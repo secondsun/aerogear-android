@@ -26,10 +26,11 @@ import org.aerogear.android.pipeline.PipeFactory;
 
 public final class DefaultPipeFactory implements PipeFactory {
 
+
     @Override
     public <T> Pipe<T> createPipe(Class<T> klass, PipeConfig config) {
         Pipe<T> createdPipe;
-        if (config.getType().equals(PipeTypes.REST)) {
+        if (PipeTypes.REST.equals(config.getType())) {
             URL url = appendEndpoint(config.getBaseURL(), config.getEndpoint());
             HttpRestProvider httpProvider = new HttpRestProvider(url);
 

@@ -22,8 +22,11 @@ import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertNull;
 import org.aerogear.android.DataManager;
+import org.aerogear.android.datamanager.IdGenerator;
 import org.aerogear.android.datamanager.Store;
+import org.aerogear.android.datamanager.StoreFactory;
 import static org.aerogear.android.impl.datamanager.StoreTypes.MEMORY;
+import org.aerogear.android.impl.helper.TestUtil;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -34,6 +37,25 @@ public class DataManagerTest {
     @Before
     public void setup() {
         dataManager = new DataManager();
+    }
+    
+    @Test
+    public void constructors() throws Exception {
+            IdGenerator defaultGenerator = new DefaultIdGenerator();
+            StoreFactory defaultFactory = new DefaultStoreFactory();
+            DataManager manager = new DataManager(defaultGenerator);
+            assertEquals(defaultGenerator, TestUtil.getPrivateField(manager,
+                            "idGenerator", IdGenerator.class));
+
+            manager = new DataManager(defaultFactory);
+            assertEquals(defaultFactory, TestUtil.getPrivateField(manager,
+                            "storeFactory", StoreFactory.class));
+
+            manager = new DataManager(defaultGenerator, defaultFactory);
+            assertEquals(defaultFactory, TestUtil.getPrivateField(manager,
+                            "storeFactory", StoreFactory.class));
+            assertEquals(defaultGenerator, TestUtil.getPrivateField(manager,
+                            "idGenerator", IdGenerator.class));
     }
 
     @Test
@@ -48,7 +70,7 @@ public class DataManagerTest {
     }
 
     @Test
-    public void testCreateStoreWithDefaulType() {
+    public void testCreateStoreWithDefaultType() {
         Store store = dataManager.store("foo");
 
         assertNotNull("store could not be null", store);
@@ -64,7 +86,7 @@ public class DataManagerTest {
     }
 
     @Test
-    public void testAddStoreWithDefaulType() {
+    public void testAddStoreWithDefaultType() {
         dataManager.store("foo");
         Store store = dataManager.get("foo");
 

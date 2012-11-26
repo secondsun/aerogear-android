@@ -67,7 +67,8 @@ public final class RestAuthenticationModule implements AuthenticationModule {
 	private final String tokenHeaderName;
 
 	private boolean isLoggedIn = false;
-	private static final String TAG = "RestAuthenticationModule";
+	private static final String TAG = RestAuthenticationModule.class
+			.getSimpleName();
 
 	/**
 	 *
@@ -94,7 +95,7 @@ public final class RestAuthenticationModule implements AuthenticationModule {
 	}
 
 	@Override
-	public URL getbaseURL() {
+	public URL getBaseURL() {
 		return baseURL;
 	}
 

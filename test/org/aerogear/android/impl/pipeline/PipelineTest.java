@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.aerogear.android.impl.pipeline;
 
 import com.xtremelabs.robolectric.RobolectricTestRunner;
@@ -24,9 +23,14 @@ import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertNull;
 import org.aerogear.android.Pipeline;
+import org.aerogear.android.authentication.AuthenticationModule;
+import org.aerogear.android.authentication.impl.RestAuthenticationConfig;
+import org.aerogear.android.authentication.impl.RestAuthenticationModule;
 import org.aerogear.android.impl.helper.Data;
 import static org.aerogear.android.impl.pipeline.PipeTypes.REST;
 import org.aerogear.android.pipeline.Pipe;
+import org.aerogear.android.pipeline.PipeType;
+import org.aerogear.android.impl.helper.TestUtil;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -185,4 +189,51 @@ public class PipelineTest {
 
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void defaultPipeFactoryThrowsIAEOnBadConfigType() {
+        DefaultPipeFactory factory = new DefaultPipeFactory();
+        PipeConfig config = new PipeConfig(url, Data.class);
+        config.setType(null);
+        factory.createPipe(Data.class, config);
+    }
+
+    @Test
+    public void pipeFactoryAddsAuthModule() throws Exception {
+        DefaultPipeFactory factory = new DefaultPipeFactory();
+        PipeConfig config = new PipeConfig(url, Data.class);
+        config.setAuthModule(new RestAuthenticationModule(url,
+                new RestAuthenticationConfig()));
+        RestAdapter<Data> pipe = (RestAdapter<Data>) factory.createPipe(
+                Data.class, config);
+
+        assertNotNull(TestUtil.getPrivateField(pipe, "authModule",
+                AuthenticationModule.class));
+
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void pipelineStringConstructorThrowsExceptionOnBadURL()
+            throws Exception {
+        new Pipeline("ttp:");
+    }
+
+    @Test
+    public void pipeFactoryAppendsUrlCorrectly() throws Exception {
+        URL altUrl = new URL("http://server.com/context");
+        DefaultPipeFactory factory = new DefaultPipeFactory();
+        PipeConfig config = new PipeConfig(altUrl, Data.class);
+        Pipe<Data> pipe = factory.createPipe(Data.class, config);
+        assertEquals("http://server.com/context/data", pipe.getUrl().toString());
+    }
+
+    @Test
+    public void pipelineStringConstructor() {
+        Pipeline pipeline = new Pipeline(url.toString());
+        Pipeline pipeline2 = new Pipeline(url);
+
+        Pipe pipe = pipeline.pipe(Data.class);
+        Pipe pipe2 = pipeline2.pipe(Data.class);
+
+        assertEquals(pipe.getUrl(), pipe2.getUrl());
+    }
 }
