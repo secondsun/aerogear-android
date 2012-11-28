@@ -38,23 +38,23 @@ public class DataManagerTest {
     public void setup() {
         dataManager = new DataManager();
     }
-    
+
     @Test
     public void constructors() throws Exception {
-            IdGenerator defaultGenerator = new DefaultIdGenerator();
-            StoreFactory defaultFactory = new DefaultStoreFactory();
-            DataManager manager = new DataManager(defaultGenerator);
-            assertEquals(defaultGenerator, TestUtil.getPrivateField(manager,
+        IdGenerator defaultGenerator = new DefaultIdGenerator();
+        StoreFactory defaultFactory = new DefaultStoreFactory();
+        DataManager manager = new DataManager(defaultGenerator);
+        assertEquals(defaultGenerator, TestUtil.getPrivateField(manager,
                             "idGenerator", IdGenerator.class));
 
-            manager = new DataManager(defaultFactory);
-            assertEquals(defaultFactory, TestUtil.getPrivateField(manager,
+        manager = new DataManager(defaultFactory);
+        assertEquals(defaultFactory, TestUtil.getPrivateField(manager,
                             "storeFactory", StoreFactory.class));
 
-            manager = new DataManager(defaultGenerator, defaultFactory);
-            assertEquals(defaultFactory, TestUtil.getPrivateField(manager,
+        manager = new DataManager(defaultGenerator, defaultFactory);
+        assertEquals(defaultFactory, TestUtil.getPrivateField(manager,
                             "storeFactory", StoreFactory.class));
-            assertEquals(defaultGenerator, TestUtil.getPrivateField(manager,
+        assertEquals(defaultGenerator, TestUtil.getPrivateField(manager,
                             "idGenerator", IdGenerator.class));
     }
 

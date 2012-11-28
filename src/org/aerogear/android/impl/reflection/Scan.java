@@ -17,9 +17,8 @@
 
 package org.aerogear.android.impl.reflection;
 
-import org.aerogear.android.RecordId;
-
 import java.lang.reflect.Field;
+import org.aerogear.android.RecordId;
 
 /**
  * Helper to search annotations

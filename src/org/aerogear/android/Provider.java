@@ -16,9 +16,8 @@
  */
 package org.aerogear.android;
 
-
 public interface Provider<T> {
-    
+
     /**
      * 
      * Constructs and returns an object of type T
@@ -26,6 +25,6 @@ public interface Provider<T> {
      * @param in a variable number of parameters to pass to the constructor
      * @return 
      */
-    public T get(Object... in );
-    
+    public T get(Object... in);
+
 }

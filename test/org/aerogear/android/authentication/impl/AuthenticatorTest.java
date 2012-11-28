@@ -17,7 +17,6 @@
 package org.aerogear.android.authentication.impl;
 
 import com.xtremelabs.robolectric.RobolectricTestRunner;
-
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.logging.Level;

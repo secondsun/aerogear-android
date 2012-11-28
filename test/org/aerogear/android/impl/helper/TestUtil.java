@@ -19,28 +19,28 @@ package org.aerogear.android.impl.helper;
 import java.lang.reflect.Field;
 
 public class TestUtil {
-	public static void setPrivateField(Object target, String fieldName,
-			Object value) throws NoSuchFieldException,
-			IllegalArgumentException, IllegalAccessException {
-		Field field = target.getClass().getDeclaredField(fieldName);
-		field.setAccessible(true);
-		field.set(target, value);
-	}
+    public static void setPrivateField(Object target, String fieldName,
+            Object value) throws NoSuchFieldException,
+            IllegalArgumentException, IllegalAccessException {
+        Field field = target.getClass().getDeclaredField(fieldName);
+        field.setAccessible(true);
+        field.set(target, value);
+    }
 
-	public static Object getPrivateField(Object target, String fieldName)
-			throws NoSuchFieldException, IllegalArgumentException,
-			IllegalAccessException {
-		Field field = target.getClass().getDeclaredField(fieldName);
-		field.setAccessible(true);
-		return field.get(target);
-	}
+    public static Object getPrivateField(Object target, String fieldName)
+            throws NoSuchFieldException, IllegalArgumentException,
+            IllegalAccessException {
+        Field field = target.getClass().getDeclaredField(fieldName);
+        field.setAccessible(true);
+        return field.get(target);
+    }
 
-	public static <T> T getPrivateField(Object target, String fieldName,
-			Class<T> type) throws NoSuchFieldException,
-			IllegalArgumentException, IllegalAccessException {
-		Field field = target.getClass().getDeclaredField(fieldName);
-		field.setAccessible(true);
-		return (T) field.get(target);
-	}
+    public static <T> T getPrivateField(Object target, String fieldName,
+            Class<T> type) throws NoSuchFieldException,
+            IllegalArgumentException, IllegalAccessException {
+        Field field = target.getClass().getDeclaredField(fieldName);
+        field.setAccessible(true);
+        return (T) field.get(target);
+    }
 
 }

@@ -16,16 +16,15 @@
  */
 package org.aerogear.android.impl.datamanager;
 
+import java.io.Serializable;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import org.aerogear.android.datamanager.IdGenerator;
 import org.aerogear.android.datamanager.Store;
 import org.aerogear.android.datamanager.StoreType;
 import org.aerogear.android.impl.reflection.Property;
 import org.aerogear.android.impl.reflection.Scan;
-
-import java.io.Serializable;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Memory implementation of Store {@link Store}.
@@ -75,7 +74,7 @@ public class MemoryStorage<T> implements Store<T> {
 
         Serializable idValue = (Serializable) property.getValue(item);
 
-        if( idValue == null ) {
+        if (idValue == null) {
             idValue = idGenerator.generate();
             property.setValue(item, idValue);
         }

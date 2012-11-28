@@ -25,7 +25,6 @@ import org.aerogear.android.pipeline.PipeType;
 
 public final class PipeConfig {
 
-
     private URL baseURL;
     private String name;
     private String endpoint;

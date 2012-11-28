@@ -16,10 +16,6 @@
  */
 package org.aerogear.android.authentication.impl;
 
-import com.xtremelabs.robolectric.shadows.StatusLineStub;
-import com.xtremelabs.robolectric.tester.org.apache.http.RequestMatcher;
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import org.aerogear.android.Callback;
 import org.aerogear.android.core.HeaderAndBody;
 
@@ -38,8 +34,7 @@ public interface AuthenticationModuleTest {
     static final String FAILING_USERNAME = "fail";
     static final String LOGIN_PASSWORD = "password";
     static final String ENROLL_PASSWORD = "spittman";
-    
-    
+
     final class SimpleCallback implements Callback<HeaderAndBody> {
 
         HeaderAndBody data;

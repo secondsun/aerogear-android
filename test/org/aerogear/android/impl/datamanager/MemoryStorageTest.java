@@ -17,20 +17,18 @@
 
 package org.aerogear.android.impl.datamanager;
 
-import org.aerogear.android.impl.reflection.PropertyNotFoundException;
-import org.aerogear.android.impl.reflection.RecordIdNotFoundException;
+import java.util.Collection;
 
 import org.aerogear.android.datamanager.StoreType;
+import static org.aerogear.android.impl.datamanager.StoreTypes.MEMORY;
 import org.aerogear.android.impl.helper.Data;
 import org.aerogear.android.impl.helper.DataWithNoIdConfigured;
 import org.aerogear.android.impl.helper.DataWithNoPropertyId;
+import org.aerogear.android.impl.reflection.PropertyNotFoundException;
+import org.aerogear.android.impl.reflection.RecordIdNotFoundException;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.util.Collection;
-
-import static org.aerogear.android.impl.datamanager.StoreTypes.MEMORY;
-import static org.junit.Assert.*;
 
 public class MemoryStorageTest {
 
@@ -48,16 +46,16 @@ public class MemoryStorageTest {
         assertEquals("verifying the type", MEMORY, store.getType());
     }
 
-	@Test(expected = IllegalArgumentException.class)
-	public void testStoreTypeThrowsException() {
-		DefaultStoreFactory factory = new DefaultStoreFactory();
-		factory.createStore(new FakeStoreType(), null);
-	}
+    @Test(expected = IllegalArgumentException.class)
+    public void testStoreTypeThrowsException() {
+        DefaultStoreFactory factory = new DefaultStoreFactory();
+        factory.createStore(new FakeStoreType(), null);
+    }
 
-	@Test
-	public void testReadAll() {
-		store.save(new Data("foo", "desc of foo"));
-		store.save(new Data("bar", "desc of bar"));
+    @Test
+    public void testReadAll() {
+        store.save(new Data("foo", "desc of foo"));
+        store.save(new Data("bar", "desc of bar"));
 
         Collection<Data> datas = store.readAll();
         assertNotNull("datas could not be null", datas);
@@ -146,12 +144,12 @@ public class MemoryStorageTest {
         assertNull("bar should be null", bar);
     }
 
-	private static class FakeStoreType implements StoreType {
+    private static class FakeStoreType implements StoreType {
 
-		@Override
-		public String getName() {
-			return "FAKE";
-		}
-	}
+        @Override
+        public String getName() {
+            return "FAKE";
+        }
+    }
 
 }

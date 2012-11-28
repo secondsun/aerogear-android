@@ -18,7 +18,6 @@ package org.aerogear.android.impl.pipeline;
 
 import android.graphics.Point;
 import com.google.gson.Gson;
-
 import com.google.gson.GsonBuilder;
 import com.google.gson.InstanceCreator;
 import com.google.gson.JsonDeserializationContext;
@@ -44,12 +43,11 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import junit.framework.Assert;
 import static junit.framework.Assert.assertEquals;
 import org.aerogear.android.Callback;
-import org.aerogear.android.RecordId;
 import org.aerogear.android.Pipeline;
-
+import org.aerogear.android.RecordId;
 import org.aerogear.android.core.HeaderAndBody;
-import org.aerogear.android.impl.helper.HttpStubProvider;
 import org.aerogear.android.impl.helper.Data;
+import org.aerogear.android.impl.helper.HttpStubProvider;
 import org.aerogear.android.impl.helper.TestUtil;
 import org.aerogear.android.pipeline.Pipe;
 import org.junit.Before;
@@ -117,24 +115,24 @@ public class RestAdapterTest {
         runRead(restPipe);
 
     }
-    
+
     @Test(timeout = 500L)
-	public void testConfigSetEncoding() throws Exception {
-		GsonBuilder builder = new GsonBuilder().registerTypeAdapter(
-				Point.class, new RestAdapterTest.PointTypeAdapter());
-		final Charset utf_16 = Charset.forName("UTF-16");
+    public void testConfigSetEncoding() throws Exception {
+        GsonBuilder builder = new GsonBuilder().registerTypeAdapter(
+                Point.class, new RestAdapterTest.PointTypeAdapter());
+        final Charset utf_16 = Charset.forName("UTF-16");
 
-		Pipeline pipeline = new Pipeline(url);
-		PipeConfig config = new PipeConfig(url, ListClassId.class);
-		config.setEncoding(utf_16);
-		config.setGsonBuilder(builder);
+        Pipeline pipeline = new Pipeline(url);
+        PipeConfig config = new PipeConfig(url, ListClassId.class);
+        config.setEncoding(utf_16);
+        config.setGsonBuilder(builder);
 
-		RestAdapter<ListClassId> restPipe = (RestAdapter<ListClassId>) pipeline
-				.pipe(ListClassId.class, config);
+        RestAdapter<ListClassId> restPipe = (RestAdapter<ListClassId>) pipeline
+                .pipe(ListClassId.class, config);
 
-		assertEquals(utf_16, TestUtil.getPrivateField(restPipe, "encoding"));
+        assertEquals(utf_16, TestUtil.getPrivateField(restPipe, "encoding"));
 
-	}
+    }
 
     @Test
     public void testSingleObjectRead() throws ParseException, InterruptedException {

@@ -16,9 +16,6 @@
  */
 package org.aerogear.android.authentication.impl;
 
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.xtremelabs.robolectric.Robolectric;
 import com.xtremelabs.robolectric.RobolectricTestRunner;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -32,240 +29,238 @@ import org.aerogear.android.core.HttpException;
 import org.aerogear.android.core.HttpProvider;
 import org.aerogear.android.impl.helper.HttpStubProvider;
 import org.aerogear.android.impl.helper.TestUtil;
-import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(RobolectricTestRunner.class)
 public class RestAuthenticationModuleTest implements AuthenticationModuleTest {
 
-	private static final URL SIMPLE_URL;
+    private static final URL SIMPLE_URL;
 
-	static {
-		try {
-			SIMPLE_URL = new URL("http://localhost:8080/todo-server");
-		} catch (MalformedURLException ex) {
-			throw new IllegalStateException(ex);
-		}
-	}
+    static {
+        try {
+            SIMPLE_URL = new URL("http://localhost:8080/todo-server");
+        } catch (MalformedURLException ex) {
+            throw new IllegalStateException(ex);
+        }
+    }
 
-	@Test
-	public void testDefaultContructor() throws Exception {
-		RestAuthenticationModule module = new RestAuthenticationModule(
-				SIMPLE_URL, new RestAuthenticationConfig());
+    @Test
+    public void testDefaultContructor() throws Exception {
+        RestAuthenticationModule module = new RestAuthenticationModule(
+                SIMPLE_URL, new RestAuthenticationConfig());
 
-		HttpProvider provider = (HttpProvider) TestUtil.getPrivateField(module,
-				"httpProviderProvider", Provider.class).get(SIMPLE_URL);
-		Assert.assertEquals(SIMPLE_URL, provider.getUrl());
+        HttpProvider provider = (HttpProvider) TestUtil.getPrivateField(module,
+                "httpProviderProvider", Provider.class).get(SIMPLE_URL);
+        Assert.assertEquals(SIMPLE_URL, provider.getUrl());
 
-		Assert.assertEquals(SIMPLE_URL, module.getBaseURL());
+        Assert.assertEquals(SIMPLE_URL, module.getBaseURL());
 
-	}
+    }
 
-	@Test
-	public void applySecurityToken() throws Exception {
-		String newTokenName = "USER_TOKEN";
+    @Test
+    public void applySecurityToken() throws Exception {
+        String newTokenName = "USER_TOKEN";
 
-		RestAuthenticationConfig config = new RestAuthenticationConfig();
-		config.setTokenHeaderName(newTokenName);
+        RestAuthenticationConfig config = new RestAuthenticationConfig();
+        config.setTokenHeaderName(newTokenName);
 
-		RestAuthenticationModule module = new RestAuthenticationModule(
-				SIMPLE_URL, config);
-		TestUtil.setPrivateField(module, "authToken", TOKEN);
+        RestAuthenticationModule module = new RestAuthenticationModule(
+                SIMPLE_URL, config);
+        TestUtil.setPrivateField(module, "authToken", TOKEN);
 
-		HttpProvider provider = (HttpProvider) TestUtil.getPrivateField(module,
-				"httpProviderProvider", Provider.class).get(SIMPLE_URL);
+        HttpProvider provider = (HttpProvider) TestUtil.getPrivateField(module,
+                "httpProviderProvider", Provider.class).get(SIMPLE_URL);
 
-		module.onSecurityApplicationRequested(provider);
-		Map<String, String> defaultHeaders = TestUtil.getPrivateField(provider,
-				"defaultHeaders", Map.class);
+        module.onSecurityApplicationRequested(provider);
+        Map<String, String> defaultHeaders = TestUtil.getPrivateField(provider,
+                "defaultHeaders", Map.class);
 
-		Assert.assertEquals(TOKEN, defaultHeaders.get(config
-				.getTokenHeaderName()));
+        Assert.assertEquals(TOKEN, defaultHeaders.get(config
+                .getTokenHeaderName()));
 
-	}
+    }
 
-	@Test(timeout = 500L)
-	public void loginFails() throws Exception {
-		RestAuthenticationModule module = new RestAuthenticationModule(
-				SIMPLE_URL, new RestAuthenticationConfig());
-		final CountDownLatch latch = new CountDownLatch(1);
-		TestUtil.setPrivateField(module, "httpProviderProvider",
-				new Provider<HttpProvider>() {
-					@Override
-					public HttpProvider get(Object... in) {
-						return new HttpStubProvider(SIMPLE_URL) {
-							@Override
-							public HeaderAndBody post(String ignore)
-									throws RuntimeException {
-								try {
-									throw new HttpException(new byte[1], 403);
-								} finally {
-									latch.countDown();
-								}
-							}
-						};
-					}
-				});
+    @Test(timeout = 500L)
+    public void loginFails() throws Exception {
+        RestAuthenticationModule module = new RestAuthenticationModule(
+                SIMPLE_URL, new RestAuthenticationConfig());
+        final CountDownLatch latch = new CountDownLatch(1);
+        TestUtil.setPrivateField(module, "httpProviderProvider",
+                new Provider<HttpProvider>() {
+                    @Override
+                    public HttpProvider get(Object... in) {
+                        return new HttpStubProvider(SIMPLE_URL) {
+                            @Override
+                            public HeaderAndBody post(String ignore)
+                                    throws RuntimeException {
+                                try {
+                                    throw new HttpException(new byte[1], 403);
+                                } finally {
+                                    latch.countDown();
+                                }
+                            }
+                        };
+                    }
+                });
 
-		SimpleCallback callback = new SimpleCallback();
-		module.login(PASSING_USERNAME, LOGIN_PASSWORD, callback);
-		Assert.assertNotNull(callback.exception);
-		Assert.assertFalse(module.isLoggedIn());
-	}
+        SimpleCallback callback = new SimpleCallback();
+        module.login(PASSING_USERNAME, LOGIN_PASSWORD, callback);
+        Assert.assertNotNull(callback.exception);
+        Assert.assertFalse(module.isLoggedIn());
+    }
 
-	@Test()
-	public void loginSucceeds() throws IOException, NoSuchFieldException,
-			InterruptedException, IllegalArgumentException,
-			IllegalAccessException {
-		RestAuthenticationModule module = new RestAuthenticationModule(
-				SIMPLE_URL, new RestAuthenticationConfig());
-		final CountDownLatch latch = new CountDownLatch(1);
-		TestUtil.setPrivateField(module, "httpProviderProvider",
-				new Provider<HttpProvider>() {
-					@Override
-					public HttpProvider get(Object... in) {
-						return new HttpStubProvider(SIMPLE_URL) {
-							@Override
-							public HeaderAndBody post(String ignore)
-									throws RuntimeException {
-								try {
-									HashMap<String, Object> headers = new HashMap<String, Object>();
-									headers.put("Auth-Token", TOKEN);
-									return new HeaderAndBody(new byte[1],
-											headers);
-								} finally {
-									latch.countDown();
-								}
-							}
-						};
-					}
-				});
+    @Test()
+    public void loginSucceeds() throws IOException, NoSuchFieldException,
+            InterruptedException, IllegalArgumentException,
+            IllegalAccessException {
+        RestAuthenticationModule module = new RestAuthenticationModule(
+                SIMPLE_URL, new RestAuthenticationConfig());
+        final CountDownLatch latch = new CountDownLatch(1);
+        TestUtil.setPrivateField(module, "httpProviderProvider",
+                new Provider<HttpProvider>() {
+                    @Override
+                    public HttpProvider get(Object... in) {
+                        return new HttpStubProvider(SIMPLE_URL) {
+                            @Override
+                            public HeaderAndBody post(String ignore)
+                                    throws RuntimeException {
+                                try {
+                                    HashMap<String, Object> headers = new HashMap<String, Object>();
+                                    headers.put("Auth-Token", TOKEN);
+                                    return new HeaderAndBody(new byte[1],
+                                            headers);
+                                } finally {
+                                    latch.countDown();
+                                }
+                            }
+                        };
+                    }
+                });
 
-		SimpleCallback callback = new SimpleCallback();
-		module.login(PASSING_USERNAME, LOGIN_PASSWORD, callback);
-		latch.await();
+        SimpleCallback callback = new SimpleCallback();
+        module.login(PASSING_USERNAME, LOGIN_PASSWORD, callback);
+        latch.await();
 
-		Assert.assertNull(callback.exception);
-		Assert.assertNotNull(callback.data);
-		Assert.assertTrue(module.isLoggedIn());
-		Assert.assertEquals(TOKEN, module.getAuthToken());
-	}
+        Assert.assertNull(callback.exception);
+        Assert.assertNotNull(callback.data);
+        Assert.assertTrue(module.isLoggedIn());
+        Assert.assertEquals(TOKEN, module.getAuthToken());
+    }
 
-	@Test(timeout = 5000L)
-	public void enrollSucceeds() throws Exception {
-		RestAuthenticationModule module = new RestAuthenticationModule(
-				SIMPLE_URL, new RestAuthenticationConfig());
-		final CountDownLatch latch = new CountDownLatch(1);
-		TestUtil.setPrivateField(module, "httpProviderProvider",
-				new Provider<HttpProvider>() {
-					@Override
-					public HttpProvider get(Object... in) {
-						return new HttpStubProvider(SIMPLE_URL) {
-							@Override
-							public HeaderAndBody post(String enrollData)
-									throws RuntimeException {
-								try {
-									HashMap<String, Object> headers = new HashMap<String, Object>();
-									headers.put("Auth-Token", TOKEN);
-									return new HeaderAndBody(new byte[1],
-											headers);
-								} finally {
-									latch.countDown();
-								}
-							}
-						};
-					}
-				});
-		SimpleCallback callback = new SimpleCallback();
+    @Test(timeout = 5000L)
+    public void enrollSucceeds() throws Exception {
+        RestAuthenticationModule module = new RestAuthenticationModule(
+                SIMPLE_URL, new RestAuthenticationConfig());
+        final CountDownLatch latch = new CountDownLatch(1);
+        TestUtil.setPrivateField(module, "httpProviderProvider",
+                new Provider<HttpProvider>() {
+                    @Override
+                    public HttpProvider get(Object... in) {
+                        return new HttpStubProvider(SIMPLE_URL) {
+                            @Override
+                            public HeaderAndBody post(String enrollData)
+                                    throws RuntimeException {
+                                try {
+                                    HashMap<String, Object> headers = new HashMap<String, Object>();
+                                    headers.put("Auth-Token", TOKEN);
+                                    return new HeaderAndBody(new byte[1],
+                                            headers);
+                                } finally {
+                                    latch.countDown();
+                                }
+                            }
+                        };
+                    }
+                });
+        SimpleCallback callback = new SimpleCallback();
 
-		Map<String, String> userData = new HashMap<String, String>();
-		userData.put("username", PASSING_USERNAME);
-		userData.put("password", ENROLL_PASSWORD);
-		userData.put("firstname", "Summers");
-		userData.put("lastname", "Pittman");
-		userData.put("role", "admin");
+        Map<String, String> userData = new HashMap<String, String>();
+        userData.put("username", PASSING_USERNAME);
+        userData.put("password", ENROLL_PASSWORD);
+        userData.put("firstname", "Summers");
+        userData.put("lastname", "Pittman");
+        userData.put("role", "admin");
 
-		module.enroll(userData, callback);
-		latch.await();
-		Assert.assertNull(callback.exception);
-		Assert.assertNotNull(callback.data);
+        module.enroll(userData, callback);
+        latch.await();
+        Assert.assertNull(callback.exception);
+        Assert.assertNotNull(callback.data);
 
-		Assert.assertTrue(module.isLoggedIn());
-		Assert.assertEquals(TOKEN, module.getAuthToken());
-	}
+        Assert.assertTrue(module.isLoggedIn());
+        Assert.assertEquals(TOKEN, module.getAuthToken());
+    }
 
-	@Test(timeout = 50000L)
-	public void logoutSucceeds() throws Exception {
-		RestAuthenticationModule module = new RestAuthenticationModule(
-				SIMPLE_URL, new RestAuthenticationConfig());
-		SimpleCallback callback = new SimpleCallback();
+    @Test(timeout = 50000L)
+    public void logoutSucceeds() throws Exception {
+        RestAuthenticationModule module = new RestAuthenticationModule(
+                SIMPLE_URL, new RestAuthenticationConfig());
+        SimpleCallback callback = new SimpleCallback();
 
-		final CountDownLatch latch = new CountDownLatch(1);
-		TestUtil.setPrivateField(module, "httpProviderProvider",
-				new Provider<HttpProvider>() {
-					@Override
-					public HttpProvider get(Object... in) {
-						return new HttpStubProvider(SIMPLE_URL) {
-							@Override
-							public HeaderAndBody post(String ignore)
-									throws RuntimeException {
-								try {
-									HashMap<String, Object> headers = new HashMap<String, Object>();
-									headers.put("Auth-Token", TOKEN);
-									return new HeaderAndBody(new byte[1],
-											headers);
-								} finally {
-									latch.countDown();
-								}
-							}
-						};
-					}
-				});
+        final CountDownLatch latch = new CountDownLatch(1);
+        TestUtil.setPrivateField(module, "httpProviderProvider",
+                new Provider<HttpProvider>() {
+                    @Override
+                    public HttpProvider get(Object... in) {
+                        return new HttpStubProvider(SIMPLE_URL) {
+                            @Override
+                            public HeaderAndBody post(String ignore)
+                                    throws RuntimeException {
+                                try {
+                                    HashMap<String, Object> headers = new HashMap<String, Object>();
+                                    headers.put("Auth-Token", TOKEN);
+                                    return new HeaderAndBody(new byte[1],
+                                            headers);
+                                } finally {
+                                    latch.countDown();
+                                }
+                            }
+                        };
+                    }
+                });
 
-		module.login(PASSING_USERNAME, LOGIN_PASSWORD, callback);
+        module.login(PASSING_USERNAME, LOGIN_PASSWORD, callback);
 
-		latch.await();
+        latch.await();
 
-		Assert.assertNull(callback.exception);
-		Assert.assertNotNull(callback.data);
-		Assert.assertTrue(module.isLoggedIn());
-		Assert.assertEquals(TOKEN, module.getAuthToken());
+        Assert.assertNull(callback.exception);
+        Assert.assertNotNull(callback.data);
+        Assert.assertTrue(module.isLoggedIn());
+        Assert.assertEquals(TOKEN, module.getAuthToken());
 
-		VoidCallback voidCallback = new VoidCallback();
+        VoidCallback voidCallback = new VoidCallback();
 
-		final CountDownLatch latch2 = new CountDownLatch(1);
-		TestUtil.setPrivateField(module, "httpProviderProvider",
-				new Provider<HttpProvider>() {
-					@Override
-					public HttpProvider get(Object... in) {
-						return new HttpStubProvider(SIMPLE_URL) {
-							@Override
-							public HeaderAndBody post(String ignore)
-									throws RuntimeException {
-								try {
-									HashMap<String, Object> headers = new HashMap<String, Object>();
+        final CountDownLatch latch2 = new CountDownLatch(1);
+        TestUtil.setPrivateField(module, "httpProviderProvider",
+                new Provider<HttpProvider>() {
+                    @Override
+                    public HttpProvider get(Object... in) {
+                        return new HttpStubProvider(SIMPLE_URL) {
+                            @Override
+                            public HeaderAndBody post(String ignore)
+                                    throws RuntimeException {
+                                try {
+                                    HashMap<String, Object> headers = new HashMap<String, Object>();
 
-									return new HeaderAndBody(new byte[1],
-											headers);
-								} finally {
-									latch2.countDown();
-								}
-							}
-						};
-					}
-				});
+                                    return new HeaderAndBody(new byte[1],
+                                            headers);
+                                } finally {
+                                    latch2.countDown();
+                                }
+                            }
+                        };
+                    }
+                });
 
-		module.logout(voidCallback);
+        module.logout(voidCallback);
 
-		latch2.await();
+        latch2.await();
 
-		Assert.assertNull(voidCallback.exception);
+        Assert.assertNull(voidCallback.exception);
 
-		Assert.assertFalse(module.isLoggedIn());
-		Assert.assertEquals("", module.getAuthToken());
+        Assert.assertFalse(module.isLoggedIn());
+        Assert.assertEquals("", module.getAuthToken());
 
-	}
+    }
 }
