@@ -16,6 +16,7 @@
  */
 package org.aerogear.android.impl.core;
 
+import com.xtremelabs.robolectric.RobolectricTestRunner;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.net.HttpURLConnection;
@@ -34,9 +35,13 @@ import org.aerogear.android.core.HttpException;
 import static org.aerogear.android.impl.helper.TestUtil.*;
 import static org.junit.Assert.*;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
+@RunWith(RobolectricTestRunner.class)
 public class HttpRestProviderTest {
 
     private static final URL SIMPLE_URL;
@@ -137,16 +142,15 @@ public class HttpRestProviderTest {
     public void testPut() throws Exception {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream(
                 RESPONSE_DATA.length);
-        HttpURLConnection connection = mock(HttpURLConnection.class);
+        final HttpURLConnection connection = mock(HttpURLConnection.class);
         HttpUrlConnectionProvider providerProvider = new HttpUrlConnectionProvider(
                 connection);
         final String id = "1";
 
-        doReturn(200).when(connection).getResponseCode();
-        when(connection.getInputStream()).thenReturn(
-                new ByteArrayInputStream(RESPONSE_DATA));
-        when(connection.getOutputStream()).thenReturn(outputStream);
-        when(connection.getHeaderFields()).thenReturn(RESPONSE_HEADERS);
+        doAnswer(new ConnectingAnswer<Integer>(connection, 200)).when(connection).getResponseCode();
+        doAnswer(new ConnectingAnswer<ByteArrayInputStream>(connection, new ByteArrayInputStream(RESPONSE_DATA))).when(connection).getInputStream();
+        doAnswer(new ConnectingAnswer<ByteArrayOutputStream>(connection, outputStream)).when(connection).getOutputStream();
+        doAnswer(new ConnectingAnswer<Map>(connection, RESPONSE_HEADERS)).when(connection).getHeaderFields();
         doCallRealMethod().when(connection).setRequestMethod(anyString());
         when(connection.getRequestMethod()).thenCallRealMethod();
 
@@ -207,6 +211,22 @@ public class HttpRestProviderTest {
                 id = (String) in[0];
             }
             return connection;
+        }
+    }
+
+    private static class ConnectingAnswer<T> implements Answer<T> {
+        private final HttpURLConnection real;
+        private final T i;
+
+        public ConnectingAnswer(HttpURLConnection real, T i) {
+            this.real = real;
+            this.i = i;
+        }
+
+        @Override
+        public T answer(InvocationOnMock invocation) throws Throwable {
+            setPrivateField(real, "connected", true);
+            return i;
         }
     }
 

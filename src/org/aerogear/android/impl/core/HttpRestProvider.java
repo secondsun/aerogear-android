@@ -141,6 +141,7 @@ public final class HttpRestProvider implements HttpProvider {
 
         try {
             urlConnection = prepareConnection();
+            urlConnection.setRequestMethod("POST");
             addBodyRequest(urlConnection, data);
             return getHeaderAndBody(urlConnection);
 
@@ -163,8 +164,9 @@ public final class HttpRestProvider implements HttpProvider {
 
         try {
             urlConnection = prepareConnection(id);
-            addBodyRequest(urlConnection, data);
             urlConnection.setRequestMethod("PUT");
+            addBodyRequest(urlConnection, data);
+
             return getHeaderAndBody(urlConnection);
         } catch (IOException e) {
             Log.e(TAG, "Error on PUT of " + url, e);
@@ -201,7 +203,6 @@ public final class HttpRestProvider implements HttpProvider {
             throws IOException {
 
         urlConnection.setDoOutput(true);
-        urlConnection.setRequestMethod("POST");
 
         if (data != null) {
             OutputStream out = new BufferedOutputStream(urlConnection

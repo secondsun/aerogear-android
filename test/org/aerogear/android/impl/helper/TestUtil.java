@@ -17,14 +17,28 @@
 package org.aerogear.android.impl.helper;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
+import org.aerogear.android.impl.reflection.FieldNotFoundException;
 
 public class TestUtil {
+
     public static void setPrivateField(Object target, String fieldName,
             Object value) throws NoSuchFieldException,
             IllegalArgumentException, IllegalAccessException {
-        Field field = target.getClass().getDeclaredField(fieldName);
-        field.setAccessible(true);
-        field.set(target, value);
+        Class type = target.getClass();
+        List<Field> fields = getAllFields(new ArrayList<Field>(), target.getClass());
+
+        for (Field field : fields) {
+            if (field.getName().equals(fieldName)) {
+                field.setAccessible(true);
+                field.set(target, value);
+                return;
+            }
+        }
+
+        throw new FieldNotFoundException(target.getClass(), fieldName);
+
     }
 
     public static Object getPrivateField(Object target, String fieldName)
@@ -43,4 +57,15 @@ public class TestUtil {
         return (T) field.get(target);
     }
 
+    public static List<Field> getAllFields(List<Field> fields, Class<?> type) {
+        for (Field field : type.getDeclaredFields()) {
+            fields.add(field);
+        }
+
+        if (type.getSuperclass() != null) {
+            fields = getAllFields(fields, type.getSuperclass());
+        }
+
+        return fields;
+    }
 }
