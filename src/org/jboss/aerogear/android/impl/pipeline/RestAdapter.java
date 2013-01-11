@@ -25,18 +25,12 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 
-import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Array;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
-import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import org.jboss.aerogear.android.Callback;
 import org.jboss.aerogear.android.Provider;
 import org.jboss.aerogear.android.ReadFilter;
@@ -52,7 +46,6 @@ import org.jboss.aerogear.android.pipeline.PipeType;
 
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Array;
-import java.net.*;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
