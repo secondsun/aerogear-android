@@ -19,6 +19,7 @@ package org.jboss.aerogear.android;
 
 import android.util.Log;
 import java.io.UnsupportedEncodingException;
+import java.net.URI;
 import java.net.URLEncoder;
 import org.json.JSONObject;
 
@@ -34,11 +35,12 @@ public class ReadFilter {
     private Integer offset = 0;
     private Integer perPage = Integer.MAX_VALUE;
     private JSONObject where = new JSONObject();
-
+    private URI linkUri;
+    
     public Integer getLimit() {
         return limit;
     }
-
+    
     public void setLimit(Integer limit) {
         this.limit = limit;
     }
@@ -67,6 +69,16 @@ public class ReadFilter {
         this.where = where;
     }
 
+    public URI getLinkUri() {
+        return linkUri;
+    }
+
+    public void setLinkUri(URI linkUri) {
+        this.linkUri = linkUri;
+    }
+
+    
+    
     /**
      * @return a URL encoded query which represents the values set in this object.
      */

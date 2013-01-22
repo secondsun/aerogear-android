@@ -18,7 +18,6 @@
 package org.jboss.aerogear.android.impl.pipeline;
 
 import android.graphics.Point;
-import android.util.Log;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.InstanceCreator;
@@ -46,8 +45,11 @@ import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import static junit.framework.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 import org.jboss.aerogear.android.Callback;
 import org.jboss.aerogear.android.Pipeline;
@@ -59,6 +61,8 @@ import org.jboss.aerogear.android.authentication.AuthorizationFields;
 import org.jboss.aerogear.android.impl.core.HttpProviderFactory;
 import org.jboss.aerogear.android.impl.helper.Data;
 import org.jboss.aerogear.android.impl.helper.UnitTestUtils;
+import org.jboss.aerogear.android.pipeline.PageConfig;
+import org.jboss.aerogear.android.pipeline.PagedList;
 import org.jboss.aerogear.android.pipeline.Pipe;
 import org.json.JSONObject;
 import org.junit.Before;
@@ -274,19 +278,121 @@ public class RestAdapterTest {
 
         verify(factory).get(new URL(url.toString() + "?token=token&per_page=10&where=%7B%22model%22:%22BMW%22%7D"));
     }
+    
+    
+    /**
+     * This test tests the default paging configuration.
+     */
+    @Test(expected=java.lang.IllegalArgumentException.class)
+    public void testLinkPagingThrowsExcptionIfNoLinkHeader() throws InterruptedException, NoSuchFieldException, NoSuchFieldException, IllegalArgumentException, IllegalAccessException, Exception {
+        Pipeline pipeline = new Pipeline(url);
+                
+        final HttpStubProvider provider = new HttpStubProvider(url, new HeaderAndBody(SERIALIZED_POINTS.getBytes(), new HashMap<String, Object>()));
 
+        PageConfig pageConfig = new PageConfig();
+        GsonBuilder builder = new GsonBuilder().registerTypeAdapter(Point.class, new RestAdapterTest.PointTypeAdapter());
+
+        PipeConfig pipeConfig = new PipeConfig(url, ListClassId.class);
+        pipeConfig.setGsonBuilder(builder);
+        pipeConfig.setPageConfig(pageConfig);
+        
+        Pipe<ListClassId> dataPipe = pipeline.pipe(ListClassId.class, pipeConfig);
+        
+        UnitTestUtils.setPrivateField(dataPipe, "httpProviderFactory", new Provider<HttpProvider>() {
+
+            @Override
+            public HttpProvider get(Object... in) {
+                return provider;
+            }
+        });
+        
+        ReadFilter onePageFilter = new ReadFilter();
+        onePageFilter.setPerPage(1);
+        runReadForException(dataPipe, onePageFilter);
+        
+    }
+
+    /**
+     * This test tests the default paging configuration.
+     */
+    @Test
+    public void testDefaultPaging() throws InterruptedException, NoSuchFieldException, NoSuchFieldException, IllegalArgumentException, IllegalAccessException {
+        Pipeline pipeline = new Pipeline(url);
+
+        PageConfig pageConfig = new PageConfig();
+        GsonBuilder builder = new GsonBuilder().registerTypeAdapter(Point.class, new RestAdapterTest.PointTypeAdapter());
+
+        PipeConfig pipeConfig = new PipeConfig(url, ListClassId.class);
+        pipeConfig.setGsonBuilder(builder);
+        pipeConfig.setPageConfig(pageConfig);
+        
+        Pipe<ListClassId> dataPipe = pipeline.pipe(ListClassId.class, pipeConfig);
+        
+        UnitTestUtils.setPrivateField(dataPipe, "httpProviderFactory", new Provider<HttpProvider>() {
+
+            @Override
+            public HttpProvider get(Object... in) {
+                HashMap<String, Object> headers = new HashMap<String, Object>(1);
+                headers.put("Link", "<http://example.com/TheBook/chapter2>; rel=\"previous\";title=\"previous chapter\"");
+                HttpStubProvider provider = new HttpStubProvider(url, new HeaderAndBody(SERIALIZED_POINTS.getBytes(), headers));
+
+                return provider;
+            }
+        });
+        
+        ReadFilter onePageFilter = new ReadFilter();
+        onePageFilter.setPerPage(1);
+        List<ListClassId> pagedList = runRead(dataPipe, onePageFilter);
+        assertTrue(pagedList instanceof PagedList);
+    }
+    
+    private <T> List<T> runRead(Pipe<T> restPipe) throws InterruptedException {
+        return runRead(restPipe, null);
+    }
+    
     /**
      * Runs a read method, returns the result of the call back and makes sure no
      * exceptions are thrown
      *
      * @param restPipe
      */
-    private <T> List<T> runRead(RestAdapter<T> restPipe) throws InterruptedException {
+    private <T> List<T> runRead(Pipe<T> restPipe, ReadFilter readFilter) throws InterruptedException {
+        final CountDownLatch latch = new CountDownLatch(1);
+        final AtomicBoolean hasException = new AtomicBoolean(false);
+        final AtomicReference<List<T>> resultRef = new AtomicReference<List<T>>();
+
+        restPipe.readWithFilter(readFilter, new Callback<List<T>>() {
+            @Override
+            public void onSuccess(List<T> data) {
+                resultRef.set(data);
+                latch.countDown();
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                hasException.set(true);
+                Logger.getLogger(RestAdapterTest.class.getSimpleName()).log(Level.SEVERE, e.getMessage(), e);
+                latch.countDown();
+            }
+        });
+
+        latch.await(2, TimeUnit.SECONDS);
+        Assert.assertFalse(hasException.get());
+
+        return resultRef.get();
+    }
+
+        /**
+     * Runs a read method, returns the result of the call back and rethrows the underlying exception
+     *
+     * @param restPipe
+     */
+    private <T> List<T> runReadForException(Pipe<T> restPipe, ReadFilter readFilter) throws InterruptedException, Exception {
         final CountDownLatch latch = new CountDownLatch(1);
         final AtomicBoolean hasException = new AtomicBoolean(false);
         final List<T> returnedData = new ArrayList<T>();
-
-        restPipe.read(new Callback<List<T>>() {
+        final AtomicReference<Exception> exceptionref = new AtomicReference<Exception>();
+        restPipe.readWithFilter(readFilter, new Callback<List<T>>() {
             @Override
             public void onSuccess(List<T> data) {
                 returnedData.addAll(data);
@@ -296,17 +402,17 @@ public class RestAdapterTest {
             @Override
             public void onFailure(Exception e) {
                 hasException.set(true);
-                Log.e(TAG, "Failure to run the read", e);
+                exceptionref.set(e);
                 latch.countDown();
             }
         });
 
         latch.await(2, TimeUnit.SECONDS);
-        Assert.assertFalse(hasException.get());
+        Assert.assertTrue(hasException.get());
 
-        return returnedData;
+        throw exceptionref.get();
     }
-
+    
     public final static class ListClassId {
 
         List<Point> points = new ArrayList<Point>(10);

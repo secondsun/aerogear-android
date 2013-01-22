@@ -22,6 +22,7 @@ import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.charset.UnsupportedCharsetException;
 import org.jboss.aerogear.android.authentication.AuthenticationModule;
+import org.jboss.aerogear.android.pipeline.PageConfig;
 import org.jboss.aerogear.android.pipeline.PipeType;
 
 public final class PipeConfig {
@@ -30,6 +31,7 @@ public final class PipeConfig {
     private String name;
     private String endpoint;
     private PipeType type = PipeTypes.REST;
+    private PageConfig pageConfig;
     private GsonBuilder gsonBuilder;
     private AuthenticationModule authModule;
     private Charset encoding = Charset.forName("UTF-8");
@@ -115,4 +117,14 @@ public final class PipeConfig {
         this.encoding = Charset.forName(charsetName);
     }
 
+    public PageConfig getPageConfig() {
+        return pageConfig;
+    }
+
+    public void setPageConfig(PageConfig pageConfig) {
+        this.pageConfig = pageConfig;
+    }
+
+    
+    
 }

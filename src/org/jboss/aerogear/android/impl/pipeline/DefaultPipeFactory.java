@@ -33,9 +33,9 @@ public final class DefaultPipeFactory implements PipeFactory {
             URL url = appendEndpoint(config.getBaseURL(), config.getEndpoint());
 
             if (config.getGsonBuilder() != null) {
-                createdPipe = new RestAdapter<T>(klass, url, config.getGsonBuilder());
+                createdPipe = new RestAdapter<T>(klass, url, config.getGsonBuilder(), config.getPageConfig());
             } else {
-                createdPipe = new RestAdapter<T>(klass, url);
+                createdPipe = new RestAdapter<T>(klass, url, config.getPageConfig());
             }
 
             ((RestAdapter<T>) createdPipe).setEncoding(config.getEncoding());
