@@ -44,4 +44,12 @@ public class WrappingPagedList<T> extends ForwardingList<T> implements PagedList
         pipe.readWithFilter(previousFilter, callback);
     }
 
+    public ReadFilter getNextFilter() {
+        return nextFilter;
+    }
+
+    public ReadFilter getPreviousFilter() {
+        return previousFilter;
+    }
+
 }

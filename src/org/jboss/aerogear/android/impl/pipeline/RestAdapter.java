@@ -50,8 +50,6 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.jboss.aerogear.android.impl.util.ParseException;
 import org.jboss.aerogear.android.impl.util.WebLinkParser;
 import org.jboss.aerogear.android.pipeline.PageConfig;
@@ -113,6 +111,15 @@ public final class RestAdapter<T> implements Pipe<T> {
         this.baseURL = baseURL;
         this.gson = gsonBuilder.create();
         this.pageConfig = pageconfig;
+        if (pageconfig != null) {
+            if (pageconfig.getPageHeaderParser() == null) {
+                if (pageconfig.getMetadataLocation().equals(PageConfig.MetadataLocation.BODY.toString())) {
+                    pageconfig.setPageHeaderParser(new URIBodyPageParser(baseURL));
+                } else if (pageconfig.getMetadataLocation().equals(PageConfig.MetadataLocation.HEADERS.toString())) {
+                    pageconfig.setPageHeaderParser(new URIPageHeaderParser(baseURL));
+                }
+            }
+        }
     }
     
     /**
@@ -445,8 +452,21 @@ public final class RestAdapter<T> implements Pipe<T> {
                 Log.e(TAG, webLinksRaw + " could not be parsed as a web link header", ex);
                 throw new RuntimeException(ex);
             }
+        } else if (pageConfig.getMetadataLocation().equals(PageConfig.MetadataLocation.HEADERS.toString())) {
+            nextRead = pageConfig.getPageHeaderParser().getNextFilter(httpResponse, RestAdapter.this.pageConfig);
+            previousRead = pageConfig.getPageHeaderParser().getPreviousFilter(httpResponse, RestAdapter.this.pageConfig);                    
+        } else if (pageConfig.getMetadataLocation().equals(PageConfig.MetadataLocation.BODY.toString())){
+            nextRead = pageConfig.getPageHeaderParser().getNextFilter(httpResponse, RestAdapter.this.pageConfig);
+            previousRead = pageConfig.getPageHeaderParser().getPreviousFilter(httpResponse, RestAdapter.this.pageConfig);                    
         } else {
             throw new IllegalStateException("Not supported");
+        }
+        if (nextRead != null) {
+            nextRead.setWhere( where );
+        }
+        
+        if (previousRead != null) {
+            previousRead.setWhere( where );
         }
         
         return new WrappingPagedList<T>(this, result, nextRead, previousRead);

@@ -37,31 +37,11 @@ public class PageConfig {
 
     }
 
-    public static enum PagingLocation {
-        QUERY("query"), HEADER("header");
-
-        private final String value;
-
-        private PagingLocation(String value) {
-            this.value = value;
-        }
-
-        @Override
-        public String toString() {
-            return value;
-        }
-
-    }
 
     /**
      * indicates whether paging information (see identifiers) is received from the response header, the response body (body) or via RFC 5988 (webLinking), which is the default
      */
     private String metadataLocation = MetadataLocation.WEB_LINKING.toString();
-
-    /**
-     *  indicate whether paging information is sent as query parameters (default), or on the request header.
-     */
-    private String pagingLocation = PagingLocation.QUERY.toString();
 
     /**
      * the next identifier name (default: next)
@@ -85,20 +65,14 @@ public class PageConfig {
 
     private ParameterProvider parameterProvider;
 
+    private PageResultExtractor pageHeaderParser;
+    
     public String getMetadataLocation() {
         return metadataLocation;
     }
 
     public void setMetadataLocation(String metadataLocation) {
         this.metadataLocation = metadataLocation;
-    }
-
-    public String getPagingLocation() {
-        return pagingLocation;
-    }
-
-    public void setPagingLocation(String pagingLocation) {
-        this.pagingLocation = pagingLocation;
     }
 
     public String getNextIdentifier() {
@@ -139,6 +113,14 @@ public class PageConfig {
 
     public void setParameterProvider(ParameterProvider parameterProvider) {
         this.parameterProvider = parameterProvider;
+    }
+
+    public PageResultExtractor getPageHeaderParser() {
+        return pageHeaderParser;
+    }
+
+    public void setPageHeaderParser(PageResultExtractor pageHeaderParser) {
+        this.pageHeaderParser = pageHeaderParser;
     }
 
     

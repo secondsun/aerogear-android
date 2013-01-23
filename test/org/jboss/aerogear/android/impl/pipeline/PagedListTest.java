@@ -27,14 +27,13 @@ public class PagedListTest {
         ReadFilter next = new ReadFilter();
         List delegate = new ArrayList();
         ReadFilter previous = new ReadFilter();
-        next.setLinkUri(URI.create("./next"));
         
+        next.setLinkUri(URI.create("./next"));
         previous.setLinkUri(URI.create("./previous"));
         
         WrappingPagedList list = new WrappingPagedList(pipe, delegate, next, previous);
         list.next(mock(Callback.class));
         list.previous(mock(Callback.class));
-        
         
         verify(pipe).readWithFilter(eq(next), any(Callback.class));
         verify(pipe).readWithFilter(eq(previous), any(Callback.class));
