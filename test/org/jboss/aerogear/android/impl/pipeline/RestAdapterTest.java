@@ -193,6 +193,27 @@ public class RestAdapterTest {
     }
 
     @Test
+    public void testSingleObjectReadWithNestedResult() throws Exception {
+        GsonBuilder builder = new GsonBuilder().registerTypeAdapter(Point.class, new RestAdapterTest.PointTypeAdapter());
+        HeaderAndBody response = new HeaderAndBody(("{\"result\":{\"fancy_women\":" + SERIALIZED_POINTS + "}}").getBytes(), new HashMap<String, Object>());
+        final HttpStubProvider provider = new HttpStubProvider(url, response);
+        RestAdapter<ListClassId> restPipe = new RestAdapter<ListClassId>(ListClassId.class, url, builder);
+        //restPipe.setDataRoot("result");
+        UnitTestUtils.setPrivateField(restPipe, "httpProviderFactory", new Provider<HttpProvider>() {
+
+            @Override
+            public HttpProvider get(Object... in) {
+                return provider;
+            }
+        });
+        List<ListClassId> result = runRead(restPipe);
+
+        List<Point> returnedPoints = result.get(0).points;
+        assertEquals(10, returnedPoints.size());
+
+    }
+    
+    @Test
     public void testGsonBuilderProperty() throws Exception {
         GsonBuilder builder = new GsonBuilder().registerTypeAdapter(Point.class, new RestAdapterTest.PointTypeAdapter());
 

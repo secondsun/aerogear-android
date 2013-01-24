@@ -34,6 +34,14 @@ public final class PipeConfig {
     private PageConfig pageConfig;
     private GsonBuilder gsonBuilder;
     private AuthenticationModule authModule;
+    
+    /**
+     * Where the data elements the pipe wants to extract are found in the
+     * response from the server.  Defaults to the root of the data structure 
+     * represented by an empty string
+     */
+    private String dataRoot = "";
+   
     private Charset encoding = Charset.forName("UTF-8");
 
     public PipeConfig(URL baseURL, Class klass) {
@@ -123,6 +131,14 @@ public final class PipeConfig {
 
     public void setPageConfig(PageConfig pageConfig) {
         this.pageConfig = pageConfig;
+    }
+
+    public String getDataRoot() {
+        return dataRoot;
+    }
+
+    public void setDataRoot(String dataRoot) {
+        this.dataRoot = dataRoot;
     }
 
     

@@ -20,7 +20,6 @@ package org.jboss.aerogear.android.impl.pipeline;
 import android.util.Log;
 import java.net.MalformedURLException;
 import java.net.URL;
-import org.jboss.aerogear.android.impl.http.HttpRestProvider;
 import org.jboss.aerogear.android.pipeline.Pipe;
 import org.jboss.aerogear.android.pipeline.PipeFactory;
 
@@ -48,6 +47,8 @@ public final class DefaultPipeFactory implements PipeFactory {
             createdPipe.setAuthenticationModule(config.getAuthModule());
         }
 
+        ((RestAdapter<T>) createdPipe).setDataRoot(config.getDataRoot());
+                
         return createdPipe;
     }
 

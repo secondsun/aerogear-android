@@ -64,6 +64,7 @@ public final class RestAdapter<T> implements Pipe<T> {
     private static final String TAG = RestAdapter.class.getSimpleName();
     private static final String UTF_8 = "UTF-8";
     private final Gson gson;
+    private String dataRoot = "";
     /**
      * A class of the Generic type this pipe wraps. This is used by GSON for
      * deserializing.
@@ -103,7 +104,7 @@ public final class RestAdapter<T> implements Pipe<T> {
         this.gson = new Gson();
         this.pageConfig = pageconfig;
     }
-    
+
     public RestAdapter(Class<T> klass, URL baseURL,
             GsonBuilder gsonBuilder, PageConfig pageconfig) {
         this.klass = klass;
@@ -121,7 +122,7 @@ public final class RestAdapter<T> implements Pipe<T> {
             }
         }
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -156,21 +157,22 @@ public final class RestAdapter<T> implements Pipe<T> {
                     if (innerFilter.getLinkUri() == null) {
                         httpProvider = getHttpProvider(URLDecoder.decode(innerFilter.getQuery(), UTF_8));
                     } else {
-                        httpProvider = getHttpProvider(innerFilter.getLinkUri());   
+                        httpProvider = getHttpProvider(innerFilter.getLinkUri());
                     }
                     HeaderAndBody httpResponse = httpProvider.get();
                     byte[] responseBody = httpResponse.getBody();
                     String responseAsString = new String(responseBody, encoding);
                     JsonParser parser = new JsonParser();
-                    JsonElement result = parser.parse(responseAsString);
-                    if (result.isJsonArray()) {
-                        T[] resultArray = gson.fromJson(responseAsString, arrayKlass);
+                    JsonElement httpJsonResult = parser.parse(responseAsString);
+                    httpJsonResult = getResultElement(httpJsonResult, dataRoot);
+                    if (httpJsonResult.isJsonArray()) {
+                        T[] resultArray = gson.fromJson(httpJsonResult, arrayKlass);
                         this.result = Arrays.asList(resultArray);
                         if (pageConfig != null) {
                             this.result = buildAndAddPageContext(this.result, httpResponse, innerFilter.getWhere());
                         }
                     } else {
-                        T resultObject = gson.fromJson(responseAsString, klass);
+                        T resultObject = gson.fromJson(httpJsonResult, klass);
                         List<T> resultList = new ArrayList<T>(1);
                         resultList.add(resultObject);
                         this.result = resultList;
@@ -389,7 +391,7 @@ public final class RestAdapter<T> implements Pipe<T> {
     }
 
     private HttpProvider getHttpProvider() {
-        return getHttpProvider((String)null);
+        return getHttpProvider((String) null);
     }
 
     private HttpProvider getHttpProvider(String filterQuery) {
@@ -403,11 +405,11 @@ public final class RestAdapter<T> implements Pipe<T> {
         return httpProvider;
     }
 
-      private HttpProvider getHttpProvider(URI relativeUri) {
+    private HttpProvider getHttpProvider(URI relativeUri) {
         try {
             AuthorizationFields fields = loadAuth();
             URL authorizedURL = addAuthorization(fields.getQueryParameters(), baseURL.toURI().resolve(relativeUri).toURL());
-            
+
             final HttpProvider httpProvider = httpProviderFactory.get(authorizedURL);
             addAuthHeaders(httpProvider, fields);
             return httpProvider;
@@ -419,7 +421,7 @@ public final class RestAdapter<T> implements Pipe<T> {
             throw new RuntimeException(ex);
         }
     }
-    
+
     private List<T> buildAndAddPageContext(List<T> result, HeaderAndBody httpResponse, JSONObject where) {
         ReadFilter previousRead = null;
         ReadFilter nextRead = null;
@@ -442,8 +444,8 @@ public final class RestAdapter<T> implements Pipe<T> {
                     } else if (prevIdentifier.equals(link.getParameters().get(relHeader))) {
                         previousRead = new ReadFilter();
                         previousRead.setLinkUri(new URI(link.getUri()));
-                    } 
-                    
+                    }
+
                 }
             } catch (URISyntaxException ex) {
                 Log.e(TAG, webLinksRaw + " did not contain a valid ocntext URI", ex);
@@ -454,21 +456,21 @@ public final class RestAdapter<T> implements Pipe<T> {
             }
         } else if (pageConfig.getMetadataLocation().equals(PageConfig.MetadataLocation.HEADERS.toString())) {
             nextRead = pageConfig.getPageHeaderParser().getNextFilter(httpResponse, RestAdapter.this.pageConfig);
-            previousRead = pageConfig.getPageHeaderParser().getPreviousFilter(httpResponse, RestAdapter.this.pageConfig);                    
-        } else if (pageConfig.getMetadataLocation().equals(PageConfig.MetadataLocation.BODY.toString())){
+            previousRead = pageConfig.getPageHeaderParser().getPreviousFilter(httpResponse, RestAdapter.this.pageConfig);
+        } else if (pageConfig.getMetadataLocation().equals(PageConfig.MetadataLocation.BODY.toString())) {
             nextRead = pageConfig.getPageHeaderParser().getNextFilter(httpResponse, RestAdapter.this.pageConfig);
-            previousRead = pageConfig.getPageHeaderParser().getPreviousFilter(httpResponse, RestAdapter.this.pageConfig);                    
+            previousRead = pageConfig.getPageHeaderParser().getPreviousFilter(httpResponse, RestAdapter.this.pageConfig);
         } else {
             throw new IllegalStateException("Not supported");
         }
         if (nextRead != null) {
-            nextRead.setWhere( where );
+            nextRead.setWhere(where);
         }
-        
+
         if (previousRead != null) {
-            previousRead.setWhere( where );
+            previousRead.setWhere(where);
         }
-        
+
         return new WrappingPagedList<T>(this, result, nextRead, previousRead);
     }
 
@@ -478,5 +480,26 @@ public final class RestAdapter<T> implements Pipe<T> {
             return header.toString();
         }
         return null;
+    }
+
+    public String getDataRoot() {
+        return dataRoot;
+    }
+
+    protected void setDataRoot(String dataRoot) {
+        this.dataRoot = dataRoot;
+    }
+
+    private JsonElement getResultElement(JsonElement element, String dataRoot) {
+        String[] identifiers = dataRoot.split("\\.");
+        for (String identifier : identifiers) {
+            JsonElement newElement = element.getAsJsonObject().get(identifier);
+            if (newElement == null) {
+                return element;
+            } else {
+                element = newElement;
+            }
+        }
+        return element;
     }
 }
