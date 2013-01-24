@@ -38,7 +38,10 @@ public final class DefaultPipeFactory implements PipeFactory {
             }
 
             ((RestAdapter<T>) createdPipe).setEncoding(config.getEncoding());
-
+            ((RestAdapter<T>) createdPipe).setDataRoot(config.getDataRoot());
+            if (config.getParameterProvider() != null) {
+                ((RestAdapter<T>) createdPipe).setParameterProvider(config.getParameterProvider());
+            }
         } else {
             throw new IllegalArgumentException("Type is not supported yet");
         }
@@ -47,7 +50,7 @@ public final class DefaultPipeFactory implements PipeFactory {
             createdPipe.setAuthenticationModule(config.getAuthModule());
         }
 
-        ((RestAdapter<T>) createdPipe).setDataRoot(config.getDataRoot());
+        
                 
         return createdPipe;
     }

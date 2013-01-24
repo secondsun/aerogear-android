@@ -50,9 +50,11 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import org.apache.http.client.utils.URIUtils;
 import org.jboss.aerogear.android.impl.util.ParseException;
 import org.jboss.aerogear.android.impl.util.WebLinkParser;
 import org.jboss.aerogear.android.pipeline.PageConfig;
+import org.jboss.aerogear.android.pipeline.ParameterProvider;
 import org.json.JSONObject;
 
 /**
@@ -65,6 +67,7 @@ public final class RestAdapter<T> implements Pipe<T> {
     private static final String UTF_8 = "UTF-8";
     private final Gson gson;
     private String dataRoot = "";
+    private ParameterProvider parameterProvider = new DefaultParameterProvider();
     /**
      * A class of the Generic type this pipe wraps. This is used by GSON for
      * deserializing.
@@ -155,7 +158,7 @@ public final class RestAdapter<T> implements Pipe<T> {
                 try {
                     HttpProvider httpProvider;
                     if (innerFilter.getLinkUri() == null) {
-                        httpProvider = getHttpProvider(URLDecoder.decode(innerFilter.getQuery(), UTF_8));
+                        httpProvider = getHttpProvider(parameterProvider.getParameters(innerFilter));
                     } else {
                         httpProvider = getHttpProvider(innerFilter.getLinkUri());
                     }
@@ -312,7 +315,9 @@ public final class RestAdapter<T> implements Pipe<T> {
             if (baseQuery == null || baseQuery.isEmpty()) {
                 baseQuery = query;
             } else {
-                baseQuery = baseQuery + "&" + query;
+                if (query != null && !query.isEmpty()) {
+                    baseQuery = baseQuery + "&" + query;
+                }
             }
 
             return new URI(baseURI.getScheme(), baseURI.getUserInfo(), baseURI.getHost(), baseURI.getPort(), baseURI.getPath(), baseQuery, baseURI.getFragment()).toURL();
@@ -391,24 +396,14 @@ public final class RestAdapter<T> implements Pipe<T> {
     }
 
     private HttpProvider getHttpProvider() {
-        return getHttpProvider((String) null);
-    }
-
-    private HttpProvider getHttpProvider(String filterQuery) {
-        AuthorizationFields fields = loadAuth();
-        URL authorizedURL = addAuthorization(fields.getQueryParameters(), baseURL);
-        if (!(filterQuery == null || filterQuery.isEmpty())) {
-            authorizedURL = appendQuery(filterQuery, authorizedURL);
-        }
-        final HttpProvider httpProvider = httpProviderFactory.get(authorizedURL);
-        addAuthHeaders(httpProvider, fields);
-        return httpProvider;
+        return getHttpProvider(URI.create(""));
     }
 
     private HttpProvider getHttpProvider(URI relativeUri) {
         try {
             AuthorizationFields fields = loadAuth();
-            URL authorizedURL = addAuthorization(fields.getQueryParameters(), baseURL.toURI().resolve(relativeUri).toURL());
+            
+            URL authorizedURL = addAuthorization(fields.getQueryParameters(), URIUtils.resolve(baseURL.toURI(),relativeUri).toURL());
 
             final HttpProvider httpProvider = httpProviderFactory.get(authorizedURL);
             addAuthHeaders(httpProvider, fields);
@@ -502,4 +497,15 @@ public final class RestAdapter<T> implements Pipe<T> {
         }
         return element;
     }
+
+    public ParameterProvider getParameterProvider() {
+        return parameterProvider;
+    }
+
+    protected void setParameterProvider(ParameterProvider parameterProvider) {
+        this.parameterProvider = parameterProvider;
+    }
+    
+    
+    
 }

@@ -33,7 +33,7 @@ public class ReadFilter {
 
     private Integer limit = Integer.MAX_VALUE;
     private Integer offset = 0;
-    private Integer perPage = Integer.MAX_VALUE;
+
     private JSONObject where = new JSONObject();
     private URI linkUri;
     
@@ -51,14 +51,6 @@ public class ReadFilter {
 
     public void setOffset(Integer offset) {
         this.offset = offset;
-    }
-
-    public Integer getPerPage() {
-        return perPage;
-    }
-
-    public void setPerPage(Integer perPage) {
-        this.perPage = perPage;
     }
 
     public JSONObject getWhere() {
@@ -83,7 +75,7 @@ public class ReadFilter {
      * @return a URL encoded query which represents the values set in this object.
      */
     public String getQuery() {
-        StringBuilder queryBuilder = new StringBuilder();
+        StringBuilder queryBuilder = new StringBuilder("?");
         String amp = "";
 
         if (limit != null && limit != Integer.MAX_VALUE) {
@@ -96,10 +88,6 @@ public class ReadFilter {
             amp = "&";
         }
 
-        if (perPage != null && perPage != Integer.MAX_VALUE) {
-            queryBuilder.append(amp).append("per_page=").append(perPage);
-            amp = "&";
-        }
 
         if (where != null && where.length() > 0) {
             try {

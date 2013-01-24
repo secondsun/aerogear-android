@@ -195,10 +195,10 @@ public class RestAdapterTest {
     @Test
     public void testSingleObjectReadWithNestedResult() throws Exception {
         GsonBuilder builder = new GsonBuilder().registerTypeAdapter(Point.class, new RestAdapterTest.PointTypeAdapter());
-        HeaderAndBody response = new HeaderAndBody(("{\"result\":{\"fancy_women\":" + SERIALIZED_POINTS + "}}").getBytes(), new HashMap<String, Object>());
+        HeaderAndBody response = new HeaderAndBody(("{\"result\":{\"points\":" + SERIALIZED_POINTS + "}}").getBytes(), new HashMap<String, Object>());
         final HttpStubProvider provider = new HttpStubProvider(url, response);
         RestAdapter<ListClassId> restPipe = new RestAdapter<ListClassId>(ListClassId.class, url, builder);
-        //restPipe.setDataRoot("result");
+        restPipe.setDataRoot("result.points");
         UnitTestUtils.setPrivateField(restPipe, "httpProviderFactory", new Provider<HttpProvider>() {
 
             @Override
@@ -246,7 +246,7 @@ public class RestAdapterTest {
         });
 
         final CountDownLatch latch = new CountDownLatch(1);
-        final ListClassId listClass = new ListClassId();
+        final ListClassId listClass = new ListClassId(true);
         final List<Point> returnedPoints = new ArrayList<Point>(10);
 
         restPipe.save(listClass, new Callback<ListClassId>() {
@@ -277,7 +277,7 @@ public class RestAdapterTest {
         UnitTestUtils.setPrivateField(adapter, "httpProviderFactory", factory);
 
         ReadFilter filter = new ReadFilter();
-        filter.setLinkUri(URI.create("?token=token&perPage=10&where=%7B%22model%22:%22BMW%22%7D"));
+        filter.setLinkUri(URI.create("?limit=10&where=%7B%22model%22:%22BMW%22%7D&token=token"));
         
         adapter.readWithFilter(filter, new Callback<List<Data>>() {
 
@@ -290,7 +290,7 @@ public class RestAdapterTest {
             }
         });
 
-        verify(factory).get(eq(new URL(url.toString() + "?token=token&perPage=10&where=%7B%22model%22:%22BMW%22%7D&")));
+        verify(factory).get(eq(new URL(url.toString() + "?limit=10&where=%7B%22model%22:%22BMW%22%7D&token=token")));
     }
     
     @Test
@@ -310,7 +310,7 @@ public class RestAdapterTest {
         UnitTestUtils.setPrivateField(adapter, "httpProviderFactory", factory);
 
         ReadFilter filter = new ReadFilter();
-        filter.setPerPage(10);
+        filter.setLimit(10);
         filter.setWhere(new JSONObject("{\"model\":\"BMW\"}"));
 
         adapter.setAuthenticationModule(urlModule);
@@ -323,10 +323,11 @@ public class RestAdapterTest {
 
             @Override
             public void onFailure(Exception e) {
+                Logger.getLogger(getClass().getSimpleName()).log(Level.SEVERE, TAG, e);
             }
         });
 
-        verify(factory).get(new URL(url.toString() + "?token=token&per_page=10&where=%7B%22model%22:%22BMW%22%7D"));
+        verify(factory).get(new URL(url.toString() + "?limit=10&where=%7B%22model%22:%22BMW%22%7D&token=token"));
     }
     
     
@@ -357,7 +358,7 @@ public class RestAdapterTest {
         });
         
         ReadFilter onePageFilter = new ReadFilter();
-        onePageFilter.setPerPage(1);
+        onePageFilter.setLimit(1);
         runReadForException(dataPipe, onePageFilter);
         
     }
@@ -391,7 +392,7 @@ public class RestAdapterTest {
         });
         
         ReadFilter onePageFilter = new ReadFilter();
-        onePageFilter.setPerPage(1);
+        onePageFilter.setLimit(1);
         List<ListClassId> resultList = runRead(dataPipe, onePageFilter);
         assertTrue(resultList instanceof PagedList);
         WrappingPagedList<ListClassId> pagedList = (WrappingPagedList<ListClassId>) resultList;
@@ -482,12 +483,10 @@ public class RestAdapterTest {
     private <T> List<T> runReadForException(Pipe<T> restPipe, ReadFilter readFilter) throws InterruptedException, Exception {
         final CountDownLatch latch = new CountDownLatch(1);
         final AtomicBoolean hasException = new AtomicBoolean(false);
-        final List<T> returnedData = new ArrayList<T>();
         final AtomicReference<Exception> exceptionref = new AtomicReference<Exception>();
         restPipe.readWithFilter(readFilter, new Callback<List<T>>() {
             @Override
             public void onSuccess(List<T> data) {
-                returnedData.addAll(data);
                 latch.countDown();
             }
 
@@ -511,10 +510,16 @@ public class RestAdapterTest {
         @RecordId
         String id = "1";
 
-        public ListClassId() {
+        public ListClassId(boolean build) {
+            if (build) {
             for (int i = 0; i < 10; i++) {
                 points.add(new Point(i, i * 2));
             }
+            }
+        }
+        
+        public ListClassId() {
+            
         }
 
         public String getId() {
