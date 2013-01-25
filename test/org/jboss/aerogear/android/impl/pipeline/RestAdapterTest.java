@@ -17,6 +17,7 @@
 
 package org.jboss.aerogear.android.impl.pipeline;
 
+import org.jboss.aerogear.android.impl.pipeline.paging.WrappingPagedList;
 import android.graphics.Point;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -64,9 +65,9 @@ import org.jboss.aerogear.android.authentication.AuthorizationFields;
 import org.jboss.aerogear.android.impl.core.HttpProviderFactory;
 import org.jboss.aerogear.android.impl.helper.Data;
 import org.jboss.aerogear.android.impl.helper.UnitTestUtils;
-import org.jboss.aerogear.android.pipeline.PageConfig;
-import org.jboss.aerogear.android.pipeline.PagedList;
 import org.jboss.aerogear.android.pipeline.Pipe;
+import org.jboss.aerogear.android.pipeline.paging.PageConfig;
+import org.jboss.aerogear.android.pipeline.paging.PagedList;
 import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
@@ -404,7 +405,7 @@ public class RestAdapterTest {
     @Test
     public void testBuildPagedResultsFromHeaders() throws Exception {
         PageConfig pageConfig = new PageConfig();
-        pageConfig.setMetadataLocation(PageConfig.MetadataLocation.HEADERS.toString());
+        pageConfig.setMetadataLocation(PageConfig.MetadataLocations.HEADERS);
 
         RestAdapter adapter = new RestAdapter(Data.class, url, new GsonBuilder(), pageConfig);
         List<Data> list = new ArrayList<Data>();
@@ -422,7 +423,7 @@ public class RestAdapterTest {
     @Test
     public void testBuildPagedResultsFromBody() throws Exception {
         PageConfig pageConfig = new PageConfig();
-        pageConfig.setMetadataLocation(PageConfig.MetadataLocation.BODY.toString());
+        pageConfig.setMetadataLocation(PageConfig.MetadataLocations.BODY);
         pageConfig.setNextIdentifier("pages.next");
         pageConfig.setPreviousIdentifier("pages.previous");
         RestAdapter adapter = new RestAdapter(Data.class, url, new GsonBuilder(), pageConfig);

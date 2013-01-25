@@ -2,14 +2,14 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.jboss.aerogear.android.impl.pipeline;
+package org.jboss.aerogear.android.impl.pipeline.paging;
 
 import com.google.common.collect.ForwardingList;
 import java.util.List;
 import org.jboss.aerogear.android.Callback;
 import org.jboss.aerogear.android.ReadFilter;
-import org.jboss.aerogear.android.pipeline.PagedList;
 import org.jboss.aerogear.android.pipeline.Pipe;
+import org.jboss.aerogear.android.pipeline.paging.PagedList;
 
 /**
  *

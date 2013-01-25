@@ -17,6 +17,11 @@
 
 package org.jboss.aerogear.android.impl.pipeline;
 
+import org.jboss.aerogear.android.impl.pipeline.paging.DefaultParameterProvider;
+import org.jboss.aerogear.android.impl.pipeline.paging.WrappingPagedList;
+import org.jboss.aerogear.android.impl.pipeline.paging.URIPageHeaderParser;
+import org.jboss.aerogear.android.impl.pipeline.paging.WebLink;
+import org.jboss.aerogear.android.impl.pipeline.paging.URIBodyPageParser;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.util.Pair;
@@ -53,8 +58,8 @@ import java.util.List;
 import org.apache.http.client.utils.URIUtils;
 import org.jboss.aerogear.android.impl.util.ParseException;
 import org.jboss.aerogear.android.impl.util.WebLinkParser;
-import org.jboss.aerogear.android.pipeline.PageConfig;
-import org.jboss.aerogear.android.pipeline.ParameterProvider;
+import org.jboss.aerogear.android.pipeline.paging.PageConfig;
+import org.jboss.aerogear.android.pipeline.paging.ParameterProvider;
 import org.json.JSONObject;
 
 /**
@@ -117,9 +122,9 @@ public final class RestAdapter<T> implements Pipe<T> {
         this.pageConfig = pageconfig;
         if (pageconfig != null) {
             if (pageconfig.getPageHeaderParser() == null) {
-                if (pageconfig.getMetadataLocation().equals(PageConfig.MetadataLocation.BODY.toString())) {
+                if (PageConfig.MetadataLocations.BODY.equals(pageconfig.getMetadataLocation())) {
                     pageconfig.setPageHeaderParser(new URIBodyPageParser(baseURL));
-                } else if (pageconfig.getMetadataLocation().equals(PageConfig.MetadataLocation.HEADERS.toString())) {
+                } else if (PageConfig.MetadataLocations.HEADERS.equals(pageconfig.getMetadataLocation())) {
                     pageconfig.setPageHeaderParser(new URIPageHeaderParser(baseURL));
                 }
             }
@@ -421,7 +426,7 @@ public final class RestAdapter<T> implements Pipe<T> {
         ReadFilter previousRead = null;
         ReadFilter nextRead = null;
 
-        if (pageConfig.getMetadataLocation().equals(PageConfig.MetadataLocation.WEB_LINKING.toString())) {
+        if (PageConfig.MetadataLocations.WEB_LINKING.equals(pageConfig.getMetadataLocation())) {
             String webLinksRaw = "";
             final String relHeader = "rel";
             final String nextIdentifier = pageConfig.getNextIdentifier();
@@ -449,10 +454,10 @@ public final class RestAdapter<T> implements Pipe<T> {
                 Log.e(TAG, webLinksRaw + " could not be parsed as a web link header", ex);
                 throw new RuntimeException(ex);
             }
-        } else if (pageConfig.getMetadataLocation().equals(PageConfig.MetadataLocation.HEADERS.toString())) {
+        } else if (pageConfig.getMetadataLocation().equals(PageConfig.MetadataLocations.HEADERS)) {
             nextRead = pageConfig.getPageHeaderParser().getNextFilter(httpResponse, RestAdapter.this.pageConfig);
             previousRead = pageConfig.getPageHeaderParser().getPreviousFilter(httpResponse, RestAdapter.this.pageConfig);
-        } else if (pageConfig.getMetadataLocation().equals(PageConfig.MetadataLocation.BODY.toString())) {
+        } else if (pageConfig.getMetadataLocation().equals(PageConfig.MetadataLocations.BODY)) {
             nextRead = pageConfig.getPageHeaderParser().getNextFilter(httpResponse, RestAdapter.this.pageConfig);
             previousRead = pageConfig.getPageHeaderParser().getPreviousFilter(httpResponse, RestAdapter.this.pageConfig);
         } else {

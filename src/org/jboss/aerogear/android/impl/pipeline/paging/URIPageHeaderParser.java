@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.jboss.aerogear.android.impl.pipeline;
+package org.jboss.aerogear.android.impl.pipeline.paging;
 
 import android.util.Log;
 import java.net.URI;
@@ -10,8 +10,8 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import org.jboss.aerogear.android.ReadFilter;
 import org.jboss.aerogear.android.http.HeaderAndBody;
-import org.jboss.aerogear.android.pipeline.PageConfig;
-import org.jboss.aerogear.android.pipeline.PageResultExtractor;
+import org.jboss.aerogear.android.pipeline.paging.PageConfig;
+import org.jboss.aerogear.android.pipeline.paging.PageResultExtractor;
 
 /**
  *

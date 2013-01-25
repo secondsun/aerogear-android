@@ -13,20 +13,19 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
-package org.jboss.aerogear.android.pipeline;
+ */package org.jboss.aerogear.android.pipeline.paging;
 
 
 public class PageConfig {
 
-    public static enum MetadataLocation {
+    public static enum MetadataLocations implements MetadataLocation{
         WEB_LINKING("webLinking"),
         HEADERS("headers"),
         BODY("body");
 
         private final String value;
 
-        private MetadataLocation(String value) {
+        private MetadataLocations(String value) {
             this.value = value;
         }
 
@@ -41,7 +40,7 @@ public class PageConfig {
     /**
      * indicates whether paging information (see identifiers) is received from the response header, the response body (body) or via RFC 5988 (webLinking), which is the default
      */
-    private String metadataLocation = MetadataLocation.WEB_LINKING.toString();
+    private MetadataLocation metadataLocation = MetadataLocations.WEB_LINKING;
 
     /**
      * the next identifier name (default: next)
@@ -67,11 +66,11 @@ public class PageConfig {
 
     private PageResultExtractor pageHeaderParser;
     
-    public String getMetadataLocation() {
+    public MetadataLocation getMetadataLocation() {
         return metadataLocation;
     }
 
-    public void setMetadataLocation(String metadataLocation) {
+    public void setMetadataLocation(MetadataLocation metadataLocation) {
         this.metadataLocation = metadataLocation;
     }
 

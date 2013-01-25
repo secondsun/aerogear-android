@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.jboss.aerogear.android.pipeline;
+package org.jboss.aerogear.android.pipeline.paging;
 
 import java.util.List;
 import org.jboss.aerogear.android.Callback;

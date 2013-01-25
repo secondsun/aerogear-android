@@ -19,7 +19,7 @@ package org.jboss.aerogear.android.impl.util;
 import android.util.Log;
 import java.util.ArrayList;
 import java.util.List;
-import org.jboss.aerogear.android.impl.pipeline.WebLink;
+import org.jboss.aerogear.android.impl.pipeline.paging.WebLink;
 
 public class WebLinkParser {
 
