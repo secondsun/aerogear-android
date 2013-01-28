@@ -36,15 +36,15 @@ public final class PipeConfig {
     private PageConfig pageConfig;
     private GsonBuilder gsonBuilder;
     private AuthenticationModule authModule;
-    private ParameterProvider parameterProvider = new DefaultParameterProvider();
     
+
     /**
      * Where the data elements the pipe wants to extract are found in the
      * response from the server.  Defaults to the root of the data structure 
      * represented by an empty string
      */
     private String dataRoot = "";
-   
+
     private Charset encoding = Charset.forName("UTF-8");
 
     public PipeConfig(URL baseURL, Class klass) {
@@ -144,14 +144,4 @@ public final class PipeConfig {
         this.dataRoot = dataRoot;
     }
 
-    public ParameterProvider getParameterProvider() {
-        return parameterProvider;
-    }
-
-    public void setParameterProvider(ParameterProvider parameterProvider) {
-        this.parameterProvider = parameterProvider;
-    }
-
-    
-    
 }

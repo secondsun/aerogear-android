@@ -16,9 +16,11 @@
  */
 package org.jboss.aerogear.android.pipeline.paging;
 
+import org.jboss.aerogear.android.impl.pipeline.paging.DefaultParameterProvider;
+
 public class PageConfig {
 
-    public static enum MetadataLocations implements MetadataLocation{
+    public static enum MetadataLocations implements MetadataLocation {
         WEB_LINKING("webLinking"),
         HEADERS("headers"),
         BODY("body");
@@ -35,7 +37,6 @@ public class PageConfig {
         }
 
     }
-
 
     /**
      * indicates whether paging information (see identifiers) is received from the response header, the response body (body) or via RFC 5988 (webLinking), which is the default
@@ -62,10 +63,13 @@ public class PageConfig {
      */
     private Integer limitValue = 10;
 
-    private ParameterProvider parameterProvider;
+    /**
+     * The parameter Provider for paging.  Defaults to {@link DefaultParameterProvider}
+     */
+    private ParameterProvider parameterProvider = new DefaultParameterProvider();
 
     private PageResultExtractor pageHeaderParser;
-    
+
     public MetadataLocation getMetadataLocation() {
         return metadataLocation;
     }
@@ -122,6 +126,4 @@ public class PageConfig {
         this.pageHeaderParser = pageHeaderParser;
     }
 
-    
-    
 }
