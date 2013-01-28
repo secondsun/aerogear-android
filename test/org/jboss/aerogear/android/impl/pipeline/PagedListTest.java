@@ -30,24 +30,24 @@ import static org.mockito.Mockito.*;
 
 @RunWith(RobolectricTestRunner.class)
 public class PagedListTest {
-    
+
     @Test
     public void testNext() {
         Pipe pipe = mock(Pipe.class);
         ReadFilter next = new ReadFilter();
         List delegate = new ArrayList();
         ReadFilter previous = new ReadFilter();
-        
+
         next.setLinkUri(URI.create("./next"));
         previous.setLinkUri(URI.create("./previous"));
-        
+
         WrappingPagedList list = new WrappingPagedList(pipe, delegate, next, previous);
         list.next(mock(Callback.class));
         list.previous(mock(Callback.class));
-        
+
         verify(pipe).readWithFilter(eq(next), any(Callback.class));
         verify(pipe).readWithFilter(eq(previous), any(Callback.class));
-        
+
     }
-    
+
 }

@@ -19,7 +19,28 @@ package org.jboss.aerogear.android.pipeline.paging;
 import org.jboss.aerogear.android.ReadFilter;
 import org.jboss.aerogear.android.http.HeaderAndBody;
 
+/**
+ * Classes which implement this interface are responsible for consuming a response from a server and extracting paging information (if any).
+ */
 public interface PageResultExtractor<T extends PageConfig> {
-    public ReadFilter getNextFilter(HeaderAndBody header, T config);
-    public ReadFilter getPreviousFilter(HeaderAndBody header, T config);
+
+    /**
+     * 
+     * Extracts a usable ReadFilter from the response of a server for the "next" result set.
+     * 
+     * @param response the server's response from a Pipe.read or Pipe.readWithFilter call.
+     * @param config the Pipe's PageConfig.
+     * @return a ReadFilter to be used to get the "next" page from Pipe.readWithFilter.  
+     */
+    public ReadFilter getNextFilter(HeaderAndBody response, T config);
+
+    /**
+     * 
+     * Extracts a usable ReadFilter from the response of a server for the "previous" result set.
+     * 
+     * @param response the server's response from a Pipe.read or Pipe.readWithFilter call.
+     * @param config the Pipe's PageConfig.
+     * @return a ReadFilter to be used to get the "previous" page from Pipe.readWithFilter.  
+     */
+    public ReadFilter getPreviousFilter(HeaderAndBody response, T config);
 }

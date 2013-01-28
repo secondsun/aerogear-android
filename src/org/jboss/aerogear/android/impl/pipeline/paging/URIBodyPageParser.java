@@ -27,15 +27,19 @@ import org.jboss.aerogear.android.http.HeaderAndBody;
 import org.jboss.aerogear.android.pipeline.paging.PageConfig;
 import org.jboss.aerogear.android.pipeline.paging.PageResultExtractor;
 
+/**
+ * This class assumes the response body paging properties are URI's and parses them 
+ * accordingly.
+ */
 public class URIBodyPageParser implements PageResultExtractor<PageConfig> {
-private final URI baseUri;
-    
+    private final URI baseUri;
+
     private static final String TAG = URIPageHeaderParser.class.getSimpleName();
-    
+
     public URIBodyPageParser(URI uri) {
         this.baseUri = uri;
     }
-    
+
     public URIBodyPageParser(URL url) {
         try {
             this.baseUri = url.toURI();
@@ -44,7 +48,7 @@ private final URI baseUri;
             throw new RuntimeException(url + " could not become URI", ex);
         }
     }
-    
+
     public URIBodyPageParser() {
         this.baseUri = null;
     }
@@ -52,17 +56,17 @@ private final URI baseUri;
     @Override
     public ReadFilter getNextFilter(HeaderAndBody result, PageConfig config) {
         ReadFilter filter = new ReadFilter();
-        JsonParser parser =new JsonParser();
+        JsonParser parser = new JsonParser();
         JsonElement element = parser.parse(new String(result.getBody()));
         URI nextUri = URI.create(getFromJSON(element, config.getNextIdentifier()));
         filter.setLinkUri(baseUri.resolve(nextUri));
         return filter;
     }
-    
+
     @Override
     public ReadFilter getPreviousFilter(HeaderAndBody result, PageConfig config) {
         ReadFilter filter = new ReadFilter();
-        JsonParser parser =new JsonParser();
+        JsonParser parser = new JsonParser();
         JsonElement element = parser.parse(new String(result.getBody()));
         URI nextUri = URI.create(getFromJSON(element, config.getPreviousIdentifier()));
         filter.setLinkUri(baseUri.resolve(nextUri));
@@ -71,15 +75,15 @@ private final URI baseUri;
 
     private String getFromJSON(JsonElement element, String nextIdentifier) {
         String[] identifiers = nextIdentifier.split("\\.");
-        for( String identifier:identifiers) {
+        for (String identifier : identifiers) {
             element = element.getAsJsonObject().get(identifier);
         }
-        
+
         if (element.isJsonNull()) {
             return null;
         } else {
             return element.getAsString();
         }
     }
-    
+
 }

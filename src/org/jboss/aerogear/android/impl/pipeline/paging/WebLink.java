@@ -24,7 +24,7 @@ import org.jboss.aerogear.android.impl.util.ParseException;
 
 /**
  * This class represents a "Link" header link.
- * See the RFC:{@link http://tools.ietf.org/html/rfc5988}
+ * See the <a href="http://tools.ietf.org/html/rfc5988">RFC </a>
  */
 public class WebLink {
 
@@ -74,7 +74,7 @@ public class WebLink {
 
     /**
      * @return a string representation of the URI in a WebLink
-     */ 
+     */
     public String getUri() {
         return uri;
     }

@@ -23,7 +23,12 @@ import org.jboss.aerogear.android.ReadFilter;
 import org.jboss.aerogear.android.pipeline.Pipe;
 import org.jboss.aerogear.android.pipeline.paging.PagedList;
 
-
+/**
+ * Wraps a resultSet in a ForwardingList and provides paging methods.
+ * 
+ * This class also combines 
+ * 
+ */
 public class WrappingPagedList<T> extends ForwardingList<T> implements PagedList<T> {
 
     private final Pipe<T> pipe;
@@ -31,6 +36,12 @@ public class WrappingPagedList<T> extends ForwardingList<T> implements PagedList
     private final ReadFilter nextFilter;
     private final ReadFilter previousFilter;
 
+    /**
+     * @param pipe
+     * @param data
+     * @param nextFilter
+     * @param previousFilter 
+     */
     public WrappingPagedList(Pipe<T> pipe, List<T> data, ReadFilter nextFilter, ReadFilter previousFilter) {
         this.pipe = pipe;
         this.data = data;

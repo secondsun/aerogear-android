@@ -19,9 +19,16 @@ package org.jboss.aerogear.android.pipeline.paging;
 import java.net.URI;
 import org.jboss.aerogear.android.ReadFilter;
 
-
+/**
+ * Classes which implement this interface should provide the necessary parameters for paging to a Pipe's read request.
+ */
 public interface ParameterProvider {
 
+    /**
+     * 
+     * @param filter the {@link ReadFilter} associated with a request.
+     * @return a URI query which represents the filter's paging request.
+     */
     public URI getParameters(ReadFilter filter);
-    
+
 }

@@ -22,7 +22,9 @@ import java.util.List;
 import org.jboss.aerogear.android.impl.pipeline.paging.WebLink;
 
 /**
- * A utility class to parse WebLink headers. {@link  http://tools.ietf.org/html/rfc5988}
+ * A utility class to parse WebLink headers. 
+ * 
+ * See the <a href="http://tools.ietf.org/html/rfc5988">RFC </a>
  */
 public class WebLinkParser {
 

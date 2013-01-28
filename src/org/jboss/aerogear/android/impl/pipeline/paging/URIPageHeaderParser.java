@@ -25,15 +25,19 @@ import org.jboss.aerogear.android.http.HeaderAndBody;
 import org.jboss.aerogear.android.pipeline.paging.PageConfig;
 import org.jboss.aerogear.android.pipeline.paging.PageResultExtractor;
 
-
-public class URIPageHeaderParser implements PageResultExtractor{
+/**
+ * This class assumes the header responses in a response are URI's and parses them 
+ * accordingly.
+ */
+public class URIPageHeaderParser implements PageResultExtractor {
     private final URI baseUri;
-    
+
     private static final String TAG = URIPageHeaderParser.class.getSimpleName();
+
     public URIPageHeaderParser(URI uri) {
         this.baseUri = uri;
     }
-    
+
     public URIPageHeaderParser(URL url) {
         try {
             this.baseUri = url.toURI();
@@ -42,7 +46,7 @@ public class URIPageHeaderParser implements PageResultExtractor{
             throw new RuntimeException(url + " could not become URI", ex);
         }
     }
-    
+
     public URIPageHeaderParser() {
         this.baseUri = null;
     }
@@ -54,7 +58,7 @@ public class URIPageHeaderParser implements PageResultExtractor{
         filter.setLinkUri(baseUri.resolve(nextUri));
         return filter;
     }
-    
+
     @Override
     public ReadFilter getPreviousFilter(HeaderAndBody result, PageConfig config) {
         ReadFilter filter = new ReadFilter();
@@ -62,5 +66,5 @@ public class URIPageHeaderParser implements PageResultExtractor{
         filter.setLinkUri(baseUri.resolve(nextUri));
         return filter;
     }
-    
+
 }

@@ -69,8 +69,6 @@ public class ReadFilter {
         this.linkUri = linkUri;
     }
 
-    
-    
     /**
      * @return a URL encoded query which represents the values set in this object.
      */

@@ -16,6 +16,9 @@
  */
 package org.jboss.aerogear.android.impl.util;
 
+/**
+ * This exception if thrown if something which parses fails parsing (ex {@link WebLinkParser})
+ */
 public class ParseException extends Exception {
 
     public ParseException(String string) {

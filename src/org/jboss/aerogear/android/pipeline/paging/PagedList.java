@@ -19,8 +19,24 @@ package org.jboss.aerogear.android.pipeline.paging;
 import java.util.List;
 import org.jboss.aerogear.android.Callback;
 
+/**
+ * This class wraps a result and provides methods for retrieving the next and previous result sets.
+ * 
+ * @param <T> the data type of the list
+ */
 public interface PagedList<T> extends List<T> {
+
+    /**
+     * Retrieve the next result set.  This method MUST NOT pass data to the callback which can not be used.
+     * 
+     * @param callback 
+     */
     public void next(Callback<List<T>> callback);
 
+    /**
+     * Retrieve the previous result set.  This method MUST NOT pass data to the callback which can not be used.
+     * 
+     * @param callback 
+     */
     public void previous(Callback<List<T>> callback);
 }

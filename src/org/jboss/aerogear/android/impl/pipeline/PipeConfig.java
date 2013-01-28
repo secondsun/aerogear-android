@@ -36,7 +36,6 @@ public final class PipeConfig {
     private PageConfig pageConfig;
     private GsonBuilder gsonBuilder;
     private AuthenticationModule authModule;
-    
 
     /**
      * Where the data elements the pipe wants to extract are found in the

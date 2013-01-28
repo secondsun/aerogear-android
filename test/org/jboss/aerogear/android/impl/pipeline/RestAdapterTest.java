@@ -366,7 +366,7 @@ public class RestAdapterTest {
 
         assertNotNull(result);
         assertFalse(result instanceof PagedList);
-        
+
     }
 
     /**
@@ -392,7 +392,8 @@ public class RestAdapterTest {
             public HttpProvider get(Object... in) {
                 HashMap<String, Object> headers = new HashMap<String, Object>(1);
                 headers
-                        .put("Link",
+                        .put(
+                                "Link",
                                 "<http://example.com/TheBook/chapter2>; rel=\"previous\";title=\"previous chapter\",<http://example.com/TheBook/chapter3>; rel=\"next\";title=\"next chapter\"");
                 HttpStubProvider provider = new HttpStubProvider(url, new HeaderAndBody(SERIALIZED_POINTS.getBytes(), headers));
 

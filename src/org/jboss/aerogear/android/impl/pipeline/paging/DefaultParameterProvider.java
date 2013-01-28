@@ -20,12 +20,14 @@ import java.net.URI;
 import org.jboss.aerogear.android.ReadFilter;
 import org.jboss.aerogear.android.pipeline.paging.ParameterProvider;
 
-
-public class DefaultParameterProvider implements ParameterProvider{
+/**
+ * This class returns the URI calculated from {@link ReadFilter}.getQuery
+ */
+public class DefaultParameterProvider implements ParameterProvider {
 
     @Override
     public URI getParameters(ReadFilter filter) {
         return URI.create(filter.getQuery());
     }
-    
+
 }
