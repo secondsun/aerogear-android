@@ -21,6 +21,9 @@ import java.util.ArrayList;
 import java.util.List;
 import org.jboss.aerogear.android.impl.pipeline.paging.WebLink;
 
+/**
+ * A utility class to parse WebLink headers. {@link  http://tools.ietf.org/html/rfc5988}
+ */
 public class WebLinkParser {
 
     private static final String TAG = WebLinkParser.class.getSimpleName();
@@ -28,7 +31,6 @@ public class WebLinkParser {
     private static final Character QUOTE = '"';
     private static final Character OPEN_LINK = '<';
     private static final Character CLOSE_LINK = '>';
-    private static final Character EQUALS = '=';
 
     public static List<WebLink> parse(String linkHeader) throws ParseException {
 

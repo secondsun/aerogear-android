@@ -22,21 +22,29 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.jboss.aerogear.android.impl.util.ParseException;
 
+/**
+ * This class represents a "Link" header link.
+ * See the RFC:{@link http://tools.ietf.org/html/rfc5988}
+ */
 public class WebLink {
 
     private static Pattern P = Pattern.compile("\\s*<(.*)>\\s*(.*)");
 
-    private static final String DELIMITER = ";";
     private static final String EQUALS = "=";
-    private static final String QUOTE = "\"";
 
     private String uri;
     private Map<String, String> parameters;
 
-    public WebLink(String field) throws ParseException {
-        Matcher uriAndFields = P.matcher(field);
+    /**
+     * Attempts to parse a header value into a WebLink.
+     * 
+     * @param headerContent
+     * @throws ParseException 
+     */
+    public WebLink(String headerContent) throws ParseException {
+        Matcher uriAndFields = P.matcher(headerContent);
         if (!uriAndFields.matches()) {
-            throw new ParseException("Can not parse value:" + field);
+            throw new ParseException("Can not parse value:" + headerContent);
         }
 
         uri = uriAndFields.group(1);
@@ -64,10 +72,17 @@ public class WebLink {
         return paramsMap;
     }
 
+    /**
+     * @return a string representation of the URI in a WebLink
+     */ 
     public String getUri() {
         return uri;
     }
 
+    /**
+     * 
+     * @return a map of parameters for the WebLink
+     */
     public Map<String, String> getParameters() {
         return parameters;
     }
