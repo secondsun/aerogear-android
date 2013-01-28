@@ -213,7 +213,7 @@ public class RestAdapterTest {
         assertEquals(10, returnedPoints.size());
 
     }
-    
+
     @Test
     public void testGsonBuilderProperty() throws Exception {
         GsonBuilder builder = new GsonBuilder().registerTypeAdapter(Point.class, new RestAdapterTest.PointTypeAdapter());
@@ -293,7 +293,7 @@ public class RestAdapterTest {
 
         verify(factory).get(eq(new URL(url.toString() + "?limit=10&where=%7B%22model%22:%22BMW%22%7D&token=token")));
     }
-    
+
     @Test
     public void runReadWithFilterAndAuthenticaiton() throws Exception {
 
@@ -330,15 +330,15 @@ public class RestAdapterTest {
 
         verify(factory).get(new URL(url.toString() + "?limit=10&where=%7B%22model%22:%22BMW%22%7D&token=token"));
     }
-    
-    
+
     /**
      * This test tests the default paging configuration.
      */
-    @Test(expected=java.lang.IllegalArgumentException.class)
-    public void testLinkPagingThrowsExcptionIfNoLinkHeader() throws InterruptedException, NoSuchFieldException, NoSuchFieldException, IllegalArgumentException, IllegalAccessException, Exception {
+    @Test()
+    public void testLinkPagingReturnsData() throws InterruptedException, NoSuchFieldException, NoSuchFieldException, IllegalArgumentException,
+            IllegalAccessException, Exception {
         Pipeline pipeline = new Pipeline(url);
-                
+
         final HttpStubProvider provider = new HttpStubProvider(url, new HeaderAndBody(SERIALIZED_POINTS.getBytes(), new HashMap<String, Object>()));
 
         PageConfig pageConfig = new PageConfig();
@@ -347,9 +347,9 @@ public class RestAdapterTest {
         PipeConfig pipeConfig = new PipeConfig(url, ListClassId.class);
         pipeConfig.setGsonBuilder(builder);
         pipeConfig.setPageConfig(pageConfig);
-        
+
         Pipe<ListClassId> dataPipe = pipeline.pipe(ListClassId.class, pipeConfig);
-        
+
         UnitTestUtils.setPrivateField(dataPipe, "httpProviderFactory", new Provider<HttpProvider>() {
 
             @Override
@@ -357,10 +357,15 @@ public class RestAdapterTest {
                 return provider;
             }
         });
-        
+
         ReadFilter onePageFilter = new ReadFilter();
+
         onePageFilter.setLimit(1);
-        runReadForException(dataPipe, onePageFilter);
+        runRead(dataPipe, onePageFilter);
+        List<ListClassId> result = runRead(dataPipe, onePageFilter);
+
+        assertNotNull(result);
+        assertFalse(result instanceof PagedList);
         
     }
 
@@ -368,7 +373,8 @@ public class RestAdapterTest {
      * This test tests the default paging configuration.
      */
     @Test
-    public void testDefaultPaging() throws InterruptedException, NoSuchFieldException, NoSuchFieldException, IllegalArgumentException, IllegalAccessException, URISyntaxException {
+    public void testDefaultPaging() throws InterruptedException, NoSuchFieldException, NoSuchFieldException, IllegalArgumentException, IllegalAccessException,
+            URISyntaxException {
         Pipeline pipeline = new Pipeline(url);
 
         PageConfig pageConfig = new PageConfig();
@@ -377,27 +383,29 @@ public class RestAdapterTest {
         PipeConfig pipeConfig = new PipeConfig(url, ListClassId.class);
         pipeConfig.setGsonBuilder(builder);
         pipeConfig.setPageConfig(pageConfig);
-        
+
         Pipe<ListClassId> dataPipe = pipeline.pipe(ListClassId.class, pipeConfig);
-        
+
         UnitTestUtils.setPrivateField(dataPipe, "httpProviderFactory", new Provider<HttpProvider>() {
 
             @Override
             public HttpProvider get(Object... in) {
                 HashMap<String, Object> headers = new HashMap<String, Object>(1);
-                headers.put("Link", "<http://example.com/TheBook/chapter2>; rel=\"previous\";title=\"previous chapter\",<http://example.com/TheBook/chapter3>; rel=\"next\";title=\"next chapter\"");
+                headers
+                        .put("Link",
+                                "<http://example.com/TheBook/chapter2>; rel=\"previous\";title=\"previous chapter\",<http://example.com/TheBook/chapter3>; rel=\"next\";title=\"next chapter\"");
                 HttpStubProvider provider = new HttpStubProvider(url, new HeaderAndBody(SERIALIZED_POINTS.getBytes(), headers));
 
                 return provider;
             }
         });
-        
+
         ReadFilter onePageFilter = new ReadFilter();
         onePageFilter.setLimit(1);
         List<ListClassId> resultList = runRead(dataPipe, onePageFilter);
         assertTrue(resultList instanceof PagedList);
         WrappingPagedList<ListClassId> pagedList = (WrappingPagedList<ListClassId>) resultList;
-        
+
         assertEquals(new URI("http://example.com/TheBook/chapter3"), pagedList.getNextFilter().getLinkUri());
         assertEquals(new URI("http://example.com/TheBook/chapter2"), pagedList.getPreviousFilter().getLinkUri());
     }
@@ -409,17 +417,22 @@ public class RestAdapterTest {
 
         RestAdapter adapter = new RestAdapter(Data.class, url, new GsonBuilder(), pageConfig);
         List<Data> list = new ArrayList<Data>();
-        HeaderAndBody response = new HeaderAndBody(new byte[]{}, new HashMap<String, Object>(){{put("next", "chapter3");put("previous", "chapter2");}});
+        HeaderAndBody response = new HeaderAndBody(new byte[] {}, new HashMap<String, Object>() {
+            {
+                put("next", "chapter3");
+                put("previous", "chapter2");
+            }
+        });
         JSONObject where = new JSONObject();
-        Method method = adapter.getClass().getDeclaredMethod("buildAndAddPageContext", List.class, HeaderAndBody.class, JSONObject.class);
+        Method method = adapter.getClass().getDeclaredMethod("computePagedList", List.class, HeaderAndBody.class, JSONObject.class);
         method.setAccessible(true);
-        
+
         WrappingPagedList<Data> pagedList = (WrappingPagedList<Data>) method.invoke(adapter, list, response, where);
         assertEquals(new URI("http://server.com/context/chapter3"), pagedList.getNextFilter().getLinkUri());
         assertEquals(new URI("http://server.com/context/chapter2"), pagedList.getPreviousFilter().getLinkUri());
 
     }
-    
+
     @Test
     public void testBuildPagedResultsFromBody() throws Exception {
         PageConfig pageConfig = new PageConfig();
@@ -430,20 +443,19 @@ public class RestAdapterTest {
         List<Data> list = new ArrayList<Data>();
         HeaderAndBody response = new HeaderAndBody("{\"pages\":{\"next\":\"chapter3\",\"previous\":\"chapter2\"}}".getBytes(), new HashMap<String, Object>());
         JSONObject where = new JSONObject();
-        Method method = adapter.getClass().getDeclaredMethod("buildAndAddPageContext", List.class, HeaderAndBody.class, JSONObject.class);
+        Method method = adapter.getClass().getDeclaredMethod("computePagedList", List.class, HeaderAndBody.class, JSONObject.class);
         method.setAccessible(true);
-        
+
         WrappingPagedList<Data> pagedList = (WrappingPagedList<Data>) method.invoke(adapter, list, response, where);
         assertEquals(new URI("http://server.com/context/chapter3"), pagedList.getNextFilter().getLinkUri());
         assertEquals(new URI("http://server.com/context/chapter2"), pagedList.getPreviousFilter().getLinkUri());
 
     }
-    
-    
+
     private <T> List<T> runRead(Pipe<T> restPipe) throws InterruptedException {
         return runRead(restPipe, null);
     }
-    
+
     /**
      * Runs a read method, returns the result of the call back and makes sure no
      * exceptions are thrown
@@ -476,7 +488,7 @@ public class RestAdapterTest {
         return resultRef.get();
     }
 
-        /**
+    /**
      * Runs a read method, returns the result of the call back and rethrows the underlying exception
      *
      * @param restPipe
@@ -504,7 +516,7 @@ public class RestAdapterTest {
 
         throw exceptionref.get();
     }
-    
+
     public final static class ListClassId {
 
         List<Point> points = new ArrayList<Point>(10);
@@ -513,14 +525,14 @@ public class RestAdapterTest {
 
         public ListClassId(boolean build) {
             if (build) {
-            for (int i = 0; i < 10; i++) {
-                points.add(new Point(i, i * 2));
-            }
+                for (int i = 0; i < 10; i++) {
+                    points.add(new Point(i, i * 2));
+                }
             }
         }
-        
+
         public ListClassId() {
-            
+
         }
 
         public String getId() {

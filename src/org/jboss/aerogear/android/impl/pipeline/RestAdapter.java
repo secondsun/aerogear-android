@@ -34,7 +34,6 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.net.URLDecoder;
 import java.net.URLEncoder;
 import org.jboss.aerogear.android.Callback;
 import org.jboss.aerogear.android.Provider;
@@ -177,7 +176,7 @@ public final class RestAdapter<T> implements Pipe<T> {
                         T[] resultArray = gson.fromJson(httpJsonResult, arrayKlass);
                         this.result = Arrays.asList(resultArray);
                         if (pageConfig != null) {
-                            this.result = buildAndAddPageContext(this.result, httpResponse, innerFilter.getWhere());
+                            this.result = computePagedList(this.result, httpResponse, innerFilter.getWhere());
                         }
                     } else {
                         T resultObject = gson.fromJson(httpJsonResult, klass);
@@ -185,7 +184,7 @@ public final class RestAdapter<T> implements Pipe<T> {
                         resultList.add(resultObject);
                         this.result = resultList;
                         if (pageConfig != null) {
-                            this.result = buildAndAddPageContext(this.result, httpResponse, innerFilter.getWhere());
+                            this.result = computePagedList(this.result, httpResponse, innerFilter.getWhere());
                         }
                     }
                 } catch (Exception e) {
@@ -407,8 +406,8 @@ public final class RestAdapter<T> implements Pipe<T> {
     private HttpProvider getHttpProvider(URI relativeUri) {
         try {
             AuthorizationFields fields = loadAuth();
-            
-            URL authorizedURL = addAuthorization(fields.getQueryParameters(), URIUtils.resolve(baseURL.toURI(),relativeUri).toURL());
+
+            URL authorizedURL = addAuthorization(fields.getQueryParameters(), URIUtils.resolve(baseURL.toURI(), relativeUri).toURL());
 
             final HttpProvider httpProvider = httpProviderFactory.get(authorizedURL);
             addAuthHeaders(httpProvider, fields);
@@ -422,7 +421,16 @@ public final class RestAdapter<T> implements Pipe<T> {
         }
     }
 
-    private List<T> buildAndAddPageContext(List<T> result, HeaderAndBody httpResponse, JSONObject where) {
+    /**
+     * 
+     * This method checks for paging information and returns the appropriate data
+     * 
+     * @param result
+     * @param httpResponse
+     * @param where
+     * @return a {@link WrappingPagedList} if there is paging, result if not.
+     */
+    private List<T> computePagedList(List<T> result, HeaderAndBody httpResponse, JSONObject where) {
         ReadFilter previousRead = null;
         ReadFilter nextRead = null;
 
@@ -433,8 +441,8 @@ public final class RestAdapter<T> implements Pipe<T> {
             final String prevIdentifier = pageConfig.getPreviousIdentifier();
             try {
                 webLinksRaw = getHeader(httpResponse, "Link");
-                if (webLinksRaw == null) {
-                    throw new IllegalArgumentException("A \"Link\" header was not provided");
+                if (webLinksRaw == null) { //no paging, return result
+                    return result;
                 }
                 List<WebLink> webLinksParsed = WebLinkParser.parse(webLinksRaw);
                 for (WebLink link : webLinksParsed) {
@@ -448,7 +456,7 @@ public final class RestAdapter<T> implements Pipe<T> {
 
                 }
             } catch (URISyntaxException ex) {
-                Log.e(TAG, webLinksRaw + " did not contain a valid ocntext URI", ex);
+                Log.e(TAG, webLinksRaw + " did not contain a valid context URI", ex);
                 throw new RuntimeException(ex);
             } catch (ParseException ex) {
                 Log.e(TAG, webLinksRaw + " could not be parsed as a web link header", ex);
@@ -510,7 +518,5 @@ public final class RestAdapter<T> implements Pipe<T> {
     protected void setParameterProvider(ParameterProvider parameterProvider) {
         this.parameterProvider = parameterProvider;
     }
-    
-    
-    
+
 }
