@@ -68,7 +68,6 @@ public final class RestAdapter<T> implements Pipe<T> {
 
     private final PageConfig pageConfig;
     private static final String TAG = RestAdapter.class.getSimpleName();
-    private static final String UTF_8 = "UTF-8";
     private final Gson gson;
     private String dataRoot = "";
     private ParameterProvider parameterProvider = new DefaultParameterProvider();
