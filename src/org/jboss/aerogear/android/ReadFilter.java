@@ -36,11 +36,11 @@ public class ReadFilter {
 
     private JSONObject where = new JSONObject();
     private URI linkUri;
-    
+
     public Integer getLimit() {
         return limit;
     }
-    
+
     public void setLimit(Integer limit) {
         this.limit = limit;
     }
@@ -85,7 +85,6 @@ public class ReadFilter {
             queryBuilder.append(amp).append("offset=").append(offset);
             amp = "&";
         }
-
 
         if (where != null && where.length() > 0) {
             try {

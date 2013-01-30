@@ -28,7 +28,7 @@ import org.jboss.aerogear.android.impl.util.ParseException;
  */
 public class WebLink {
 
-    private static Pattern P = Pattern.compile("\\s*<(.*)>\\s*(.*)");
+    private static final Pattern P = Pattern.compile("\\s*<(.*)>\\s*(.*)");
 
     private static final String EQUALS = "=";
 

@@ -27,7 +27,7 @@ public enum StoreTypes implements StoreType {
     MEMORY("MEMORY"),
     SQL("SQL");
 
-    private String typeDescription;
+    private final String typeDescription;
 
     StoreTypes(String typeDescription) {
         this.typeDescription = typeDescription;

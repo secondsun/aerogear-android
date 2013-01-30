@@ -39,32 +39,32 @@ public class PageConfig {
     }
 
     /**
-     * indicates whether paging information (see identifiers) is received from the response header, the response body (body) or via RFC 5988 (webLinking), which is the default
+     * Indicates whether paging information is received from the response header, the response body (body) or via RFC 5988 (webLinking), which is the default
      */
     private MetadataLocation metadataLocation = MetadataLocations.WEB_LINKING;
 
     /**
-     * the next identifier name (default: next)
+     * The identified for the element containing data for the next page (default: next)
      */
     private String nextIdentifier = "next";
 
     /**
-     *  the previous identifier name (default: previous)
+     * The identified for the element containing data for the previous page (default: previous)
      */
     private String previousIdentifier = "previous";
 
     /**
-     * the offset of the first element that should be included in the returned collection (default: 0)
+     * The offset of the first element that should be included in the returned collection (default: 0)
      */
     private String offsetValue = "0";
 
     /**
-     * the maximum number of results the server should return (default: 10)
+     * The maximum number of results the server should return (default: 10)
      */
     private Integer limitValue = 10;
 
     /**
-     * The parameter Provider for paging.  Defaults to {@link DefaultParameterProvider}
+     * The {@link ParameterProvider} for paging.  Defaults to {@link DefaultParameterProvider}
      */
     private ParameterProvider parameterProvider = new DefaultParameterProvider();
 

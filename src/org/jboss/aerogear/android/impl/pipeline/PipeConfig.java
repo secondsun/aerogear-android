@@ -17,7 +17,6 @@
 
 package org.jboss.aerogear.android.impl.pipeline;
 
-import org.jboss.aerogear.android.impl.pipeline.paging.DefaultParameterProvider;
 import com.google.gson.GsonBuilder;
 import java.net.URL;
 import java.nio.charset.Charset;
@@ -25,7 +24,6 @@ import java.nio.charset.UnsupportedCharsetException;
 import org.jboss.aerogear.android.authentication.AuthenticationModule;
 import org.jboss.aerogear.android.pipeline.PipeType;
 import org.jboss.aerogear.android.pipeline.paging.PageConfig;
-import org.jboss.aerogear.android.pipeline.paging.ParameterProvider;
 
 public final class PipeConfig {
 
