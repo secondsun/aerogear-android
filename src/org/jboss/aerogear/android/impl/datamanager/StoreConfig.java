@@ -25,7 +25,7 @@ import org.jboss.aerogear.android.datamanager.StoreFactory;
 import org.jboss.aerogear.android.datamanager.StoreType;
 
 /**
- * This class bundles up all of the possible variables which may be used to instanciate a {@link Store}
+ * This class bundles up all of the possible variables which may be used to instantiate a {@link Store}
  */
 public final class StoreConfig {
 

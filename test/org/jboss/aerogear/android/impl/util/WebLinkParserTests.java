@@ -14,32 +14,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package org.jboss.aerogear.android.impl.core;
+package org.jboss.aerogear.android.impl.util;
 
 import com.xtremelabs.robolectric.RobolectricTestRunner;
-import org.jboss.aerogear.android.ReadFilter;
-import org.json.JSONException;
-import org.json.JSONObject;
-import static org.junit.Assert.*;
+import java.util.List;
+import org.jboss.aerogear.android.impl.pipeline.paging.WebLink;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(RobolectricTestRunner.class)
-public class ReadFilterTest {
+public class WebLinkParserTests {
 
     @Test
-    public void testFilterQueryBuilder() throws JSONException {
-        ReadFilter filter = new ReadFilter();
-        filter.setLimit(1);
-        assertEquals("?limit=1", filter.getQuery());
+    public void testStandard() throws ParseException {
+        final String testString = "</TheBook/chapter2>;" +
+                "rel=\"previous\"; title*=UTF-8'de'letztes%20Kapitel,\n" +
+                "</TheBook/chapter4>;" +
+                "rel=\"next\"; title*=UTF-8'de'n%c3%a4chstes%20Kapitel";
 
-        filter.setOffset(2);
-        assertEquals("?limit=1&offset=2", filter.getQuery());
-
-        filter.setWhere(new JSONObject("{\"model\":\"BMW\"}"));
-        assertEquals("?limit=1&offset=2&where=%7B%22model%22:%22BMW%22%7D", filter.getQuery());
-
+        List<WebLink> result = WebLinkParser.parse(testString);
+        Assert.assertEquals(2, result.size());
+        Assert.assertEquals("/TheBook/chapter4", result.get(1).getUri());
+        Assert.assertEquals(2, result.get(0).getParameters().size());
+        Assert.assertEquals("next", result.get(1).getParameters().get("rel"));
     }
-
 }

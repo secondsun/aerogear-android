@@ -42,7 +42,6 @@ import java.util.logging.Logger;
 
 import static org.jboss.aerogear.android.impl.helper.UnitTestUtils.setPrivateField;
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
 
 @RunWith(RobolectricTestRunner.class)

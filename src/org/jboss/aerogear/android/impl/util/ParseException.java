@@ -14,27 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package org.jboss.aerogear.android.impl.datamanager;
-
-import org.jboss.aerogear.android.datamanager.StoreType;
+package org.jboss.aerogear.android.impl.util;
 
 /**
- * Types of store
+ * This exception is thrown by something which parses if parsing fails(ex {@link WebLinkParser})
  */
-public enum StoreTypes implements StoreType {
+public class ParseException extends Exception {
 
-    MEMORY("MEMORY"),
-    SQL("SQL");
-
-    private final String typeDescription;
-
-    StoreTypes(String typeDescription) {
-        this.typeDescription = typeDescription;
+    public ParseException(String string) {
+        super(string);
     }
 
-    @Override
-    public String getName() {
-        return this.typeDescription;
-    }
 }

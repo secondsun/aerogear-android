@@ -84,7 +84,7 @@ public class MemoryStorageTest {
         store.save(new Data("bar", "desc of bar"));
 
         ReadFilter filter = new ReadFilter();
-        filter.setPerPage(1);
+        filter.setLimit(1);
 
         Collection<Data> datas = store.readWithFilter(filter);
         assertNotNull("datas could not be null", datas);

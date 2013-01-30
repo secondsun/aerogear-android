@@ -230,11 +230,11 @@ public class SQLStore<T> extends SQLiteOpenHelper implements Store<T> {
                         String value = primitive.getAsString();
                         database.execSQL(sql, new Object[] { path + pathVar + propertyName, value, id });
                     } else {
-                        throw new IllegalArgumentException(jsonValue + " isnt a number, boolean, or string");
+                        throw new IllegalArgumentException(jsonValue + " isn't a number, boolean, or string");
                     }
 
                 } else {
-                    throw new IllegalArgumentException(jsonValue + " isnt a JsonPrimitive");
+                    throw new IllegalArgumentException(jsonValue + " isn't a JsonPrimitive");
                 }
 
             }
@@ -346,13 +346,13 @@ public class SQLStore<T> extends SQLiteOpenHelper implements Store<T> {
                         keyValues.add(new Pair<String, String>(path, value.toString()));
                     } else if (primitive.isString()) {
                         String value = primitive.getAsString();
-                        keyValues.add(new Pair<String, String>(path, value.toString()));
+                        keyValues.add(new Pair<String, String>(path, value));
                     } else {
-                        throw new IllegalArgumentException(jsonValue + " isnt a number, boolean, or string");
+                        throw new IllegalArgumentException(jsonValue + " isn't a number, boolean, or string");
                     }
 
                 } else {
-                    throw new IllegalArgumentException(jsonValue + " isnt a JsonPrimitive");
+                    throw new IllegalArgumentException(jsonValue + " isn't a JsonPrimitive");
                 }
 
             }

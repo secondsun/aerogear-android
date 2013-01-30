@@ -14,31 +14,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.jboss.aerogear.android.impl.pipeline;
 
-package org.jboss.aerogear.android.impl.core;
-
+import org.jboss.aerogear.android.impl.pipeline.paging.WrappingPagedList;
 import com.xtremelabs.robolectric.RobolectricTestRunner;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
+import org.jboss.aerogear.android.Callback;
 import org.jboss.aerogear.android.ReadFilter;
-import org.json.JSONException;
-import org.json.JSONObject;
-import static org.junit.Assert.*;
+import org.jboss.aerogear.android.pipeline.Pipe;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import static org.mockito.Mockito.*;
 
 @RunWith(RobolectricTestRunner.class)
-public class ReadFilterTest {
+public class PagedListTest {
 
     @Test
-    public void testFilterQueryBuilder() throws JSONException {
-        ReadFilter filter = new ReadFilter();
-        filter.setLimit(1);
-        assertEquals("?limit=1", filter.getQuery());
+    public void testNext() {
+        Pipe pipe = mock(Pipe.class);
+        ReadFilter next = new ReadFilter();
+        List delegate = new ArrayList();
+        ReadFilter previous = new ReadFilter();
 
-        filter.setOffset(2);
-        assertEquals("?limit=1&offset=2", filter.getQuery());
+        next.setLinkUri(URI.create("./next"));
+        previous.setLinkUri(URI.create("./previous"));
 
-        filter.setWhere(new JSONObject("{\"model\":\"BMW\"}"));
-        assertEquals("?limit=1&offset=2&where=%7B%22model%22:%22BMW%22%7D", filter.getQuery());
+        WrappingPagedList list = new WrappingPagedList(pipe, delegate, next, previous);
+        list.next(mock(Callback.class));
+        list.previous(mock(Callback.class));
+
+        verify(pipe).readWithFilter(eq(next), any(Callback.class));
+        verify(pipe).readWithFilter(eq(previous), any(Callback.class));
 
     }
 

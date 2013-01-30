@@ -14,32 +14,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.jboss.aerogear.android.pipeline.paging;
 
-package org.jboss.aerogear.android.impl.core;
-
-import com.xtremelabs.robolectric.RobolectricTestRunner;
+import java.net.URI;
 import org.jboss.aerogear.android.ReadFilter;
-import org.json.JSONException;
-import org.json.JSONObject;
-import static org.junit.Assert.*;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 
-@RunWith(RobolectricTestRunner.class)
-public class ReadFilterTest {
+/**
+ * Classes which implement this interface should provide the necessary parameters for paging to a Pipe's read request.
+ */
+public interface ParameterProvider {
 
-    @Test
-    public void testFilterQueryBuilder() throws JSONException {
-        ReadFilter filter = new ReadFilter();
-        filter.setLimit(1);
-        assertEquals("?limit=1", filter.getQuery());
-
-        filter.setOffset(2);
-        assertEquals("?limit=1&offset=2", filter.getQuery());
-
-        filter.setWhere(new JSONObject("{\"model\":\"BMW\"}"));
-        assertEquals("?limit=1&offset=2&where=%7B%22model%22:%22BMW%22%7D", filter.getQuery());
-
-    }
+    /**
+     * 
+     * @param filter the {@link ReadFilter} associated with a request.
+     * @return a URI query which represents the filter's paging request.
+     */
+    public URI getParameters(ReadFilter filter);
 
 }

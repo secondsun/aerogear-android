@@ -14,27 +14,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package org.jboss.aerogear.android.impl.datamanager;
-
-import org.jboss.aerogear.android.datamanager.StoreType;
+package org.jboss.aerogear.android.pipeline.paging;
 
 /**
- * Types of store
+ * A marker interface for {@link PageConfig} which describes where to find paging metadata in a response.
  */
-public enum StoreTypes implements StoreType {
+public interface MetadataLocation {
 
-    MEMORY("MEMORY"),
-    SQL("SQL");
-
-    private final String typeDescription;
-
-    StoreTypes(String typeDescription) {
-        this.typeDescription = typeDescription;
-    }
-
-    @Override
-    public String getName() {
-        return this.typeDescription;
-    }
 }

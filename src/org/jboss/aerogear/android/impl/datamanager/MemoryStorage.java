@@ -119,7 +119,7 @@ public class MemoryStorage<T> implements Store<T> {
         List<T> results = new ArrayList<T>(data.values());
 
         filterData(results, where);
-        results = pageData(results, filter.getLimit(), filter.getOffset(), filter.getPerPage());
+        results = pageData(results, filter.getLimit(), filter.getOffset());
         return results;
     }
 
@@ -143,7 +143,7 @@ public class MemoryStorage<T> implements Store<T> {
         while (keys.hasNext()) {
             filterPropertyName = keys.next().toString();
             filterValue = where.opt(filterPropertyName);
- 
+
             for (T objectInStorage : data) {
                 Property objectProperty = new Property(objectInStorage.getClass(), filterPropertyName);
                 Object propertyValue = objectProperty.getValue(objectInStorage);
@@ -156,7 +156,7 @@ public class MemoryStorage<T> implements Store<T> {
         }
     }
 
-    private List<T> pageData(List<T> results, Integer limit, Integer offset, Integer perPage) {
-        return results.subList(offset, Math.min(offset + perPage, results.size()));
+    private List<T> pageData(List<T> results, Integer limit, Integer offset) {
+        return results.subList(offset, Math.min(offset + limit, results.size()));
     }
 }

@@ -20,7 +20,6 @@ package org.jboss.aerogear.android.impl.pipeline;
 import android.util.Log;
 import java.net.MalformedURLException;
 import java.net.URL;
-import org.jboss.aerogear.android.impl.http.HttpRestProvider;
 import org.jboss.aerogear.android.pipeline.Pipe;
 import org.jboss.aerogear.android.pipeline.PipeFactory;
 
@@ -33,13 +32,16 @@ public final class DefaultPipeFactory implements PipeFactory {
             URL url = appendEndpoint(config.getBaseURL(), config.getEndpoint());
 
             if (config.getGsonBuilder() != null) {
-                createdPipe = new RestAdapter<T>(klass, url, config.getGsonBuilder());
+                createdPipe = new RestAdapter<T>(klass, url, config.getGsonBuilder(), config.getPageConfig());
             } else {
-                createdPipe = new RestAdapter<T>(klass, url);
+                createdPipe = new RestAdapter<T>(klass, url, config.getPageConfig());
             }
 
             ((RestAdapter<T>) createdPipe).setEncoding(config.getEncoding());
-
+            ((RestAdapter<T>) createdPipe).setDataRoot(config.getDataRoot());
+            if (config.getPageConfig() != null && config.getPageConfig().getParameterProvider() != null) {
+                ((RestAdapter<T>) createdPipe).setParameterProvider(config.getPageConfig().getParameterProvider());
+            }
         } else {
             throw new IllegalArgumentException("Type is not supported yet");
         }

@@ -14,27 +14,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.jboss.aerogear.android.pipeline.paging;
 
-package org.jboss.aerogear.android.impl.datamanager;
-
-import org.jboss.aerogear.android.datamanager.StoreType;
+import java.util.List;
+import org.jboss.aerogear.android.Callback;
 
 /**
- * Types of store
+ * This class wraps a result and provides methods for retrieving the next and previous result sets.
+ * 
+ * @param <T> the data type of the list
  */
-public enum StoreTypes implements StoreType {
+public interface PagedList<T> extends List<T> {
 
-    MEMORY("MEMORY"),
-    SQL("SQL");
+    /**
+     * Retrieve the next result set.  This method MUST NOT pass data to the callback which can not be used.
+     * 
+     * @param callback 
+     */
+    public void next(Callback<List<T>> callback);
 
-    private final String typeDescription;
-
-    StoreTypes(String typeDescription) {
-        this.typeDescription = typeDescription;
-    }
-
-    @Override
-    public String getName() {
-        return this.typeDescription;
-    }
+    /**
+     * Retrieve the previous result set.  This method MUST NOT pass data to the callback which can not be used.
+     * 
+     * @param callback 
+     */
+    public void previous(Callback<List<T>> callback);
 }

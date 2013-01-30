@@ -17,7 +17,6 @@
 
 package org.jboss.aerogear.android.impl.pipeline;
 
-import org.jboss.aerogear.android.impl.pipeline.PipeConfig;
 import java.net.MalformedURLException;
 import java.net.URL;
 import org.jboss.aerogear.android.Callback;

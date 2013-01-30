@@ -23,6 +23,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.UnsupportedCharsetException;
 import org.jboss.aerogear.android.authentication.AuthenticationModule;
 import org.jboss.aerogear.android.pipeline.PipeType;
+import org.jboss.aerogear.android.pipeline.paging.PageConfig;
 
 public final class PipeConfig {
 
@@ -30,8 +31,17 @@ public final class PipeConfig {
     private String name;
     private String endpoint;
     private PipeType type = PipeTypes.REST;
+    private PageConfig pageConfig;
     private GsonBuilder gsonBuilder;
     private AuthenticationModule authModule;
+
+    /**
+     * Where the data elements the pipe wants to extract are found in the
+     * response from the server.  Defaults to the root of the data structure 
+     * represented by an empty string
+     */
+    private String dataRoot = "";
+
     private Charset encoding = Charset.forName("UTF-8");
 
     public PipeConfig(URL baseURL, Class klass) {
@@ -113,6 +123,22 @@ public final class PipeConfig {
      */
     public void setEncoding(String charsetName) {
         this.encoding = Charset.forName(charsetName);
+    }
+
+    public PageConfig getPageConfig() {
+        return pageConfig;
+    }
+
+    public void setPageConfig(PageConfig pageConfig) {
+        this.pageConfig = pageConfig;
+    }
+
+    public String getDataRoot() {
+        return dataRoot;
+    }
+
+    public void setDataRoot(String dataRoot) {
+        this.dataRoot = dataRoot;
     }
 
 }
