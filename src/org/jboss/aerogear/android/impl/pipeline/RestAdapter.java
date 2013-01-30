@@ -439,7 +439,7 @@ public final class RestAdapter<T> implements Pipe<T> {
             final String nextIdentifier = pageConfig.getNextIdentifier();
             final String prevIdentifier = pageConfig.getPreviousIdentifier();
             try {
-                webLinksRaw = getHeader(httpResponse, "Link");
+                webLinksRaw = getWebLinkHeader(httpResponse);
                 if (webLinksRaw == null) { //no paging, return result
                     return result;
                 }
@@ -481,8 +481,9 @@ public final class RestAdapter<T> implements Pipe<T> {
         return new WrappingPagedList<T>(this, result, nextRead, previousRead);
     }
 
-    private String getHeader(HeaderAndBody httpResponse, String linksNext) {
-        Object header = httpResponse.getHeader(linksNext);
+    private String getWebLinkHeader(HeaderAndBody httpResponse) {
+        String linkHeaderName = "Link";
+        Object header = httpResponse.getHeader(linkHeaderName);
         if (header != null) {
             return header.toString();
         }
