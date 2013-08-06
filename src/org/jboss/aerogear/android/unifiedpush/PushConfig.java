@@ -20,9 +20,7 @@ import java.io.Serializable;
 
 
 import com.google.common.collect.ImmutableSet;
-
 import java.net.URI;
-
 import org.jboss.aerogear.android.impl.unifiedpush.PushTypes;
 
 public class PushConfig implements Serializable {

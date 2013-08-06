@@ -24,12 +24,15 @@ public class DefaultPushRegistrarFactory implements PushRegistrarFactory {
 
     @Override
     public PushRegistrar createPushRegistrar(PushConfig config) {
-        if (config.getType().equals(PushTypes.AEROGEAR_GCM)) {
-            return new AeroGearGCMPushRegistrar(config);
-        }
-        
-        throw new IllegalArgumentException("Unsupported Push Type" + config.getType().getName());
-        
+        PushTypes type = PushTypes.valueOf(config.getType().getName());
+        switch(type) {
+            case AEROGEAR_GCM:
+                return new AeroGearGCMPushRegistrar(config);    
+            case MQTT:
+                return new MQTTPushRegistrar(config);
+            default:
+                throw new IllegalArgumentException("Unsupported Push Type" + config.getType().getName());
+        }        
     }
     
 }

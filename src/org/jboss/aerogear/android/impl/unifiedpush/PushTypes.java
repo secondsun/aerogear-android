@@ -29,7 +29,9 @@ public enum PushTypes implements PushType {
      * This value will cause AeroGear to provide a {@link PushRegistrar} 
      * instance which registers against both GCM and an AeroGear push server.
      */
-    AEROGEAR_GCM("AEROGEAR_GCM");
+    AEROGEAR_GCM("AEROGEAR_GCM"),
+    
+    MQTT("MQTT");
 
     private final String typeDescription;
 

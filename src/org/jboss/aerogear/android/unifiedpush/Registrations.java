@@ -142,12 +142,9 @@ public class Registrations {
             && defaultHandler != null) {
             new Thread(new Runnable() {
                 public void run() {
-
-                    GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(context);
-                    String messageType = gcm.getMessageType(message);
-                    if (GoogleCloudMessaging.MESSAGE_TYPE_SEND_ERROR.equals(messageType)) {
+                    if (message.getBooleanExtra(PushConstants.ERROR, false)) {
                         defaultHandler.onError();
-                    } else if (GoogleCloudMessaging.MESSAGE_TYPE_DELETED.equals(messageType)) {
+                    } else if (message.getBooleanExtra(PushConstants.DELETED, false)) {
                         defaultHandler.onDeleteMessage(context, message.getExtras());
                     } else {
                         defaultHandler.onMessage(context, message.getExtras());
@@ -160,12 +157,9 @@ public class Registrations {
         for (final MessageHandler handler : backgroundThreadHandlers) {
             new Thread(new Runnable() {
                 public void run() {
-
-                    GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(context);
-                    String messageType = gcm.getMessageType(message);
-                    if (GoogleCloudMessaging.MESSAGE_TYPE_SEND_ERROR.equals(messageType)) {
+                    if (message.getBooleanExtra(PushConstants.ERROR, false)) {
                         handler.onError();
-                    } else if (GoogleCloudMessaging.MESSAGE_TYPE_DELETED.equals(messageType)) {
+                    } else if (message.getBooleanExtra(PushConstants.DELETED, false)) {
                         handler.onDeleteMessage(context, message.getExtras());
                     } else {
                         handler.onMessage(context, message.getExtras());
@@ -181,11 +175,9 @@ public class Registrations {
             new Handler(main).post(new Runnable() {
                 @Override
                 public void run() {
-                    GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(context);
-                    String messageType = gcm.getMessageType(message);
-                    if (GoogleCloudMessaging.MESSAGE_TYPE_SEND_ERROR.equals(messageType)) {
+                    if (message.getBooleanExtra(PushConstants.ERROR, false)) {
                         handler.onError();
-                    } else if (GoogleCloudMessaging.MESSAGE_TYPE_DELETED.equals(messageType)) {
+                    } else if (message.getBooleanExtra(PushConstants.ERROR, false)) {
                         handler.onDeleteMessage(context, message.getExtras());
                     } else {
                         handler.onMessage(context, message.getExtras());
