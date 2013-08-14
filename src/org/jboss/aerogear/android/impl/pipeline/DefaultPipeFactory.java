@@ -19,6 +19,7 @@ package org.jboss.aerogear.android.impl.pipeline;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import org.jboss.aerogear.android.impl.util.UrlUtils;
 import org.jboss.aerogear.android.pipeline.Pipe;
 import org.jboss.aerogear.android.pipeline.PipeFactory;
 
@@ -30,7 +31,7 @@ public final class DefaultPipeFactory implements PipeFactory {
     public <T> Pipe<T> createPipe(Class<T> klass, PipeConfig config) {
         Pipe<T> createdPipe;
         if (PipeTypes.REST.equals(config.getType())) {
-            URL url = appendEndpoint(config.getBaseURL(), config.getEndpoint());
+            URL url = UrlUtils.appendToBaseURL(config.getBaseURL(), config.getEndpoint());
 
             createdPipe = new RestAdapter<T>(klass, url, config);
 
@@ -39,18 +40,6 @@ public final class DefaultPipeFactory implements PipeFactory {
         }
 
         return createdPipe;
-    }
-
-    private static URL appendEndpoint(URL baseURL, String endpoint) {
-        try {
-            if (!baseURL.toString().endsWith("/")) {
-                endpoint = "/" + endpoint;
-            }
-            return new URL(baseURL + endpoint);
-        } catch (MalformedURLException e) {
-            Log.e("AeroGear", e.getMessage());
-            return null;
-        }
     }
 
 }

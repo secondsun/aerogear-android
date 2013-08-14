@@ -29,6 +29,9 @@ public final class UrlUtils {
     }
 
     /**
+     *
+     * Append the base url with endpoint
+     *
      * @param baseURL 
      * @param endpoint
      * @return a new url baseUrl + endpoint
@@ -37,13 +40,14 @@ public final class UrlUtils {
     public static URL appendToBaseURL(final URL baseURL, String endpoint) {
         try {
             String baseString = baseURL.toString();
-            if (!baseString.endsWith("/")) {
+            if (!baseString.endsWith("/") && !endpoint.startsWith("/")) {
                 baseString += "/";
+            } else if (baseString.endsWith("/") && endpoint.startsWith("/")) {
+                endpoint = endpoint.replaceFirst("/", "");
             }
-            return new URL(baseURL.toString() + endpoint);
+            return new URL(baseString + endpoint);
         } catch (MalformedURLException ex) {
-            String message = "Could not append " + endpoint + " to "
-                    + baseURL.toString();
+            String message = "Could not append " + endpoint + " to " + baseURL.toString();
             Log.e(TAG, message, ex);
             throw new IllegalArgumentException(message, ex);
         }

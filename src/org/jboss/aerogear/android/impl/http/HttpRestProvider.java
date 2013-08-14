@@ -21,9 +21,7 @@ import com.google.common.base.Function;
 import com.google.common.collect.Maps;
 
 import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.net.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,6 +34,7 @@ import org.jboss.aerogear.android.http.HttpException;
 import org.jboss.aerogear.android.http.HttpProvider;
 
 import android.util.Log;
+import org.jboss.aerogear.android.impl.util.UrlUtils;
 
 /**
  * These are tuned for AeroGear, assume the body is String data, and that the
@@ -68,14 +67,7 @@ public final class HttpRestProvider implements HttpProvider {
             URL resourceURL = HttpRestProvider.this.url;
 
             if (id != null) {
-                try {
-                    resourceURL = new URL(HttpRestProvider.this
-                            .appendIdToURL(id));
-                } catch (MalformedURLException ex) {
-                    Log.e(TAG, String.format("Failed to append %s to %s", id,
-                            resourceURL.toString()), ex);
-                    throw new RuntimeException(ex);
-                }
+                resourceURL = UrlUtils.appendToBaseURL(HttpRestProvider.this.url, id);
             }
 
             HttpURLConnection urlConnection;
@@ -246,15 +238,6 @@ public final class HttpRestProvider implements HttpProvider {
         connection.setReadTimeout(timeout);
         connection.setConnectTimeout(timeout);
         return connection;
-    }
-
-    private String appendIdToURL(String id) {
-        StringBuilder newUrl = new StringBuilder(url.toString());
-        if (!url.toString().endsWith("/")) {
-            newUrl.append("/");
-        }
-        newUrl.append(id);
-        return newUrl.toString();
     }
 
     @Override

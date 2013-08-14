@@ -22,18 +22,20 @@ If you are unfamiliar with Maven, developerWorks has a detailed [introduction](h
 * Git
 * Android SDK
 * Need to have an AVD image running 2.3.3 (API level 10)
+* Need to include the Android Support Library.
+* Need to include the Google Play services.
 * You may use any IDE that supports Maven, but this guide currently focuses on the command line.
 
 #### Setup Maven Android SDK Deployer
 
-We need to have the [Android Maven SDK Deployer](https://github.com/mosabua/maven-android-sdk-deployer) installed and configured.  These are only quickstart instructions, the Android Maven SDK Deployer GitHub has a much more in depth install guide.
+We need to have the [Android Maven SDK Deployer](https://github.com/mosabua/maven-android-sdk-deployer) installed and configured. These are only quickstart instructions, the Android Maven SDK Deployer GitHub has a much more in depth install guide.
 
-You must have the version of the platform installed through the Android SDK as you are using for your profile.  In this example, make sure Android 4.1 is installed.
+You must have the version of the platform installed through the Android SDK as you are using for your profile.  In this example, make sure Android 4.2 is installed.
 
     git clone https://github.com/mosabua/maven-android-sdk-deployer.git
     cd maven-android-sdk-deployer
     export ANDROID_HOME=YOUR_ANDROID_SDK_DIRECTORY
-    mvn install -P 4.1
+    mvn install -P 4.2
 
 *Note:* During the instalation you might face with some issues like this https://issues.jboss.org/browse/AEROGEAR-951. The workaround is:
 
@@ -43,22 +45,16 @@ Edit the pom.xml file commenting following modules:
 
 	<!-- <module>analytics</module> -->
 	<!-- <module>admob</module> -->
-	<!-- <module>google-play-services</module> -->
 
-
-
-Now Maven will be able to include Android 4.1 as a dependency.  There are also profiles for other version of Android.
-
+Now Maven will be able to include Android 4.2 as a dependency.  There are also profiles for other version of Android.
 
 #### Installing aerogear-android
 
-From the command line run the following.  This will clone the aerogear-android git repository (thus creating a aerogear-android directory) and then build the library and install it in your local maven repository.
-
+From the command line run the following. This will clone the aerogear-android git repository (thus creating a aerogear-android directory) and then build the library and install it in your local maven repository.
 
     git clone https://github.com/aerogear/aerogear-android.git
     cd aerogear-android/
     mvn install
-
 
 #### If your build fails with "Could not find tool 'aapt'"
 
@@ -79,4 +75,3 @@ Some installations use a slightly different structure such that the following wi
      ln -s ../build-tools/17.0.0/aidl aidl
 
 If you are having troubles feel free to contact us via IRC #aerogear or our mailing list aerogear-dev@lists.jboss.org.
-
