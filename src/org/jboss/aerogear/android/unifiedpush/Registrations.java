@@ -126,10 +126,8 @@ public class Registrations {
 
         /**
      * 
-     * This will deliver an intent to all registered handlers.  Currently it is 
-     * GCM centric, but this will be changed in the future.
-     * 
-     * See: <a href="https://issues.jboss.org/browse/AGDROID-84">AGDROID-84</a>
+     * This will deliver an intent to all registered handlers.  
+     * See {@link PushConstants} for information on how messages will be routed.
      * 
      * @param context the application's context
      * @param message the message to pass
