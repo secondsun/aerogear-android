@@ -50,7 +50,7 @@ class MQTTPushRegistrar implements PushRegistrar, Listener {
                 try {
                     CountDownLatch latch = new CountDownLatch((1));
                     ConnectionCallback conectionCallback = new ConnectionCallback(latch);
-                    mqtt.setHost(config.getRegistryURL());
+                    mqtt.setHost(config.getPushServerURI());
                     connection = mqtt.callbackConnection();
                     connection.listener(MQTTPushRegistrar.this);
                     connection.connect(conectionCallback);
