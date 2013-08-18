@@ -126,11 +126,6 @@
                             <artifactId>guava</artifactId>
                             <version>13.0.1</version>
                         </artifactItem>
-                        <artifactItem>
-                            <groupId>com.google.android.gcm</groupId>
-                            <artifactId>gcm-client</artifactId>
-                            <version>[3,)</version>
-                        </artifactItem>
                     </artifactItems>
                     <outputDirectory>${basedir}/libs</outputDirectory>
                 </configuration>
