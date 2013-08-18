@@ -16,7 +16,6 @@
  */
 package org.jboss.aerogear.android.unifiedpush;
 
-import org.jboss.aerogear.android.impl.unifiedpush.AeroGearGCMPushRegistrar;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -25,6 +24,8 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
+import com.google.android.gms.gcm.GoogleCloudMessaging;
+import static org.jboss.aerogear.android.unifiedpush.PushConstants.*;
 
 /**
  * <p> AeroGear specific <code>BroadcastReceiver</code> implementation for Google Cloud Messaging.
@@ -63,6 +64,16 @@ public class AeroGearGCMMessageReceiver extends BroadcastReceiver {
 
                 }
             }
+        }
+        
+        GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(context);
+        String messageType = gcm.getMessageType(intent);
+        if (GoogleCloudMessaging.MESSAGE_TYPE_SEND_ERROR.equals(messageType)) {
+            intent.putExtra(ERROR, true);
+        } else if (GoogleCloudMessaging.MESSAGE_TYPE_DELETED.equals(messageType)) {
+            intent.putExtra(DELETED, true);
+        } else {
+            intent.putExtra(MESSAGE, true);
         }
 
         // notity all attached MessageHandler implementations:
