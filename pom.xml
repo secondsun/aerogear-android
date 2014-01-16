@@ -47,6 +47,15 @@
         </developer>
     </developers>
 
+    <repositories>
+        <repository>
+            <name>Couchbase Lite Android repo</name>
+            <id>couchbase-lite</id>
+            <url>http://files.couchbase.com/maven2/</url>
+        </repository>
+                
+    </repositories>
+
     <scm>
         <connection>scm:git:git@github.com:aerogear/aerogear-android.git</connection>
         <developerConnection>scm:git:git@github.com:aerogear/aerogear-android.git</developerConnection>
@@ -65,7 +74,7 @@
         <junit.version>4.8.2</junit.version>
         <mockito.version>1.9.5</mockito.version>
         <scprov.version>1.47.0.3</scprov.version>
-        <maven.android.plugin.verson>3.8.0</maven.android.plugin.verson>
+        <maven.android.plugin.verson>3.8.2</maven.android.plugin.verson>
         <maven.compiler.plugin.version>2.3.2</maven.compiler.plugin.version>
         <java.version>1.7</java.version>
         <maven.dependency.plugin.version>2.5.1</maven.dependency.plugin.version>
@@ -175,6 +184,20 @@
             <version>${mockito.version}</version>
             <scope>test</scope>
         </dependency>
+        
+        <dependency>
+            <groupId>com.couchbase.cblite</groupId>
+            <artifactId>CBLite</artifactId>
+            <version>1.0.0-beta2rc1</version>
+            <type>aar</type>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.android.support</groupId>
+                    <artifactId>support-v4</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+                
     </dependencies>
 
     <build>
