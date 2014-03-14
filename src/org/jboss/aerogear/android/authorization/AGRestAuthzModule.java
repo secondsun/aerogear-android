@@ -55,17 +55,17 @@ public class AGRestAuthzModule implements AuthzModule {
         this.authzEndpoint = appendToBaseURL(baseURL, config.getAuthzEndpoint());
         this.accessTokenEndpoint = appendToBaseURL(baseURL, config.getAccessTokenEndpoint());
         this.redirectURL = Uri.parse(config.getRedirectURL().toString());
-        this.scopes = new ArrayList<>(config.getScopes());
+        this.scopes = new ArrayList<String>(config.getScopes());
         this.clientId = config.getClientId();
         this.clientSecret = config.getClientSecret();
     }
 
     public void requestAccess(final Callback<String> callback, final Activity activity, BroadcastReceiver receiver) {
         try {
-            String query ="?scope=%s&redirect_uri=%s&client_id=%s&response_type=code";
+            String query = "?scope=%s&redirect_uri=%s&client_id=%s&response_type=code";
             query = String.format(query, formatScopes(),
-                                         URLEncoder.encode(redirectURL.toString(), Charsets.UTF_8.name()),
-                                         clientId);
+                    URLEncoder.encode(redirectURL.toString(), Charsets.UTF_8.name()),
+                    clientId);
 
             URL authURL = new URL(authzEndpoint.toString() + query);
             Log.e("URL", authURL.toString());
@@ -80,9 +80,10 @@ public class AGRestAuthzModule implements AuthzModule {
             });
             dialog.show(activity.getFragmentManager(), "TAG");
 
-
-
-        } catch (UnsupportedEncodingException | MalformedURLException ex) {
+        } catch (UnsupportedEncodingException ex) {
+            Logger.getLogger(AGRestAuthzModule.class.getName()).log(Level.SEVERE, null, ex);
+            callback.onFailure(ex);
+        } catch (MalformedURLException ex) {
             Logger.getLogger(AGRestAuthzModule.class.getName()).log(Level.SEVERE, null, ex);
             callback.onFailure(ex);
         }
@@ -96,7 +97,7 @@ public class AGRestAuthzModule implements AuthzModule {
         final Map<String, String> data = new HashMap<String, String>();
         final StringBuilder bodyBuilder = new StringBuilder();
 
-        data.put("code",code);
+        data.put("code", code);
         data.put("client_id", clientId);
         data.put("redirect_uri", redirectURL.toString());
         data.put("grant_type", "authorization_code");
@@ -115,7 +116,7 @@ public class AGRestAuthzModule implements AuthzModule {
             amp = "&";
         }
 
-        new AsyncTask<Void, Void, HeaderAndBody>(){
+        new AsyncTask<Void, Void, HeaderAndBody>() {
             @Override
             protected HeaderAndBody doInBackground(Void... params) {
                 try {
@@ -134,7 +135,7 @@ public class AGRestAuthzModule implements AuthzModule {
     }
 
     private String formatScopes() throws UnsupportedEncodingException {
-        
+
         StringBuilder scopeValue = new StringBuilder();
         String append = "";
         for (String scope : scopes) {
@@ -142,8 +143,8 @@ public class AGRestAuthzModule implements AuthzModule {
             scopeValue.append(URLEncoder.encode(scope, Charsets.UTF_8.name()));
             append = "+";
         }
-        
+
         return scopeValue.toString();
     }
-    
+
 }

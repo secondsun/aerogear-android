@@ -52,7 +52,7 @@ public class AuthzConfig {
     }
 
     public List<String> getScopes() {
-        return new ArrayList<>(scopes);
+        return new ArrayList<String>(scopes);
     }
 
     public void setScopes(List<String> scopes) {

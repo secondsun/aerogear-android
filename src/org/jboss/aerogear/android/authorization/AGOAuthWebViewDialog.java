@@ -13,8 +13,7 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-import net.saga.oauthtestsing.app.R;
-
+import org.jboss.aerogear.R;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 
