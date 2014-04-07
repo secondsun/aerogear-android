@@ -343,6 +343,10 @@ public class SQLStore<T> extends SQLiteOpenHelper implements Store<T> {
         }.execute();
     }
 
+    public void openSync() {
+        SQLStore.this.database = getWritableDatabase();
+    }
+    
     @Override
     public void close() {
         this.database.close();
