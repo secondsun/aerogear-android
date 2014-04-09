@@ -1,4 +1,4 @@
-package org.jboss.aerogear.android.authorization;
+package org.jboss.aerogear.android.impl.authz;
 
 import android.app.DialogFragment;
 import android.net.Uri;
@@ -14,7 +14,6 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import org.jboss.aerogear.R;
-import java.io.UnsupportedEncodingException;
 import java.net.URL;
 
 /**
