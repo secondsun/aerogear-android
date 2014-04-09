@@ -2,7 +2,6 @@ package org.jboss.aerogear.android.impl.authorization;
 
 import android.app.Activity;
 import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Parcel;

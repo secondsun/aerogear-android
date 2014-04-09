@@ -14,7 +14,6 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import org.jboss.aerogear.R;
-import java.io.UnsupportedEncodingException;
 import java.net.URL;
 
 /**
