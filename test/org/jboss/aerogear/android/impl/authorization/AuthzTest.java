@@ -14,8 +14,8 @@ import java.util.List;
 import org.jboss.aerogear.android.Callback;
 import org.jboss.aerogear.android.authorization.AuthzConfig;
 import org.jboss.aerogear.android.impl.authz.AGAuthzService;
-import org.jboss.aerogear.android.impl.authz.AGRestAuthzModule;
-import org.jboss.aerogear.android.impl.authz.OAUTH2AuthzSession;
+import org.jboss.aerogear.android.impl.authz.oauth2.AGOAuth2AuthzModule;
+import org.jboss.aerogear.android.impl.authz.oauth2.OAUTH2AuthzSession;
 import org.junit.Assert;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -110,7 +110,7 @@ public class AuthzTest {
         BroadcastReceiver mockReceiver = mock(BroadcastReceiver.class);
         Callback mockCallback = mock(Callback.class);
         
-        AGRestAuthzModule module = new AGRestAuthzModule(makeConfig());
+        AGOAuth2AuthzModule module = new AGOAuth2AuthzModule(makeConfig());
 
         module.requestAccess("testScope", mockContext, mockCallback);
 

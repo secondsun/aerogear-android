@@ -1,4 +1,4 @@
-package org.jboss.aerogear.android.impl.authz;
+package org.jboss.aerogear.android.impl.authz.oauth2;
 
 import android.app.DialogFragment;
 import android.net.Uri;

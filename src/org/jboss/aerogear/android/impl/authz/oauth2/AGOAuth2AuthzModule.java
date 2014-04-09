@@ -1,5 +1,7 @@
-package org.jboss.aerogear.android.impl.authz;
+package org.jboss.aerogear.android.impl.authz.oauth2;
 
+import org.jboss.aerogear.android.impl.authz.oauth2.AGOAuthWebViewDialog;
+import org.jboss.aerogear.android.impl.authz.oauth2.OAUTH2AuthzSession;
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
@@ -30,10 +32,12 @@ import org.jboss.aerogear.android.Callback;
 import org.jboss.aerogear.android.authentication.AuthorizationFields;
 import org.jboss.aerogear.android.authorization.AuthzConfig;
 import org.jboss.aerogear.android.authorization.AuthzModule;
+import org.jboss.aerogear.android.impl.authz.AGAuthzService;
+import org.jboss.aerogear.android.impl.authz.AuthorizationException;
 
 import static org.jboss.aerogear.android.impl.util.UrlUtils.appendToBaseURL;
 
-public class AGRestAuthzModule implements AuthzModule {
+public class AGOAuth2AuthzModule implements AuthzModule {
 
     private final URL baseURL;
     private final URL authzEndpoint;
@@ -50,7 +54,7 @@ public class AGRestAuthzModule implements AuthzModule {
         AUTHZ_FILTER.addAction("org.jboss.aerogear.android.authz.RECEIVE_AUTHZ");
     }
 
-    public AGRestAuthzModule(AuthzConfig config) {
+    public AGOAuth2AuthzModule(AuthzConfig config) {
         this.baseURL = config.getBaseURL();
         this.authzEndpoint = appendToBaseURL(baseURL, config.getAuthzEndpoint());
         this.redirectURL = Uri.parse(config.getRedirectURL());
@@ -133,7 +137,7 @@ public class AGRestAuthzModule implements AuthzModule {
                                             });
 
                                         } catch (final AuthorizationException ex) {
-                                            Log.e(AGRestAuthzModule.class.getName(), ex.toString(), ex);
+                                            Log.e(AGOAuth2AuthzModule.class.getName(), ex.toString(), ex);
                                             new Handler(Looper.getMainLooper()).post(new Runnable() {
                                                 @Override
                                                 public void run() {
@@ -193,11 +197,11 @@ public class AGRestAuthzModule implements AuthzModule {
 
                     }
                 } catch (UnsupportedEncodingException ex) {
-                    Logger.getLogger(AGRestAuthzModule.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(AGOAuth2AuthzModule.class.getName()).log(Level.SEVERE, null, ex);
                     activity.unbindService(instance);
                     callback.onFailure(ex);
                 } catch (MalformedURLException ex) {
-                    Logger.getLogger(AGRestAuthzModule.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(AGOAuth2AuthzModule.class.getName()).log(Level.SEVERE, null, ex);
                     activity.unbindService(instance);
                     callback.onFailure(ex);
                 }

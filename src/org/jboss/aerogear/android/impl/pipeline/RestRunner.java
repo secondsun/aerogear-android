@@ -55,7 +55,7 @@ import android.util.Log;
 import android.util.Pair;
 
 import org.apache.http.HttpStatus;
-import org.jboss.aerogear.android.impl.authz.AGRestAuthzModule;
+import org.jboss.aerogear.android.impl.authz.oauth2.AGOAuth2AuthzModule;
 import org.jboss.aerogear.android.impl.util.ClassUtils;
 
 public class RestRunner<T> implements PipeHandler<T> {
@@ -80,7 +80,7 @@ public class RestRunner<T> implements PipeHandler<T> {
     private final Integer timeout;
     private final ResponseParser<T> responseParser;
     private AuthenticationModule authModule;
-    private AGRestAuthzModule authzModule;
+    private AGOAuth2AuthzModule authzModule;
     private Charset encoding = Charset.forName("UTF-8");
 
     public RestRunner(Class<T> klass, URL baseURL) {

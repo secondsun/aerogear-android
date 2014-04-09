@@ -31,7 +31,7 @@ import org.jboss.aerogear.android.pipeline.ResponseParser;
 import org.jboss.aerogear.android.pipeline.paging.PageConfig;
 
 import com.google.gson.GsonBuilder;
-import org.jboss.aerogear.android.impl.authz.AGRestAuthzModule;
+import org.jboss.aerogear.android.impl.authz.oauth2.AGOAuth2AuthzModule;
 
 /**
  * Specifies configurations for {@link Pipe} to be build by {@link Pipeline}
@@ -45,7 +45,7 @@ public final class PipeConfig {
     private PipeType type = PipeTypes.REST;
     private PageConfig pageConfig;
     private AuthenticationModule authModule;
-    private AGRestAuthzModule authzModule;
+    private AGOAuth2AuthzModule authzModule;
     private PipeHandler handler;
     private Integer timeout = 60000;
     private ResponseParser responseParser = new GsonResponseParser();
@@ -401,11 +401,11 @@ public final class PipeConfig {
         this.responseParser = responseParser;
     }
 
-    public AGRestAuthzModule getAuthzModule() {
+    public AGOAuth2AuthzModule getAuthzModule() {
         return authzModule;
     }
 
-    public void setAuthzModule(AGRestAuthzModule authzModule) {
+    public void setAuthzModule(AGOAuth2AuthzModule authzModule) {
         this.authzModule = authzModule;
     }
     
