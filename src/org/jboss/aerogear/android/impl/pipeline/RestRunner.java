@@ -60,6 +60,7 @@ import android.util.Pair;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import org.apache.http.HttpStatus;
+import org.jboss.aerogear.android.impl.authz.AGRestAuthzModule;
 import org.jboss.aerogear.android.impl.util.ClassUtils;
 
 public class RestRunner<T> implements PipeHandler<T> {
@@ -84,6 +85,7 @@ public class RestRunner<T> implements PipeHandler<T> {
     private final Integer timeout;
     private final ResponseParser<T> responseParser;
     private AuthenticationModule authModule;
+    private AGRestAuthzModule authzModule;
     private Charset encoding = Charset.forName("UTF-8");
 
     public RestRunner(Class<T> klass, URL baseURL) {
@@ -153,6 +155,10 @@ public class RestRunner<T> implements PipeHandler<T> {
 
         if (config.getAuthModule() != null) {
             this.authModule = config.getAuthModule();
+        }
+        
+        if (config.getAuthzModule() != null) {
+            this.authzModule = config.getAuthzModule();
         }
 
     }
@@ -268,6 +274,8 @@ public class RestRunner<T> implements PipeHandler<T> {
 
         if (authModule != null && authModule.isLoggedIn()) {
             return authModule.getAuthorizationFields(relativeURI, httpMethod, new byte[]{});
+        } else if (authzModule != null && authzModule.isAuthorized()) {
+            return authzModule.getAuthorizationFields(relativeURI, httpMethod, new byte[]{});
         }
 
         return new AuthorizationFields();
