@@ -28,7 +28,6 @@ import java.util.logging.Logger;
 
 import org.jboss.aerogear.android.Callback;
 import org.jboss.aerogear.android.authentication.AuthorizationFields;
-import org.jboss.aerogear.android.authorization.AGOAuthWebViewDialog;
 import org.jboss.aerogear.android.authorization.AuthzConfig;
 import org.jboss.aerogear.android.authorization.AuthzModule;
 
