@@ -1,5 +1,6 @@
 package org.jboss.aerogear.android.impl.authz;
 
+import org.jboss.aerogear.android.impl.authz.oauth2.OAUTH2AuthzSession;
 import android.app.Service;
 import android.content.ComponentName;
 import android.content.Intent;
