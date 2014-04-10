@@ -1,70 +1,55 @@
 /**
- * JBoss, Home of Professional Open Source
- * Copyright Red Hat, Inc., and individual contributors.
+ * JBoss, Home of Professional Open Source Copyright Red Hat, Inc., and
+ * individual contributors.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
  *
- * 	http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
 package org.jboss.aerogear.android.impl.authz.oauth2;
 
-import org.jboss.aerogear.android.impl.authz.oauth2.AGOAuthWebViewDialog;
-import org.jboss.aerogear.android.impl.authz.oauth2.OAUTH2AuthzSession;
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.net.Uri;
-import android.os.AsyncTask;
+import android.content.ServiceConnection;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
-import android.util.Log;
-import android.util.Pair;
-
-import com.google.common.base.Charsets;
 import com.google.common.base.Strings;
 
-import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.jboss.aerogear.android.Callback;
 import org.jboss.aerogear.android.authentication.AuthorizationFields;
 import org.jboss.aerogear.android.authorization.AuthzConfig;
 import org.jboss.aerogear.android.authorization.AuthzModule;
 import org.jboss.aerogear.android.impl.authz.AGAuthzService;
-import org.jboss.aerogear.android.impl.authz.AuthorizationException;
-
-import static org.jboss.aerogear.android.impl.util.UrlUtils.appendToBaseURL;
 
 public class AGOAuth2AuthzModule implements AuthzModule {
 
+    private static final IntentFilter AUTHZ_FILTER;
+
     private final URL baseURL;
-    private final URL authzEndpoint;
-    private final Uri redirectURL;
+    private final String accountId;
     private final List<String> scopes;
     private final String clientId;
     private final AuthzConfig config;
-
-    private static final IntentFilter AUTHZ_FILTER;
     private OAUTH2AuthzSession account;
     private AGAuthzService service;
+
     static {
         AUTHZ_FILTER = new IntentFilter();
         AUTHZ_FILTER.addAction("org.jboss.aerogear.android.authz.RECEIVE_AUTHZ");
@@ -72,24 +57,23 @@ public class AGOAuth2AuthzModule implements AuthzModule {
 
     public AGOAuth2AuthzModule(AuthzConfig config) {
         this.baseURL = config.getBaseURL();
-        this.authzEndpoint = appendToBaseURL(baseURL, config.getAuthzEndpoint());
-        this.redirectURL = Uri.parse(config.getRedirectURL());
         this.scopes = new ArrayList<String>(config.getScopes());
         this.clientId = config.getClientId();
-
+        this.accountId = config.getAccountId();
         this.config = config;
+
     }
 
     @Override
     public boolean isAuthorized() {
-        
+
         if (account == null) {
             return false;
         }
-        
+
         return account.tokenIsNotExpired() && !Strings.isNullOrEmpty(account.getAccessToken());
     }
-    
+
     @Override
     public void requestAccess(final String state, final Activity activity, final Callback<String> callback) {
 
@@ -97,131 +81,10 @@ public class AGOAuth2AuthzModule implements AuthzModule {
 
             @Override
             public void onServiceConnected(ComponentName className, IBinder iBinder) {
-
-                final AGAuthzService.AGAuthzServiceConnection instance = this;
-
                 super.onServiceConnected(className, iBinder);
-                try {
-                    service = getService();
-                    final String accountId = config.getAccountId();
-
-                    if (Strings.isNullOrEmpty(accountId)) {
-                        throw new IllegalArgumentException("need to have accountId set");
-                    }
-
-                    if (!service.hasAccount(accountId)) {
-
-                        String query = "?scope=%s&redirect_uri=%s&client_id=%s&state=%s&response_type=code";
-                        query = String.format(query, formatScopes(),
-                                URLEncoder.encode(redirectURL.toString(), Charsets.UTF_8.name()),
-                                clientId, state);
-
-                        if (config.getAdditionalAuthorizationParams() != null &&
-                            config.getAdditionalAuthorizationParams().size() > 0 ) {
-                            for (Pair<String, String> param : config.getAdditionalAuthorizationParams()) {
-                                query += String.format("&%s=%s", URLEncoder.encode(param.first, Charsets.UTF_8.name()), URLEncoder.encode(param.second, Charsets.UTF_8.name()));
-                            }
-                        }
-                        
-                        URL authURL = new URL(authzEndpoint.toString() + query);
-
-                        final AGOAuthWebViewDialog dialog = AGOAuthWebViewDialog.newInstance(authURL, "Drive");
-                        dialog.setReceiver(new AGOAuthWebViewDialog.OAuthReceiver() {
-                            @Override
-                            public void receiveOAuthCode(String code) {
-                                OAUTH2AuthzSession session = new OAUTH2AuthzSession();
-                                session.setAuthorizationCode(code);
-                                session.setAccountId(accountId);
-                                session.setCliendId(clientId);
-                                service.addAccount(session);
-
-                                new Thread(new Runnable() {
-
-                                    @Override
-                                    public void run() {
-                                        try {
-
-                                            final String accessToken = service.fetchAccessToken(accountId, config);
-                                            new Handler(Looper.getMainLooper()).post(new Runnable() {
-                                                @Override
-                                                public void run() {
-                                                    account = service.getAccount(accountId);
-                                                    activity.unbindService(instance);
-                                                    callback.onSuccess(accessToken);
-                                                    dialog.dismiss();
-                                                }
-                                            });
-
-                                        } catch (final AuthorizationException ex) {
-                                            Log.e(AGOAuth2AuthzModule.class.getName(), ex.toString(), ex);
-                                            new Handler(Looper.getMainLooper()).post(new Runnable() {
-                                                @Override
-                                                public void run() {
-
-                                                    activity.unbindService(instance);
-                                                    callback.onFailure(ex);
-                                                    dialog.dismiss();
-                                                }
-                                            });
-
-                                        }
-                                    }
-                                }).start();
-
-                            }
-
-                            @Override
-                            public void receiveOAuthError(final String error) {
-                                new Handler(Looper.getMainLooper()).post(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        activity.unbindService(instance);
-                                        callback.onFailure(new Exception(error));
-                                    }
-                                });
-                            }
-                        });
-
-                        dialog.show(activity.getFragmentManager(), "TAG");
-
-                    } else {
-
-                        new AsyncTask<Object, Void, Object>() {
-                            
-                            @Override
-                            protected Object doInBackground(Object... params) {
-                                try {
-                                    return service.fetchAccessToken((String) params[0], (AuthzConfig) params[1]);
-                                } catch (AuthorizationException ex) {
-                                    return ex;
-                                }
-                            }
-
-                            @Override
-                            protected void onPostExecute(Object result) {
-                                if (result instanceof String || result == null) {
-                                    account = service.getAccount(accountId);
-                                    activity.unbindService(instance);
-                                    callback.onSuccess((String) result);
-                                } else {
-                                    activity.unbindService(instance);
-                                    callback.onFailure((Exception) result);
-                                }
-                            }
-
-                        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, accountId, config);
-
-                    }
-                } catch (UnsupportedEncodingException ex) {
-                    Logger.getLogger(AGOAuth2AuthzModule.class.getName()).log(Level.SEVERE, null, ex);
-                    activity.unbindService(instance);
-                    callback.onFailure(ex);
-                } catch (MalformedURLException ex) {
-                    Logger.getLogger(AGOAuth2AuthzModule.class.getName()).log(Level.SEVERE, null, ex);
-                    activity.unbindService(instance);
-                    callback.onFailure(ex);
-                }
+                doRequestAccess(state, activity, callback, this);
             }
+
         };
 
         activity.bindService(
@@ -231,28 +94,111 @@ public class AGOAuth2AuthzModule implements AuthzModule {
 
     }
 
-    
-    
-    private String formatScopes() throws UnsupportedEncodingException {
-
-        StringBuilder scopeValue = new StringBuilder();
-        String append = "";
-        for (String scope : scopes) {
-            scopeValue.append(append);
-            scopeValue.append(URLEncoder.encode(scope, Charsets.UTF_8.name()));
-            append = "+";
-        }
-
-        return scopeValue.toString();
-    }
-
     @Override
     public AuthorizationFields getAuthorizationFields(URI requestUri, String method, byte[] requestBody) {
         AuthorizationFields fields = new AuthorizationFields();
-        
+
         fields.addHeader("Authorization", "Bearer " + account.getAccessToken());
-        
+
         return fields;
+    }
+
+    private void doRequestAccess(final String state, final Activity activity, final Callback<String> callback, final AGAuthzService.AGAuthzServiceConnection instance) {
+
+        service = instance.getService();
+
+        if (Strings.isNullOrEmpty(accountId)) {
+            throw new IllegalArgumentException("need to have accountId set");
+        }
+
+        if (!service.hasAccount(accountId)) {
+
+            OAuth2WebFragmentFetchAutorization authzFetch = new OAuth2WebFragmentFetchAutorization(activity, state);
+            authzFetch.performAuthorization(config, new OAuth2AuthorizationCallback(activity, callback, instance));
+
+        } else {
+
+            OAuth2FetchAccess fetcher = new OAuth2FetchAccess(service);
+            fetcher.fetchAccessCode(accountId, config, new OAuth2AccessCallback(activity, callback, instance));
+
+        }
+
+    }
+
+    private class OAuth2AccessCallback implements Callback<String> {
+
+        private final Activity callingActivity;
+        private final Callback<String> originalCallback;
+        private final ServiceConnection serviceConnection;
+        private final Handler myHandler;
+
+        public OAuth2AccessCallback(Activity callingActivity, Callback<String> originalCallback, ServiceConnection serviceConnection) {
+            this.callingActivity = callingActivity;
+            this.originalCallback = originalCallback;
+            this.serviceConnection = serviceConnection;
+            myHandler = new Handler(Looper.myLooper());
+        }
+
+        @Override
+        public void onSuccess(final String accessToken) {
+            account = service.getAccount(accountId);
+            callingActivity.unbindService(serviceConnection);
+            myHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    originalCallback.onSuccess(accessToken);
+                }
+            });
+        }
+
+        @Override
+        public void onFailure(final Exception e) {
+            myHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    callingActivity.unbindService(serviceConnection);
+                    originalCallback.onFailure(e);
+                }
+            });
+        }
+    }
+
+    private class OAuth2AuthorizationCallback implements Callback<String> {
+
+        private final Activity callingActivity;
+        private final Callback<String> originalCallback;
+        private final ServiceConnection serviceConnection;
+        private final Handler myHandler;
+
+        public OAuth2AuthorizationCallback(Activity callingActivity, Callback<String> originalCallback, ServiceConnection serviceConnection) {
+            this.callingActivity = callingActivity;
+            this.originalCallback = originalCallback;
+            this.serviceConnection = serviceConnection;
+            myHandler = new Handler(Looper.myLooper());
+        }
+
+        @Override
+        public void onSuccess(final String code) {
+            OAUTH2AuthzSession session = new OAUTH2AuthzSession();
+            session.setAuthorizationCode(code);
+            session.setAccountId(accountId);
+            session.setCliendId(clientId);
+            service.addAccount(session);
+            
+            OAuth2FetchAccess fetcher = new OAuth2FetchAccess(service);
+            fetcher.fetchAccessCode(accountId, config, new OAuth2AccessCallback(callingActivity, originalCallback, serviceConnection));
+        }
+
+        @Override
+        public void onFailure(final Exception e) {
+            myHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    callingActivity.unbindService(serviceConnection);
+                    originalCallback.onFailure(e);
+                }
+            });
+        }
     }
 
 }
