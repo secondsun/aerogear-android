@@ -182,6 +182,7 @@ public class AGAuthzService extends Service {
 
         data.put("refresh_token", storedAccount.getRefreshToken());
         data.put("grant_type", "refresh_token");
+        data.put("client_id", storedAccount.getCliendId());        
         if (config.getClientSecret() != null) {
             data.put("client_secret", config.getClientSecret());
         }
