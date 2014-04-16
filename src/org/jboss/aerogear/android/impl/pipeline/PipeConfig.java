@@ -23,6 +23,7 @@ import java.util.Locale;
 
 import org.jboss.aerogear.android.Pipeline;
 import org.jboss.aerogear.android.authentication.AuthenticationModule;
+import org.jboss.aerogear.android.authorization.AuthzModule;
 import org.jboss.aerogear.android.pipeline.Pipe;
 import org.jboss.aerogear.android.pipeline.PipeHandler;
 import org.jboss.aerogear.android.pipeline.PipeType;
@@ -46,7 +47,7 @@ public final class PipeConfig {
     private PipeType type = PipeTypes.REST;
     private PageConfig pageConfig;
     private AuthenticationModule authModule;
-    private AGOAuth2AuthzModule authzModule;
+    private AuthzModule authzModule;
     private PipeHandler handler;
     private Integer timeout = 60000;
     private ResponseParser responseParser = new GsonResponseParser();
@@ -399,11 +400,11 @@ public final class PipeConfig {
         this.responseParser = responseParser;
     }
 
-    public AGOAuth2AuthzModule getAuthzModule() {
+    public AuthzModule getAuthzModule() {
         return authzModule;
     }
 
-    public void setAuthzModule(AGOAuth2AuthzModule authzModule) {
+    public void setAuthzModule(AuthzModule authzModule) {
         this.authzModule = authzModule;
     }
     

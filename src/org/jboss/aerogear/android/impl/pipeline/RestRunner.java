@@ -32,6 +32,7 @@ import org.jboss.aerogear.android.Provider;
 import org.jboss.aerogear.android.ReadFilter;
 import org.jboss.aerogear.android.authentication.AuthenticationModule;
 import org.jboss.aerogear.android.authentication.AuthorizationFields;
+import org.jboss.aerogear.android.authorization.AuthzModule;
 import org.jboss.aerogear.android.http.HeaderAndBody;
 import org.jboss.aerogear.android.http.HttpException;
 import org.jboss.aerogear.android.http.HttpProvider;
@@ -85,7 +86,7 @@ public class RestRunner<T> implements PipeHandler<T> {
     private final Integer timeout;
     private final ResponseParser<T> responseParser;
     private AuthenticationModule authModule;
-    private AGOAuth2AuthzModule authzModule;
+    private AuthzModule authzModule;
     private Charset encoding = Charset.forName("UTF-8");
 
     public RestRunner(Class<T> klass, URL baseURL) {
