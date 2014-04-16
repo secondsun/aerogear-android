@@ -29,8 +29,8 @@ import java.net.URL;
 import java.util.List;
 import org.jboss.aerogear.android.Callback;
 import org.jboss.aerogear.android.impl.authz.AuthzConfig;
-import org.jboss.aerogear.android.impl.authz.AGAuthzService;
-import org.jboss.aerogear.android.impl.authz.oauth2.AGOAuth2AuthzModule;
+import org.jboss.aerogear.android.impl.authz.AuthzService;
+import org.jboss.aerogear.android.impl.authz.oauth2.OAuth2AuthzModule;
 import org.jboss.aerogear.android.impl.authz.oauth2.OAUTH2AuthzSession;
 import org.junit.Assert;
 import static org.junit.Assert.assertEquals;
@@ -63,12 +63,12 @@ public class AuthzTest {
     
     @Test
     public void testAddAccounts() {
-        Intent accessIntent = new Intent(Robolectric.application, AGAuthzService.class);
+        Intent accessIntent = new Intent(Robolectric.application, AuthzService.class);
         accessIntent.setData(Uri.parse("https://accounts.google.com/o/oauth2/auth?scope=testScope&redirect_uri=redirect&client_id=clientId&state=testState&response_type=code"));
         
-        AGAuthzService service = new AGAuthzService();
+        AuthzService service = new AuthzService();
         
-        ((AGAuthzService.AuthzBinder)service.onBind(null)).getService();
+        ((AuthzService.AuthzBinder)service.onBind(null)).getService();
         
         OAUTH2AuthzSession session = new OAUTH2AuthzSession();
         session.setAccessToken("accessToken");
@@ -126,7 +126,7 @@ public class AuthzTest {
         BroadcastReceiver mockReceiver = mock(BroadcastReceiver.class);
         Callback mockCallback = mock(Callback.class);
         
-        AGOAuth2AuthzModule module = new AGOAuth2AuthzModule(makeConfig());
+        OAuth2AuthzModule module = new OAuth2AuthzModule(makeConfig());
 
         module.requestAccess("testScope", mockContext, mockCallback);
 

@@ -32,7 +32,6 @@ import org.jboss.aerogear.android.pipeline.ResponseParser;
 import org.jboss.aerogear.android.pipeline.paging.PageConfig;
 
 import com.google.gson.GsonBuilder;
-import org.jboss.aerogear.android.impl.authz.oauth2.AGOAuth2AuthzModule;
 
 /**
  * Specifies configurations for {@link Pipe} to be build by {@link Pipeline}

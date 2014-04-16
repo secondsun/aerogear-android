@@ -56,7 +56,6 @@ import android.util.Log;
 import android.util.Pair;
 
 import org.apache.http.HttpStatus;
-import org.jboss.aerogear.android.impl.authz.oauth2.AGOAuth2AuthzModule;
 import org.jboss.aerogear.android.impl.util.ClassUtils;
 
 public class RestRunner<T> implements PipeHandler<T> {

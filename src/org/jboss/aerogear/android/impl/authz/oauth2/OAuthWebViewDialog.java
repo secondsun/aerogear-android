@@ -32,12 +32,12 @@ import android.webkit.WebViewClient;
 import org.jboss.aerogear.R;
 import java.net.URL;
 
-public class AGOAuthWebViewDialog extends DialogFragment {
+public class OAuthWebViewDialog extends DialogFragment {
 
-    private static final String TAG = AGOAuthWebViewDialog.class.getSimpleName();
-    private static final String TITLE = "org.jboss.aerogear.android.authorize.AGOAuthWebViewDialog.TITLE";
-    private static final String AUTHORIZE_URL = "org.jboss.aerogear.android.authorize.AGOAuthWebViewDialog.AUTHORIZE_URL";
-    private static final String REDIRECT_URL = "org.jboss.aerogear.android.authorize.AGOAuthWebViewDialog.REDIRECT_URL";
+    private static final String TAG = OAuthWebViewDialog.class.getSimpleName();
+    private static final String TITLE = "org.jboss.aerogear.android.authorize.OAuthWebViewDialog.TITLE";
+    private static final String AUTHORIZE_URL = "org.jboss.aerogear.android.authorize.OAuthWebViewDialog.AUTHORIZE_URL";
+    private static final String REDIRECT_URL = "org.jboss.aerogear.android.authorize.OAuthWebViewDialog.REDIRECT_URL";
 
     private WebView webView;
     private String authorizeUrl;
@@ -99,8 +99,8 @@ public class AGOAuthWebViewDialog extends DialogFragment {
         }
     }
 
-    public static AGOAuthWebViewDialog newInstance(URL authorizeURL, String title, Uri redirectURL) {
-        AGOAuthWebViewDialog instance = new AGOAuthWebViewDialog();
+    public static OAuthWebViewDialog newInstance(URL authorizeURL, String title, Uri redirectURL) {
+        OAuthWebViewDialog instance = new OAuthWebViewDialog();
         instance.authorizeUrl = authorizeURL.toString();
         instance.redirectURL = redirectURL.toString();
         instance.title = title;

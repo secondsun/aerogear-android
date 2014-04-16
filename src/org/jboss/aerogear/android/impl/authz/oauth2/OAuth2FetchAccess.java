@@ -10,14 +10,14 @@ import android.os.Handler;
 import android.os.Looper;
 import org.jboss.aerogear.android.Callback;
 import org.jboss.aerogear.android.impl.authz.AuthzConfig;
-import org.jboss.aerogear.android.impl.authz.AGAuthzService;
+import org.jboss.aerogear.android.impl.authz.AuthzService;
 import org.jboss.aerogear.android.impl.authz.AuthorizationException;
 
 public class OAuth2FetchAccess {
 
-    private final AGAuthzService service;
+    private final AuthzService service;
 
-    public OAuth2FetchAccess(AGAuthzService service) {
+    public OAuth2FetchAccess(AuthzService service) {
         this.service = service;
     }
 
