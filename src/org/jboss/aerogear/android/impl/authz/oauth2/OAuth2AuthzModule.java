@@ -36,9 +36,9 @@ import org.jboss.aerogear.android.Callback;
 import org.jboss.aerogear.android.authentication.AuthorizationFields;
 import org.jboss.aerogear.android.impl.authz.AuthzConfig;
 import org.jboss.aerogear.android.authorization.AuthzModule;
-import org.jboss.aerogear.android.impl.authz.AGAuthzService;
+import org.jboss.aerogear.android.impl.authz.AuthzService;
 
-public class AGOAuth2AuthzModule implements AuthzModule {
+public class OAuth2AuthzModule implements AuthzModule {
 
     private static final IntentFilter AUTHZ_FILTER;
 
@@ -48,14 +48,14 @@ public class AGOAuth2AuthzModule implements AuthzModule {
     private final String clientId;
     private final AuthzConfig config;
     private OAUTH2AuthzSession account;
-    private AGAuthzService service;
+    private AuthzService service;
 
     static {
         AUTHZ_FILTER = new IntentFilter();
         AUTHZ_FILTER.addAction("org.jboss.aerogear.android.authz.RECEIVE_AUTHZ");
     }
 
-    public AGOAuth2AuthzModule(AuthzConfig config) {
+    public OAuth2AuthzModule(AuthzConfig config) {
         this.baseURL = config.getBaseURL();
         this.scopes = new ArrayList<String>(config.getScopes());
         this.clientId = config.getClientId();
@@ -77,7 +77,7 @@ public class AGOAuth2AuthzModule implements AuthzModule {
     @Override
     public void requestAccess(final String state, final Activity activity, final Callback<String> callback) {
 
-        final AGAuthzService.AGAuthzServiceConnection connection = new AGAuthzService.AGAuthzServiceConnection() {
+        final AuthzService.AGAuthzServiceConnection connection = new AuthzService.AGAuthzServiceConnection() {
 
             @Override
             public void onServiceConnected(ComponentName className, IBinder iBinder) {
@@ -88,7 +88,7 @@ public class AGOAuth2AuthzModule implements AuthzModule {
         };
 
         activity.bindService(
-                new Intent(activity.getApplicationContext(), AGAuthzService.class
+                new Intent(activity.getApplicationContext(), AuthzService.class
                 ), connection, Context.BIND_AUTO_CREATE
         );
 
@@ -103,7 +103,7 @@ public class AGOAuth2AuthzModule implements AuthzModule {
         return fields;
     }
 
-    private void doRequestAccess(final String state, final Activity activity, final Callback<String> callback, final AGAuthzService.AGAuthzServiceConnection instance) {
+    private void doRequestAccess(final String state, final Activity activity, final Callback<String> callback, final AuthzService.AGAuthzServiceConnection instance) {
 
         service = instance.getService();
 

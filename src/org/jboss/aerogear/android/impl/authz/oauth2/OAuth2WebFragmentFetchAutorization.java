@@ -70,8 +70,8 @@ public class OAuth2WebFragmentFetchAutorization {
 
         URL authURL = new URL(authzEndpoint.toString() + query);
 
-        final AGOAuthWebViewDialog dialog = AGOAuthWebViewDialog.newInstance(authURL, "Drive", redirectURL);
-        dialog.setReceiver(new AGOAuthWebViewDialog.OAuthReceiver() {
+        final OAuthWebViewDialog dialog = OAuthWebViewDialog.newInstance(authURL, "Drive", redirectURL);
+        dialog.setReceiver(new OAuthWebViewDialog.OAuthReceiver() {
             @Override
             public void receiveOAuthCode(String code) {
                 dialog.dismiss();

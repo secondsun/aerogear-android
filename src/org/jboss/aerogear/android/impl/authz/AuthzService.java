@@ -55,13 +55,13 @@ import org.jboss.aerogear.android.impl.http.HttpRestProvider;
 
 import static org.jboss.aerogear.android.impl.util.UrlUtils.appendToBaseURL;
 
-public class AGAuthzService extends Service {
+public class AuthzService extends Service {
 
     private final AuthzBinder binder = new AuthzBinder(this);
 
     private SQLStore<OAUTH2AuthzSession> sessionStore;
 
-    public AGAuthzService() {
+    public AuthzService() {
     }
 
     @Override
@@ -250,7 +250,7 @@ public class AGAuthzService extends Service {
 
         } catch (UnsupportedEncodingException ex) {
             //Should never happen...
-            Log.d(AGAuthzService.class.getName(), null, ex);
+            Log.d(AuthzService.class.getName(), null, ex);
             throw new RuntimeException(ex);
         }
     }
@@ -268,13 +268,13 @@ public class AGAuthzService extends Service {
 
     public static class AuthzBinder extends Binder {
 
-        private final AGAuthzService service;
+        private final AuthzService service;
 
-        private AuthzBinder(AGAuthzService service) {
+        private AuthzBinder(AuthzService service) {
             this.service = service;
         }
 
-        public AGAuthzService getService() {
+        public AuthzService getService() {
             return service;
         }
 
@@ -285,7 +285,7 @@ public class AGAuthzService extends Service {
      */
     public static class AGAuthzServiceConnection implements ServiceConnection {
 
-        private AGAuthzService service;
+        private AuthzService service;
         private boolean bound = false;
 
         @Override
@@ -302,7 +302,7 @@ public class AGAuthzService extends Service {
             bound = false;
         }
 
-        public AGAuthzService getService() {
+        public AuthzService getService() {
             return service;
         }
 
