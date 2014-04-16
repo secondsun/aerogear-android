@@ -18,6 +18,8 @@
 package org.jboss.aerogear.android.authorization;
 
 import android.util.Pair;
+import org.jboss.aerogear.android.impl.authz.AuthzTypes;
+
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -38,7 +40,7 @@ public class AuthzConfig {
     private Set<Pair<String, String>> additionalAccessParams = new HashSet<Pair<String, String>>();
     
     private Long timeout = 60000l;
-    private AuthzType type = AGAuthzType.OAUTH2;
+    private AuthzType type = AuthzTypes.OAUTH2;
     
     public AuthzConfig(URL baseURL, String name) {
         this.baseURL = baseURL;
