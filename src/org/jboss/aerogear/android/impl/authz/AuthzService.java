@@ -16,7 +16,7 @@
  */
 package org.jboss.aerogear.android.impl.authz;
 
-import org.jboss.aerogear.android.impl.authz.oauth2.OAUTH2AuthzSession;
+import org.jboss.aerogear.android.impl.authz.oauth2.OAuth2AuthzSession;
 import android.app.Service;
 import android.content.ComponentName;
 import android.content.Intent;
@@ -59,7 +59,7 @@ public class AuthzService extends Service {
 
     private final AuthzBinder binder = new AuthzBinder(this);
 
-    private SQLStore<OAUTH2AuthzSession> sessionStore;
+    private SQLStore<OAuth2AuthzSession> sessionStore;
 
     public AuthzService() {
     }
@@ -71,7 +71,7 @@ public class AuthzService extends Service {
     }
 
     public String fetchAccessToken(String accountId, AuthzConfig config) throws AuthorizationException {
-        OAUTH2AuthzSession storedAccount = sessionStore.read(accountId);
+        OAuth2AuthzSession storedAccount = sessionStore.read(accountId);
         if (storedAccount == null) {
             return null;
         }
@@ -92,7 +92,7 @@ public class AuthzService extends Service {
 
     }
 
-    public void addAccount(OAUTH2AuthzSession account) {
+    public void addAccount(OAuth2AuthzSession account) {
         String accountId = account.getAccountId();
 
         if (hasAccount(accountId)) {
@@ -103,7 +103,7 @@ public class AuthzService extends Service {
     }
 
     public boolean hasAccount(String accountId) {
-        OAUTH2AuthzSession storedAccount = sessionStore.read(accountId);
+        OAuth2AuthzSession storedAccount = sessionStore.read(accountId);
         if (storedAccount == null) {
             return false;
         }
@@ -111,15 +111,15 @@ public class AuthzService extends Service {
                !Strings.isNullOrEmpty(storedAccount.getAccessToken());
     }
 
-    public OAUTH2AuthzSession getAccount(String accountId) {
+    public OAuth2AuthzSession getAccount(String accountId) {
         return sessionStore.read(accountId);
     }
     
     public List<String> getAccounts() {
-        return new ArrayList<String>(Collections2.<OAUTH2AuthzSession, String>transform(sessionStore.readAll(), new Function<OAUTH2AuthzSession, String>() {
+        return new ArrayList<String>(Collections2.<OAuth2AuthzSession, String>transform(sessionStore.readAll(), new Function<OAuth2AuthzSession, String>() {
 
             @Override
-            public String apply(OAUTH2AuthzSession input) {
+            public String apply(OAuth2AuthzSession input) {
                 return input.getAccountId();
             }
         }));
@@ -144,7 +144,7 @@ public class AuthzService extends Service {
 
     private void openSessionStore() {
         
-            sessionStore = new SQLStore<OAUTH2AuthzSession>(OAUTH2AuthzSession.class,
+            sessionStore = new SQLStore<OAuth2AuthzSession>(OAuth2AuthzSession.class,
                     getApplicationContext(),
                     new GsonBuilder(),
                     new IdGenerator() {
@@ -161,7 +161,7 @@ public class AuthzService extends Service {
         
     }
 
-    private void exchangeAuthorizationCodeForAccessToken(OAUTH2AuthzSession storedAccount, AuthzConfig config) throws AuthorizationException {
+    private void exchangeAuthorizationCodeForAccessToken(OAuth2AuthzSession storedAccount, AuthzConfig config) throws AuthorizationException {
         final Map<String, String> data = new HashMap<String, String>();
 
         data.put("code", storedAccount.getAuthorizationCode());
@@ -177,7 +177,7 @@ public class AuthzService extends Service {
 
     }
 
-    private void refreshAccount(OAUTH2AuthzSession storedAccount, AuthzConfig config) throws AuthorizationException {
+    private void refreshAccount(OAuth2AuthzSession storedAccount, AuthzConfig config) throws AuthorizationException {
         final Map<String, String> data = new HashMap<String, String>();
 
         data.put("refresh_token", storedAccount.getRefreshToken());
@@ -189,7 +189,7 @@ public class AuthzService extends Service {
         runAccountAction(storedAccount, config, data);
     }
 
-    private void runAccountAction(OAUTH2AuthzSession storedAccount, AuthzConfig config, final Map<String, String> data) throws AuthorizationException {
+    private void runAccountAction(OAuth2AuthzSession storedAccount, AuthzConfig config, final Map<String, String> data) throws AuthorizationException {
         try {
             final URL accessTokenEndpoint = appendToBaseURL(config.getBaseURL(), config.getAccessTokenEndpoint());
 

@@ -47,7 +47,7 @@ public class OAuth2AuthzModule implements AuthzModule {
     private final List<String> scopes;
     private final String clientId;
     private final AuthzConfig config;
-    private OAUTH2AuthzSession account;
+    private OAuth2AuthzSession account;
     private AuthzService service;
 
     static {
@@ -179,7 +179,7 @@ public class OAuth2AuthzModule implements AuthzModule {
 
         @Override
         public void onSuccess(final String code) {
-            OAUTH2AuthzSession session = new OAUTH2AuthzSession();
+            OAuth2AuthzSession session = new OAuth2AuthzSession();
             session.setAuthorizationCode(code);
             session.setAccountId(accountId);
             session.setCliendId(clientId);

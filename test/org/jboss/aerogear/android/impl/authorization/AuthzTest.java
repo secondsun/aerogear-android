@@ -31,7 +31,7 @@ import org.jboss.aerogear.android.Callback;
 import org.jboss.aerogear.android.impl.authz.AuthzConfig;
 import org.jboss.aerogear.android.impl.authz.AuthzService;
 import org.jboss.aerogear.android.impl.authz.oauth2.OAuth2AuthzModule;
-import org.jboss.aerogear.android.impl.authz.oauth2.OAUTH2AuthzSession;
+import org.jboss.aerogear.android.impl.authz.oauth2.OAuth2AuthzSession;
 import org.junit.Assert;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -47,7 +47,7 @@ import static org.mockito.Mockito.verify;
 public class AuthzTest {
 
     public void testParcleOAUTH2AuthzSession() {
-        OAUTH2AuthzSession session = new OAUTH2AuthzSession();
+        OAuth2AuthzSession session = new OAuth2AuthzSession();
         session.setAccessToken("accessToken");
         session.setAccountId("accountId");
         session.setAuthorizationCode("authzCode");
@@ -57,7 +57,7 @@ public class AuthzTest {
         Parcel dest = Parcel.obtain();
         session.writeToParcel(dest, 0);
         
-        assertEquals(session, OAUTH2AuthzSession.CREATOR.createFromParcel(dest));
+        assertEquals(session, OAuth2AuthzSession.CREATOR.createFromParcel(dest));
         
     }
     
@@ -70,7 +70,7 @@ public class AuthzTest {
         
         ((AuthzService.AuthzBinder)service.onBind(null)).getService();
         
-        OAUTH2AuthzSession session = new OAUTH2AuthzSession();
+        OAuth2AuthzSession session = new OAuth2AuthzSession();
         session.setAccessToken("accessToken");
         session.setAccountId("accountId");
         session.setAuthorizationCode("authCode");

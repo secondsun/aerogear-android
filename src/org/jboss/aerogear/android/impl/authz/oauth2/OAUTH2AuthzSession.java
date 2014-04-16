@@ -22,7 +22,7 @@ import java.util.Date;
 import java.util.Objects;
 import org.jboss.aerogear.android.RecordId;
 
-public class OAUTH2AuthzSession implements Parcelable {
+public class OAuth2AuthzSession implements Parcelable {
 
     @RecordId
     private String accountId = "";
@@ -33,7 +33,7 @@ public class OAUTH2AuthzSession implements Parcelable {
     private String refreshToken = "";
     private long expires_on = 0;
     
-    private OAUTH2AuthzSession(Parcel in) {
+    private OAuth2AuthzSession(Parcel in) {
         cliendId = in.readString();
         accessToken = in.readString();
         authorizationCode = in.readString();
@@ -42,7 +42,7 @@ public class OAUTH2AuthzSession implements Parcelable {
         expires_on = in.readLong();
     }
     
-    public OAUTH2AuthzSession() {
+    public OAuth2AuthzSession() {
     }
 
     public String getCliendId() {
@@ -113,7 +113,7 @@ public class OAUTH2AuthzSession implements Parcelable {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final OAUTH2AuthzSession other = (OAUTH2AuthzSession) obj;
+        final OAuth2AuthzSession other = (OAuth2AuthzSession) obj;
         if (!Objects.equals(this.cliendId, other.cliendId)) {
             return false;
         }
@@ -157,16 +157,16 @@ public class OAUTH2AuthzSession implements Parcelable {
         dest.writeLong(expires_on);
     }
 
-    public static final Parcelable.Creator<OAUTH2AuthzSession> CREATOR
-            = new Parcelable.Creator<OAUTH2AuthzSession>() {
+    public static final Parcelable.Creator<OAuth2AuthzSession> CREATOR
+            = new Parcelable.Creator<OAuth2AuthzSession>() {
                 @Override
-                public OAUTH2AuthzSession createFromParcel(Parcel in) {
-                    return new OAUTH2AuthzSession(in);
+                public OAuth2AuthzSession createFromParcel(Parcel in) {
+                    return new OAuth2AuthzSession(in);
                 }
 
                 @Override
-                public OAUTH2AuthzSession[] newArray(int size) {
-                    return new OAUTH2AuthzSession[size];
+                public OAuth2AuthzSession[] newArray(int size) {
+                    return new OAuth2AuthzSession[size];
                 }
                 
             };
