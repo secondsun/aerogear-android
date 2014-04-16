@@ -14,15 +14,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.aerogear.android.authorization;
+package org.jboss.aerogear.android.impl.authz;
 
-public enum AGAuthzType implements AuthzType {
+import org.jboss.aerogear.android.authorization.AuthzType;
+
+public enum AuthzTypes implements AuthzType {
     
     OAUTH2("OAuth2");
 
     private final String typeDescription;
 
-    AGAuthzType(String typeDescription) {
+    AuthzTypes(String typeDescription) {
         this.typeDescription = typeDescription;
     }
 
