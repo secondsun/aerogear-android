@@ -42,9 +42,7 @@ public class OAuth2AuthzModule implements AuthzModule {
 
     private static final IntentFilter AUTHZ_FILTER;
 
-    private final URL baseURL;
     private final String accountId;
-    private final List<String> scopes;
     private final String clientId;
     private final AuthzConfig config;
     private OAuth2AuthzSession account;
@@ -56,8 +54,6 @@ public class OAuth2AuthzModule implements AuthzModule {
     }
 
     public OAuth2AuthzModule(AuthzConfig config) {
-        this.baseURL = config.getBaseURL();
-        this.scopes = new ArrayList<String>(config.getScopes());
         this.clientId = config.getClientId();
         this.accountId = config.getAccountId();
         this.config = config;
