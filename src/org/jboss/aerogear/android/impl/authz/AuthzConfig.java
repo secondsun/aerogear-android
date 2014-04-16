@@ -15,9 +15,10 @@
  * limitations under the License.
  */
 
-package org.jboss.aerogear.android.authorization;
+package org.jboss.aerogear.android.impl.authz;
 
 import android.util.Pair;
+import org.jboss.aerogear.android.authorization.AuthzType;
 import org.jboss.aerogear.android.impl.authz.AuthzTypes;
 
 import java.net.URL;

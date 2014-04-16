@@ -28,7 +28,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 import org.jboss.aerogear.android.Callback;
-import org.jboss.aerogear.android.authorization.AuthzConfig;
+import org.jboss.aerogear.android.impl.authz.AuthzConfig;
 import org.jboss.aerogear.android.impl.authz.AGAuthzService;
 import org.jboss.aerogear.android.impl.authz.oauth2.AGOAuth2AuthzModule;
 import org.jboss.aerogear.android.impl.authz.oauth2.OAUTH2AuthzSession;
