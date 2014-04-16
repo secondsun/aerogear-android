@@ -70,7 +70,7 @@ public class OAuth2WebFragmentFetchAutorization {
 
         URL authURL = new URL(authzEndpoint.toString() + query);
 
-        final OAuthWebViewDialog dialog = OAuthWebViewDialog.newInstance(authURL, "Drive", redirectURL);
+        final OAuthWebViewDialog dialog = OAuthWebViewDialog.newInstance(authURL, redirectURL);
         dialog.setReceiver(new OAuthWebViewDialog.OAuthReceiver() {
             @Override
             public void receiveOAuthCode(String code) {
@@ -84,7 +84,8 @@ public class OAuth2WebFragmentFetchAutorization {
                 callback.onFailure(new AuthorizationException(error));
             }
         });
-
+        
+        dialog.setStyle(android.R.style.Theme_Light_NoTitleBar, 0);
         dialog.show(activity.getFragmentManager(), "TAG");
     }
 

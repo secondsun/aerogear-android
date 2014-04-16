@@ -244,9 +244,13 @@ public class AuthzService extends Service {
             }
 
             if (jsonResponseObject.has("refresh_token")) {
-                String refreshToke = jsonResponseObject.get("refresh_token").getAsString();
-                storedAccount.setRefreshToken(refreshToke);
+                String refreshToken = jsonResponseObject.get("refresh_token").getAsString();
+                if (!Strings.isNullOrEmpty(refreshToken)) {
+                    storedAccount.setRefreshToken(refreshToken);
+                }
             }
+
+            storedAccount.setAuthorizationCode("");
 
         } catch (UnsupportedEncodingException ex) {
             //Should never happen...

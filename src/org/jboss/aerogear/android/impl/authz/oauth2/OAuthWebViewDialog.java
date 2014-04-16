@@ -16,6 +16,7 @@
  */
 package org.jboss.aerogear.android.impl.authz.oauth2;
 
+import android.app.Dialog;
 import android.app.DialogFragment;
 import android.net.Uri;
 import android.os.Bundle;
@@ -25,9 +26,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.ProgressBar;
 
 import org.jboss.aerogear.R;
 import java.net.URL;
@@ -40,9 +43,18 @@ public class OAuthWebViewDialog extends DialogFragment {
     private static final String REDIRECT_URL = "org.jboss.aerogear.android.authorize.OAuthWebViewDialog.REDIRECT_URL";
 
     private WebView webView;
+    private ProgressBar progressBar;
     private String authorizeUrl;
-    private String title;
-    private OAuthViewClient client = new OAuthViewClient();
+    private OAuthViewClient client = new OAuthViewClient() {
+
+        @Override
+        public void onPageFinished(WebView view, String url) {
+            super.onPageFinished(view, url);
+
+            progressBar.setVisibility(View.GONE);
+        }
+
+    };
     private String redirectURL;
 
     private static class OAuthViewClient extends WebViewClient {
@@ -99,13 +111,12 @@ public class OAuthWebViewDialog extends DialogFragment {
         }
     }
 
-    public static OAuthWebViewDialog newInstance(URL authorizeURL, String title, Uri redirectURL) {
+    public static OAuthWebViewDialog newInstance(URL authorizeURL, Uri redirectURL) {
         OAuthWebViewDialog instance = new OAuthWebViewDialog();
         instance.authorizeUrl = authorizeURL.toString();
         instance.redirectURL = redirectURL.toString();
-        instance.title = title;
+
         Bundle args = new Bundle();
-        args.putString(TITLE, title);
         args.putString(AUTHORIZE_URL, instance.authorizeUrl);
         args.putString(REDIRECT_URL, instance.redirectURL);
         instance.setArguments(args);
@@ -117,7 +128,7 @@ public class OAuthWebViewDialog extends DialogFragment {
         super.onViewCreated(arg0, arg1);
 
         client.redirectURL = redirectURL;
-        
+
         webView.loadUrl(authorizeUrl);
         webView.setWebViewClient(client);
 
@@ -130,18 +141,19 @@ public class OAuthWebViewDialog extends DialogFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.title = getArguments().getString(TITLE);
         this.authorizeUrl = getArguments().getString(AUTHORIZE_URL);
         this.redirectURL = getArguments().getString(REDIRECT_URL);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        //Retrieve the webview
         View v = inflater.inflate(R.layout.oauth_web_view, container, false);
+        
+        progressBar = (ProgressBar) v.findViewById(R.id.progress_bar);
+        
         webView = (WebView) v.findViewById(R.id.web_oauth);
         webView.setScrollContainer(true);
-        getDialog().setTitle(title);
+        getDialog().getWindow().setTitle("OAuth 2 Dialog");
         return v;
     }
 
