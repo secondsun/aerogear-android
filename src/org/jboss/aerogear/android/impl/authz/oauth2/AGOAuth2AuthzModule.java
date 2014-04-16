@@ -34,7 +34,7 @@ import java.util.List;
 
 import org.jboss.aerogear.android.Callback;
 import org.jboss.aerogear.android.authentication.AuthorizationFields;
-import org.jboss.aerogear.android.authorization.AuthzConfig;
+import org.jboss.aerogear.android.impl.authz.AuthzConfig;
 import org.jboss.aerogear.android.authorization.AuthzModule;
 import org.jboss.aerogear.android.impl.authz.AGAuthzService;
 

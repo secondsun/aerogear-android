@@ -10,7 +10,7 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import org.jboss.aerogear.android.Callback;
-import org.jboss.aerogear.android.authorization.AuthzConfig;
+import org.jboss.aerogear.android.impl.authz.AuthzConfig;
 import org.jboss.aerogear.android.impl.authz.AuthorizationException;
 import static org.jboss.aerogear.android.impl.util.UrlUtils.appendToBaseURL;
 

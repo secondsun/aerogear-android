@@ -45,7 +45,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import org.jboss.aerogear.android.authorization.AuthzConfig;
+
 import org.jboss.aerogear.android.datamanager.IdGenerator;
 import org.jboss.aerogear.android.http.HeaderAndBody;
 import org.jboss.aerogear.android.http.HttpException;

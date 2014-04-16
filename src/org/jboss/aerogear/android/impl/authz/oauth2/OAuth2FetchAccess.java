@@ -9,7 +9,7 @@ import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Looper;
 import org.jboss.aerogear.android.Callback;
-import org.jboss.aerogear.android.authorization.AuthzConfig;
+import org.jboss.aerogear.android.impl.authz.AuthzConfig;
 import org.jboss.aerogear.android.impl.authz.AGAuthzService;
 import org.jboss.aerogear.android.impl.authz.AuthorizationException;
 

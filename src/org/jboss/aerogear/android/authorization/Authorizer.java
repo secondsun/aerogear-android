@@ -16,6 +16,8 @@
  */
 package org.jboss.aerogear.android.authorization;
 
+import org.jboss.aerogear.android.impl.authz.AuthzConfig;
+
 public class Authorizer {
    
     public AuthzModule authz(AuthzConfig config) {

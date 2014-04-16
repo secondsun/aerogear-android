@@ -18,7 +18,6 @@ package org.jboss.aerogear.android.impl.authorization;
 
 import android.app.Activity;
 import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Parcel;
@@ -29,7 +28,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 import org.jboss.aerogear.android.Callback;
-import org.jboss.aerogear.android.authorization.AuthzConfig;
+import org.jboss.aerogear.android.impl.authz.AuthzConfig;
 import org.jboss.aerogear.android.impl.authz.AGAuthzService;
 import org.jboss.aerogear.android.impl.authz.oauth2.AGOAuth2AuthzModule;
 import org.jboss.aerogear.android.impl.authz.oauth2.OAUTH2AuthzSession;
