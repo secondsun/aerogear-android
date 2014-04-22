@@ -28,9 +28,6 @@ import android.os.Looper;
 import com.google.common.base.Strings;
 
 import java.net.URI;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.jboss.aerogear.android.Callback;
 import org.jboss.aerogear.android.authentication.AuthorizationFields;
