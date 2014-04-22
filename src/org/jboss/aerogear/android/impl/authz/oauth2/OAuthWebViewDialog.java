@@ -16,7 +16,6 @@
  */
 package org.jboss.aerogear.android.impl.authz.oauth2;
 
-import android.app.Dialog;
 import android.app.DialogFragment;
 import android.net.Uri;
 import android.os.Bundle;
@@ -26,7 +25,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -35,6 +33,11 @@ import android.widget.ProgressBar;
 import org.jboss.aerogear.R;
 import java.net.URL;
 
+/**
+ * This is a WebView Dialog which is opened to a OAuth2 sign in page and sends
+ * data back to the calling activity.
+ * 
+ */
 public class OAuthWebViewDialog extends DialogFragment {
 
     private static final String TAG = OAuthWebViewDialog.class.getSimpleName();
@@ -148,9 +151,9 @@ public class OAuthWebViewDialog extends DialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.oauth_web_view, container, false);
-        
+
         progressBar = (ProgressBar) v.findViewById(R.id.progress_bar);
-        
+
         webView = (WebView) v.findViewById(R.id.web_oauth);
         webView.setScrollContainer(true);
         getDialog().getWindow().setTitle("OAuth 2 Dialog");

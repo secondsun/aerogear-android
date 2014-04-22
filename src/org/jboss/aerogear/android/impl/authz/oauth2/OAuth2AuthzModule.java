@@ -35,6 +35,14 @@ import org.jboss.aerogear.android.impl.authz.AuthzConfig;
 import org.jboss.aerogear.android.authorization.AuthzModule;
 import org.jboss.aerogear.android.impl.authz.AuthzService;
 
+/**
+ *
+ * An Authorization module which works with the OAuth2 protocol.
+ *
+ * Authorization is performed in a WebView and returned to the calling activity.
+ *
+ * @author summers
+ */
 public class OAuth2AuthzModule implements AuthzModule {
 
     private static final IntentFilter AUTHZ_FILTER;
@@ -177,7 +185,7 @@ public class OAuth2AuthzModule implements AuthzModule {
             session.setAccountId(accountId);
             session.setCliendId(clientId);
             service.addAccount(session);
-            
+
             OAuth2FetchAccess fetcher = new OAuth2FetchAccess(service);
             fetcher.fetchAccessCode(accountId, config, new OAuth2AccessCallback(callingActivity, originalCallback, serviceConnection));
         }

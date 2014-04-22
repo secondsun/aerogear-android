@@ -16,6 +16,9 @@
  */
 package org.jboss.aerogear.android.impl.authz;
 
+/**
+ * A wrapper for various exceptions which are defined in the OAuth2 spec.
+ */
 public class OAuth2AuthorizationException extends Exception {
 
     public enum Error {INVALID_REQUEST, INVALID_CLIENT, INVALID_GRANT, UNAUTHORIZED_CLIENT, UNSUPPORTED_GRANT_TYPE, INVALID_SCOPE, OTHER;
@@ -40,10 +43,18 @@ public class OAuth2AuthorizationException extends Exception {
         type = Error.getErrorEnum(error);
     }
 
+    /**
+     * 
+     * @return a string representaiton of the error returned.
+     */
     public String getError() {
         return error;
     }
 
+    /**
+     * 
+     * @return an enumerated type of error.
+     */
     public Error getType() {
         return type;
     }
