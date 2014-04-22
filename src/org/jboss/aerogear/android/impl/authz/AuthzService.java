@@ -70,7 +70,7 @@ public class AuthzService extends Service {
 
     }
 
-    public String fetchAccessToken(String accountId, AuthzConfig config) throws AuthorizationException {
+    public String fetchAccessToken(String accountId, AuthzConfig config) throws OAuth2AuthorizationException {
         OAuth2AuthzSession storedAccount = sessionStore.read(accountId);
         if (storedAccount == null) {
             return null;
@@ -161,7 +161,7 @@ public class AuthzService extends Service {
         
     }
 
-    private void exchangeAuthorizationCodeForAccessToken(OAuth2AuthzSession storedAccount, AuthzConfig config) throws AuthorizationException {
+    private void exchangeAuthorizationCodeForAccessToken(OAuth2AuthzSession storedAccount, AuthzConfig config) throws OAuth2AuthorizationException {
         final Map<String, String> data = new HashMap<String, String>();
 
         data.put("code", storedAccount.getAuthorizationCode());
@@ -177,7 +177,7 @@ public class AuthzService extends Service {
 
     }
 
-    private void refreshAccount(OAuth2AuthzSession storedAccount, AuthzConfig config) throws AuthorizationException {
+    private void refreshAccount(OAuth2AuthzSession storedAccount, AuthzConfig config) throws OAuth2AuthorizationException {
         final Map<String, String> data = new HashMap<String, String>();
 
         data.put("refresh_token", storedAccount.getRefreshToken());
@@ -189,7 +189,7 @@ public class AuthzService extends Service {
         runAccountAction(storedAccount, config, data);
     }
 
-    private void runAccountAction(OAuth2AuthzSession storedAccount, AuthzConfig config, final Map<String, String> data) throws AuthorizationException {
+    private void runAccountAction(OAuth2AuthzSession storedAccount, AuthzConfig config, final Map<String, String> data) throws OAuth2AuthorizationException {
         try {
             final URL accessTokenEndpoint = appendToBaseURL(config.getBaseURL(), config.getAccessTokenEndpoint());
 
@@ -224,7 +224,7 @@ public class AuthzService extends Service {
                         error = jsonResponseObject.get("error").getAsString();
                     }
 
-                    throw new AuthorizationException(error);
+                    throw new OAuth2AuthorizationException(error);
                 } else {
                     throw exception;
                 }
