@@ -14,7 +14,14 @@ import org.jboss.aerogear.android.impl.authz.AuthzConfig;
 import org.jboss.aerogear.android.impl.authz.OAuth2AuthorizationException;
 import static org.jboss.aerogear.android.impl.util.UrlUtils.appendToBaseURL;
 
+/**
+ * This class displays a WebView Dialog Fragment to facilitates exchanging
+ * credentials for authz tokens.
+ *
+ * @author summers
+ */
 public class OAuth2WebFragmentFetchAutorization {
+
     private final Activity activity;
     private final String state;
 
@@ -22,7 +29,7 @@ public class OAuth2WebFragmentFetchAutorization {
         this.activity = activity;
         this.state = state;
     }
-    
+
     public void performAuthorization(AuthzConfig config, final Callback<String> callback) {
 
         try {
@@ -32,9 +39,9 @@ public class OAuth2WebFragmentFetchAutorization {
         } catch (MalformedURLException ex) {
             callback.onFailure(ex);
         }
-        
+
     }
-    
+
     private String formatScopes(ArrayList<String> scopes) throws UnsupportedEncodingException {
 
         StringBuilder scopeValue = new StringBuilder();
@@ -49,7 +56,7 @@ public class OAuth2WebFragmentFetchAutorization {
     }
 
     private void doAuthorization(AuthzConfig config, final Callback<String> callback) throws UnsupportedEncodingException, MalformedURLException {
-        
+
         URL baseURL = config.getBaseURL();
         URL authzEndpoint = appendToBaseURL(baseURL, config.getAuthzEndpoint());
         Uri redirectURL = Uri.parse(config.getRedirectURL());
@@ -84,7 +91,7 @@ public class OAuth2WebFragmentFetchAutorization {
                 callback.onFailure(new OAuth2AuthorizationException(error));
             }
         });
-        
+
         dialog.setStyle(android.R.style.Theme_Light_NoTitleBar, 0);
         dialog.show(activity.getFragmentManager(), "TAG");
     }

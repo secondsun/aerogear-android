@@ -1,18 +1,18 @@
 /**
- * JBoss, Home of Professional Open Source
- * Copyright Red Hat, Inc., and individual contributors.
+ * JBoss, Home of Professional Open Source Copyright Red Hat, Inc., and
+ * individual contributors.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
  *
- * 	http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
 package org.jboss.aerogear.android.impl.authz;
 
@@ -55,6 +55,12 @@ import org.jboss.aerogear.android.impl.http.HttpRestProvider;
 
 import static org.jboss.aerogear.android.impl.util.UrlUtils.appendToBaseURL;
 
+/**
+ * This service manages tokens for Authorization sessions. It can also perform
+ * basic OAuth2 Access Token/ Authorization exchange and manages refresh tokens.
+ *
+ * @author summers
+ */
 public class AuthzService extends Service {
 
     private final AuthzBinder binder = new AuthzBinder(this);
@@ -70,6 +76,16 @@ public class AuthzService extends Service {
 
     }
 
+    /**
+     *
+     * This will exchange an Authorization token for an Access Token
+     *
+     * @param accountId the ID for the {@link OAuth2AuthzSession}
+     * @param config the config
+     * @return an accesstoken
+     * @throws OAuth2AuthorizationException if something went wrong in the
+     * exchange
+     */
     public String fetchAccessToken(String accountId, AuthzConfig config) throws OAuth2AuthorizationException {
         OAuth2AuthzSession storedAccount = sessionStore.read(accountId);
         if (storedAccount == null) {
@@ -92,6 +108,11 @@ public class AuthzService extends Service {
 
     }
 
+    /**
+     * Put a session into the store.
+     *
+     * @param account a new session
+     */
     public void addAccount(OAuth2AuthzSession account) {
         String accountId = account.getAccountId();
 
@@ -102,19 +123,37 @@ public class AuthzService extends Service {
         sessionStore.save(account);
     }
 
+    /**
+     * Will check if there is an account which has previously been granted an
+     * authorization code and access code
+     *
+     * @param accountId
+     * @return true if there is a session for the account.
+     */
     public boolean hasAccount(String accountId) {
         OAuth2AuthzSession storedAccount = sessionStore.read(accountId);
         if (storedAccount == null) {
             return false;
         }
-        return !Strings.isNullOrEmpty(storedAccount.getAuthorizationCode()) ||
-               !Strings.isNullOrEmpty(storedAccount.getAccessToken());
+        return !Strings.isNullOrEmpty(storedAccount.getAuthorizationCode())
+                || !Strings.isNullOrEmpty(storedAccount.getAccessToken());
     }
 
+    /**
+     * Returns the OAuth2AuthzSession for accountId if any
+     * 
+     * @param accountId the accountId to look up
+     * @return an OAuth2AuthzSession or null
+     */
     public OAuth2AuthzSession getAccount(String accountId) {
         return sessionStore.read(accountId);
     }
-    
+
+    /**
+     * Fetches all OAuth2AuthzSessions in the system.
+     * 
+     * @return all OAuth2AuthzSession's in the system
+     */
     public List<String> getAccounts() {
         return new ArrayList<String>(Collections2.<OAuth2AuthzSession, String>transform(sessionStore.readAll(), new Function<OAuth2AuthzSession, String>() {
 
@@ -143,22 +182,21 @@ public class AuthzService extends Service {
     }
 
     private void openSessionStore() {
-        
-            sessionStore = new SQLStore<OAuth2AuthzSession>(OAuth2AuthzSession.class,
-                    getApplicationContext(),
-                    new GsonBuilder(),
-                    new IdGenerator() {
 
-                        @Override
-                        public Serializable generate() {
-                            return UUID.randomUUID().toString();
-                        }
-                    }, "AuthzSessionStore"
-            );
+        sessionStore = new SQLStore<OAuth2AuthzSession>(OAuth2AuthzSession.class,
+                getApplicationContext(),
+                new GsonBuilder(),
+                new IdGenerator() {
 
-            sessionStore.openSync();
+                    @Override
+                    public Serializable generate() {
+                        return UUID.randomUUID().toString();
+                    }
+                }, "AuthzSessionStore"
+        );
 
-        
+        sessionStore.openSync();
+
     }
 
     private void exchangeAuthorizationCodeForAccessToken(OAuth2AuthzSession storedAccount, AuthzConfig config) throws OAuth2AuthorizationException {
@@ -182,7 +220,7 @@ public class AuthzService extends Service {
 
         data.put("refresh_token", storedAccount.getRefreshToken());
         data.put("grant_type", "refresh_token");
-        data.put("client_id", storedAccount.getCliendId());        
+        data.put("client_id", storedAccount.getCliendId());
         if (config.getClientSecret() != null) {
             data.put("client_secret", config.getClientSecret());
         }

@@ -18,6 +18,9 @@ package org.jboss.aerogear.android.authorization;
 
 import org.jboss.aerogear.android.TypeDescriptor;
 
+/**
+ * This is a marker interface for Types of Authorization.
+ */
 public interface AuthzType extends TypeDescriptor {
 
 }

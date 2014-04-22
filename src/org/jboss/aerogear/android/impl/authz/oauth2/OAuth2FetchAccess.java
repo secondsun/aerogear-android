@@ -13,6 +13,12 @@ import org.jboss.aerogear.android.impl.authz.AuthzConfig;
 import org.jboss.aerogear.android.impl.authz.AuthzService;
 import org.jboss.aerogear.android.impl.authz.OAuth2AuthorizationException;
 
+/**
+ * This is a helper class which fetches an access token given an authorization
+ * token.
+ *
+ * @author summers
+ */
 public class OAuth2FetchAccess {
 
     private final AuthzService service;
