@@ -11,7 +11,7 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import org.jboss.aerogear.android.Callback;
 import org.jboss.aerogear.android.impl.authz.AuthzConfig;
-import org.jboss.aerogear.android.impl.authz.AuthorizationException;
+import org.jboss.aerogear.android.impl.authz.OAuth2AuthorizationException;
 import static org.jboss.aerogear.android.impl.util.UrlUtils.appendToBaseURL;
 
 public class OAuth2WebFragmentFetchAutorization {
@@ -81,7 +81,7 @@ public class OAuth2WebFragmentFetchAutorization {
             @Override
             public void receiveOAuthError(final String error) {
                 dialog.dismiss();
-                callback.onFailure(new AuthorizationException(error));
+                callback.onFailure(new OAuth2AuthorizationException(error));
             }
         });
         

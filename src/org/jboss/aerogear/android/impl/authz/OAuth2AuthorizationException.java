@@ -16,7 +16,7 @@
  */
 package org.jboss.aerogear.android.impl.authz;
 
-public class AuthorizationException extends Exception {
+public class OAuth2AuthorizationException extends Exception {
 
     public enum Error {INVALID_REQUEST, INVALID_CLIENT, INVALID_GRANT, UNAUTHORIZED_CLIENT, UNSUPPORTED_GRANT_TYPE, INVALID_SCOPE, OTHER;
         
@@ -34,7 +34,7 @@ public class AuthorizationException extends Exception {
     public final String error;
     public final Error type;
     
-    public AuthorizationException(String error) {
+    public OAuth2AuthorizationException(String error) {
         super(error);
         this.error = error;
         type = Error.getErrorEnum(error);

@@ -11,7 +11,7 @@ import android.os.Looper;
 import org.jboss.aerogear.android.Callback;
 import org.jboss.aerogear.android.impl.authz.AuthzConfig;
 import org.jboss.aerogear.android.impl.authz.AuthzService;
-import org.jboss.aerogear.android.impl.authz.AuthorizationException;
+import org.jboss.aerogear.android.impl.authz.OAuth2AuthorizationException;
 
 public class OAuth2FetchAccess {
 
@@ -30,7 +30,7 @@ public class OAuth2FetchAccess {
                 protected Object doInBackground(Object... params) {
                     try {
                         return service.fetchAccessToken((String) params[0], (AuthzConfig) params[1]);
-                    } catch (AuthorizationException ex) {
+                    } catch (OAuth2AuthorizationException ex) {
                         return ex;
                     }
                 }
@@ -56,7 +56,7 @@ public class OAuth2FetchAccess {
                         String code = service.fetchAccessToken(accountId, config);
                         callback.onSuccess((String) code);
 
-                    } catch (AuthorizationException ex) {
+                    } catch (OAuth2AuthorizationException ex) {
                         callback.onFailure(ex);
                     }
                 }
