@@ -67,7 +67,7 @@ public class RestRunnerTest {
         AuthenticationModule mockModule = createMockModule();
         runner.setAuthenticationModule(mockModule);
         HttpProviderFactory mockFactory = mock(HttpProviderFactory.class);
-        
+
         HttpProvider mockProvider = createMockProvider(403);
         when(mockFactory.get(any(), any())).thenReturn(mockProvider);
         try {

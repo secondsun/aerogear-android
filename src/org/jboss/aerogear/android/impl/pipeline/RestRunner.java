@@ -151,7 +151,7 @@ public class RestRunner<T> implements PipeHandler<T> {
         if (config.getAuthModule() != null) {
             this.authModule = config.getAuthModule();
         }
-        
+
         if (config.getAuthzModule() != null) {
             this.authzModule = config.getAuthzModule();
         }
@@ -268,9 +268,9 @@ public class RestRunner<T> implements PipeHandler<T> {
     private AuthorizationFields loadAuth(URI relativeURI, String httpMethod) {
 
         if (authModule != null && authModule.isLoggedIn()) {
-            return authModule.getAuthorizationFields(relativeURI, httpMethod, new byte[]{});
+            return authModule.getAuthorizationFields(relativeURI, httpMethod, new byte[] {});
         } else if (authzModule != null && authzModule.isAuthorized()) {
-            return authzModule.getAuthorizationFields(relativeURI, httpMethod, new byte[]{});
+            return authzModule.getAuthorizationFields(relativeURI, httpMethod, new byte[] {});
         }
 
         return new AuthorizationFields();
@@ -415,10 +415,10 @@ public class RestRunner<T> implements PipeHandler<T> {
         return runHttpGet(httpProvider);
 
     }
-    
+
     private HeaderAndBody runHttpGet(HttpProvider httpProvider) {
         HeaderAndBody httpResponse;
-        
+
         try {
             httpResponse = httpProvider.get();
         } catch (HttpException exception) {

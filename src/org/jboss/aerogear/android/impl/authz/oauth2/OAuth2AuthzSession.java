@@ -1,18 +1,18 @@
 /**
- * JBoss, Home of Professional Open Source Copyright Red Hat, Inc., and
- * individual contributors.
+ * JBoss, Home of Professional Open Source
+ * Copyright Red Hat, Inc., and individual contributors.
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not
- * use this file except in compliance with the License. You may obtain a copy of
- * the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * 	http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations under
- * the License.
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.jboss.aerogear.android.impl.authz.oauth2;
 
@@ -154,7 +154,8 @@ public class OAuth2AuthzSession implements Parcelable {
 
     @Override
     public String toString() {
-        return "AuthzSession{" + "cliendId=" + cliendId + ", accessToken=" + accessToken + ", authorizationCode=" + authorizationCode + ", refreshToken=" + refreshToken + ", accountId=" + accountId + ", expires_on=" + expires_on + '}';
+        return "AuthzSession{" + "cliendId=" + cliendId + ", accessToken=" + accessToken + ", authorizationCode=" + authorizationCode + ", refreshToken=" + refreshToken
+                + ", accountId=" + accountId + ", expires_on=" + expires_on + '}';
     }
 
     @Override
@@ -172,19 +173,18 @@ public class OAuth2AuthzSession implements Parcelable {
         dest.writeLong(expires_on);
     }
 
-    public static final Parcelable.Creator<OAuth2AuthzSession> CREATOR
-            = new Parcelable.Creator<OAuth2AuthzSession>() {
-                @Override
-                public OAuth2AuthzSession createFromParcel(Parcel in) {
-                    return new OAuth2AuthzSession(in);
-                }
+    public static final Parcelable.Creator<OAuth2AuthzSession> CREATOR = new Parcelable.Creator<OAuth2AuthzSession>() {
+        @Override
+        public OAuth2AuthzSession createFromParcel(Parcel in) {
+            return new OAuth2AuthzSession(in);
+        }
 
-                @Override
-                public OAuth2AuthzSession[] newArray(int size) {
-                    return new OAuth2AuthzSession[size];
-                }
+        @Override
+        public OAuth2AuthzSession[] newArray(int size) {
+            return new OAuth2AuthzSession[size];
+        }
 
-            };
+    };
 
     public boolean tokenIsNotExpired() {
         if (expires_on == 0) {
