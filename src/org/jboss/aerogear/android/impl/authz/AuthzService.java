@@ -17,6 +17,7 @@
 package org.jboss.aerogear.android.impl.authz;
 
 import org.jboss.aerogear.android.impl.authz.oauth2.OAuth2AuthzSession;
+
 import android.app.Service;
 import android.content.ComponentName;
 import android.content.Intent;
@@ -24,6 +25,7 @@ import android.content.ServiceConnection;
 import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
+import android.util.Pair;
 
 import com.google.common.base.Function;
 import com.google.common.base.Strings;
@@ -77,14 +79,13 @@ public class AuthzService extends Service {
     }
 
     /**
-     *
      * This will exchange an Authorization token for an Access Token
      *
      * @param accountId the ID for the {@link OAuth2AuthzSession}
-     * @param config the config
+     * @param config    the config
      * @return an accesstoken
      * @throws OAuth2AuthorizationException if something went wrong in the
-     * exchange
+     *                                      exchange
      */
     public String fetchAccessToken(String accountId, AuthzConfig config) throws OAuth2AuthorizationException {
         OAuth2AuthzSession storedAccount = sessionStore.read(accountId);
@@ -141,7 +142,7 @@ public class AuthzService extends Service {
 
     /**
      * Returns the OAuth2AuthzSession for accountId if any
-     * 
+     *
      * @param accountId the accountId to look up
      * @return an OAuth2AuthzSession or null
      */
@@ -151,7 +152,7 @@ public class AuthzService extends Service {
 
     /**
      * Fetches all OAuth2AuthzSessions in the system.
-     * 
+     *
      * @return all OAuth2AuthzSession's in the system
      */
     public List<String> getAccounts() {
@@ -211,6 +212,18 @@ public class AuthzService extends Service {
         if (config.getClientSecret() != null) {
             data.put("client_secret", config.getClientSecret());
         }
+
+        if (!config.getAdditionalAccessParams().isEmpty()) {
+            for (Pair<String, String> param : config.getAdditionalAccessParams()) {
+                try {
+                    data.put(URLEncoder.encode(param.first, "UTF-8"), param.second);
+                } catch (UnsupportedEncodingException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+
+
         runAccountAction(storedAccount, config, data);
 
     }
@@ -224,6 +237,17 @@ public class AuthzService extends Service {
         if (config.getClientSecret() != null) {
             data.put("client_secret", config.getClientSecret());
         }
+
+        if (!config.getAdditionalAccessParams().isEmpty()) {
+            for (Pair<String, String> param : config.getAdditionalAccessParams()) {
+                try {
+                    data.put(URLEncoder.encode(param.first, "UTF-8"), param.second);
+                } catch (UnsupportedEncodingException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+
         runAccountAction(storedAccount, config, data);
     }
 
@@ -239,7 +263,7 @@ public class AuthzService extends Service {
 
             String amp = "";
             for (Map.Entry<String, String> entry : data.entrySet()) {
-                bodyBuilder.append(amp);
+                    bodyBuilder.append(amp);
                 try {
                     bodyBuilder.append(String.format(formTemplate, entry.getKey(), URLEncoder.encode(entry.getValue(), "UTF-8")));
                 } catch (UnsupportedEncodingException e) {
@@ -332,7 +356,7 @@ public class AuthzService extends Service {
 
         @Override
         public void onServiceConnected(ComponentName className,
-                IBinder iBinder) {
+                                       IBinder iBinder) {
             // We've bound to LocalService, cast the IBinder and get LocalService instance
             AuthzBinder binder = (AuthzBinder) iBinder;
             this.service = binder.service;
@@ -352,6 +376,8 @@ public class AuthzService extends Service {
             return bound;
         }
 
-    };
+    }
+
+    ;
 
 }
