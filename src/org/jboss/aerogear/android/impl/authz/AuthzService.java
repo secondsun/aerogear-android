@@ -1,18 +1,18 @@
 /**
- * JBoss, Home of Professional Open Source Copyright Red Hat, Inc., and
- * individual contributors.
+ * JBoss, Home of Professional Open Source
+ * Copyright Red Hat, Inc., and individual contributors.
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not
- * use this file except in compliance with the License. You may obtain a copy of
- * the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * 	http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations under
- * the License.
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.jboss.aerogear.android.impl.authz;
 
@@ -156,7 +156,7 @@ public class AuthzService extends Service {
      * @return all OAuth2AuthzSession's in the system
      */
     public List<String> getAccounts() {
-        return new ArrayList<String>(Collections2.<OAuth2AuthzSession, String>transform(sessionStore.readAll(), new Function<OAuth2AuthzSession, String>() {
+        return new ArrayList<String>(Collections2.<OAuth2AuthzSession, String> transform(sessionStore.readAll(), new Function<OAuth2AuthzSession, String>() {
 
             @Override
             public String apply(OAuth2AuthzSession input) {
@@ -194,7 +194,7 @@ public class AuthzService extends Service {
                         return UUID.randomUUID().toString();
                     }
                 }, "AuthzSessionStore"
-        );
+                );
 
         sessionStore.openSync();
 
@@ -222,7 +222,6 @@ public class AuthzService extends Service {
                 }
             }
         }
-
 
         runAccountAction(storedAccount, config, data);
 
@@ -263,7 +262,7 @@ public class AuthzService extends Service {
 
             String amp = "";
             for (Map.Entry<String, String> entry : data.entrySet()) {
-                    bodyBuilder.append(amp);
+                bodyBuilder.append(amp);
                 try {
                     bodyBuilder.append(String.format(formTemplate, entry.getKey(), URLEncoder.encode(entry.getValue(), "UTF-8")));
                 } catch (UnsupportedEncodingException e) {

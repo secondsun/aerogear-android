@@ -22,7 +22,7 @@ import org.jboss.aerogear.android.authorization.AuthzType;
  * This is an enumeration of types supported by AeroGear.
  */
 public enum AuthzTypes implements AuthzType {
-    
+
     OAUTH2("OAuth2");
 
     private final String typeDescription;

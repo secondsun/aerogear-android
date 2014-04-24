@@ -406,6 +406,5 @@ public final class PipeConfig {
     public void setAuthzModule(AuthzModule authzModule) {
         this.authzModule = authzModule;
     }
-    
-    
+
 }
