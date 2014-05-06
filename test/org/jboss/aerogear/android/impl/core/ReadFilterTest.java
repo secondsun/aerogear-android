@@ -16,7 +16,7 @@
  */
 package org.jboss.aerogear.android.impl.core;
 
-import com.xtremelabs.robolectric.RobolectricTestRunner;
+import org.robolectric.RobolectricTestRunner;
 import org.jboss.aerogear.android.ReadFilter;
 import org.json.JSONException;
 import org.json.JSONObject;
