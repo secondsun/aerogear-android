@@ -18,8 +18,8 @@ package org.jboss.aerogear.android.impl.datamanager;
 
 import android.content.Context;
 import com.google.gson.GsonBuilder;
-import com.xtremelabs.robolectric.Robolectric;
-import com.xtremelabs.robolectric.RobolectricTestRunner;
+import org.robolectric.Robolectric;
+import org.robolectric.RobolectricTestRunner;
 import org.jboss.aerogear.android.ReadFilter;
 import org.jboss.aerogear.android.impl.helper.Data;
 import org.jboss.aerogear.android.impl.helper.DataWithNoIdConfigured;

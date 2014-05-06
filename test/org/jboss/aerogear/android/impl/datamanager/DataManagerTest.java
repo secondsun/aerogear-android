@@ -16,8 +16,8 @@
  */
 package org.jboss.aerogear.android.impl.datamanager;
 
-import com.xtremelabs.robolectric.Robolectric;
-import com.xtremelabs.robolectric.RobolectricTestRunner;
+import org.robolectric.Robolectric;
+import org.robolectric.RobolectricTestRunner;
 import java.net.MalformedURLException;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;

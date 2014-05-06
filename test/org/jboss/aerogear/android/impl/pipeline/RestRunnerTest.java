@@ -16,7 +16,7 @@
  */
 package org.jboss.aerogear.android.impl.pipeline;
 
-import com.xtremelabs.robolectric.RobolectricTestRunner;
+import org.robolectric.RobolectricTestRunner;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.logging.Level;

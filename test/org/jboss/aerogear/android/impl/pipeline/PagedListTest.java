@@ -17,7 +17,7 @@
 package org.jboss.aerogear.android.impl.pipeline;
 
 import org.jboss.aerogear.android.impl.pipeline.paging.WrappingPagedList;
-import com.xtremelabs.robolectric.RobolectricTestRunner;
+import org.robolectric.RobolectricTestRunner;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
