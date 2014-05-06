@@ -16,7 +16,7 @@
  */
 package org.jboss.aerogear.android.impl.util;
 
-import com.xtremelabs.robolectric.RobolectricTestRunner;
+import org.robolectric.RobolectricTestRunner;
 import java.util.List;
 import org.jboss.aerogear.android.impl.pipeline.paging.WebLink;
 import org.junit.Assert;
