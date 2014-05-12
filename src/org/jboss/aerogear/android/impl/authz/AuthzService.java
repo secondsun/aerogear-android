@@ -31,7 +31,6 @@ import com.google.common.base.Function;
 import com.google.common.base.Strings;
 import com.google.common.collect.Collections2;
 import com.google.common.net.HttpHeaders;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -52,7 +51,7 @@ import org.jboss.aerogear.android.datamanager.IdGenerator;
 import org.jboss.aerogear.android.http.HeaderAndBody;
 import org.jboss.aerogear.android.http.HttpException;
 import org.jboss.aerogear.android.http.HttpProvider;
-import org.jboss.aerogear.android.impl.datamanager.SQLStore;
+import org.jboss.aerogear.android.impl.datamanager.MemoryStorage;
 import org.jboss.aerogear.android.impl.http.HttpRestProvider;
 
 import static org.jboss.aerogear.android.impl.util.UrlUtils.appendToBaseURL;
@@ -67,7 +66,7 @@ public class AuthzService extends Service {
 
     private final AuthzBinder binder = new AuthzBinder(this);
 
-    private SQLStore<OAuth2AuthzSession> sessionStore;
+    private MemoryStorage<OAuth2AuthzSession> sessionStore;
 
     public AuthzService() {
     }
@@ -173,30 +172,21 @@ public class AuthzService extends Service {
 
     @Override
     public boolean onUnbind(Intent intent) {
-        if (sessionStore != null) {
-            try {
-                sessionStore.close();
-            } catch (Exception ignore) {
-            }
-        }
         return super.onUnbind(intent);
     }
 
     private void openSessionStore() {
 
-        sessionStore = new SQLStore<OAuth2AuthzSession>(OAuth2AuthzSession.class,
-                getApplicationContext(),
-                new GsonBuilder(),
+        sessionStore = new MemoryStorage<OAuth2AuthzSession>(
                 new IdGenerator() {
 
                     @Override
                     public Serializable generate() {
                         return UUID.randomUUID().toString();
                     }
-                }, "AuthzSessionStore"
-                );
+                });
 
-        sessionStore.openSync();
+        
 
     }
 
