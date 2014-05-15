@@ -198,7 +198,7 @@ public final class PipeConfig {
      *
      * @return the current encoding, will not be null.
      * 
-     * @deprecated Use {@link  MarshallingConfig#getEncoding() instead}
+     * @deprecated Use {@link org.jboss.aerogear.android.pipeline.MarshallingConfig#getEncoding()} instead
      */
     @Deprecated
     public Charset getEncoding() {
@@ -209,7 +209,8 @@ public final class PipeConfig {
      * @param encoding a not null encoding
      * @throws IllegalArgumentException if encoding is null
      *
-     * @deprecated Use MarshallingConfig.setEncoding
+     * @deprecated Use
+     * {@link org.jboss.aerogear.android.pipeline.MarshallingConfig#setEncoding(java.nio.charset.Charset)}} instead
      *
      */
     @Deprecated
@@ -224,8 +225,9 @@ public final class PipeConfig {
     /**
      * @param charsetName a string for the encoding to be used
      * @throws UnsupportedCharsetException if charSet is not supported
-     * 
-     * @deprecated Use MarshallingConfig.setEncoding
+     *
+     * @deprecated Use
+     * {@link org.jboss.aerogear.android.pipeline.MarshallingConfig#setEncoding(java.nio.charset.Charset)}} instead
      *
      */
     @Deprecated
@@ -277,7 +279,7 @@ public final class PipeConfig {
      *
      * @return the current dataRoot
      * 
-     * @deprecated use {@link MarshallingConfig#getDataRoot()}  instead
+     * @deprecated use {@link org.jboss.aerogear.android.pipeline.MarshallingConfig#getDataRoot()}  instead
      */
     @Deprecated
     public String getDataRoot() {
@@ -305,7 +307,8 @@ public final class PipeConfig {
      *
      * @param dataRoot  the new dataroot
      * 
-     * @deprecated use {@link MarshallingConfig#setDataRoot(java.lang.String)}  instead
+     * @deprecated use
+     * {@link org.jboss.aerogear.android.pipeline.MarshallingConfig#setDataRoot(java.lang.String)} instead
      */
     @Deprecated
     public void setDataRoot(String dataRoot) {
