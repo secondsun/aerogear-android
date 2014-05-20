@@ -16,7 +16,7 @@
  */
 package org.jboss.aerogear.android.impl.pipeline;
 
-import com.xtremelabs.robolectric.RobolectricTestRunner;
+import org.robolectric.RobolectricTestRunner;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.logging.Level;
@@ -67,7 +67,7 @@ public class RestRunnerTest {
         AuthenticationModule mockModule = createMockModule();
         runner.setAuthenticationModule(mockModule);
         HttpProviderFactory mockFactory = mock(HttpProviderFactory.class);
-        
+
         HttpProvider mockProvider = createMockProvider(403);
         when(mockFactory.get(any(), any())).thenReturn(mockProvider);
         try {

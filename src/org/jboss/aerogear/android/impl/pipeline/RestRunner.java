@@ -1,18 +1,18 @@
 /**
- * JBoss, Home of Professional Open Source Copyright Red Hat, Inc., and
- * individual contributors.
+ * JBoss, Home of Professional Open Source
+ * Copyright Red Hat, Inc., and individual contributors.
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not
- * use this file except in compliance with the License. You may obtain a copy of
- * the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * 	http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations under
- * the License.
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.jboss.aerogear.android.impl.pipeline;
 
@@ -29,6 +29,7 @@ import org.jboss.aerogear.android.Provider;
 import org.jboss.aerogear.android.ReadFilter;
 import org.jboss.aerogear.android.authentication.AuthenticationModule;
 import org.jboss.aerogear.android.authentication.AuthorizationFields;
+import org.jboss.aerogear.android.authorization.AuthzModule;
 import org.jboss.aerogear.android.http.HeaderAndBody;
 import org.jboss.aerogear.android.http.HttpException;
 import org.jboss.aerogear.android.http.HttpProvider;
@@ -79,6 +80,7 @@ public class RestRunner<T> implements PipeHandler<T> {
     private final Integer timeout;
     private final ResponseParser<T> responseParser;
     private AuthenticationModule authModule;
+    private AuthzModule authzModule;
     private Charset encoding = Charset.forName("UTF-8");
 
     public RestRunner(Class<T> klass, URL baseURL) {
@@ -148,6 +150,10 @@ public class RestRunner<T> implements PipeHandler<T> {
 
         if (config.getAuthModule() != null) {
             this.authModule = config.getAuthModule();
+        }
+
+        if (config.getAuthzModule() != null) {
+            this.authzModule = config.getAuthzModule();
         }
 
     }
@@ -262,7 +268,9 @@ public class RestRunner<T> implements PipeHandler<T> {
     private AuthorizationFields loadAuth(URI relativeURI, String httpMethod) {
 
         if (authModule != null && authModule.isLoggedIn()) {
-            return authModule.getAuthorizationFields(relativeURI, httpMethod, new byte[]{});
+            return authModule.getAuthorizationFields(relativeURI, httpMethod, new byte[] {});
+        } else if (authzModule != null && authzModule.isAuthorized()) {
+            return authzModule.getAuthorizationFields(relativeURI, httpMethod, new byte[] {});
         }
 
         return new AuthorizationFields();
@@ -407,10 +415,10 @@ public class RestRunner<T> implements PipeHandler<T> {
         return runHttpGet(httpProvider);
 
     }
-    
+
     private HeaderAndBody runHttpGet(HttpProvider httpProvider) {
         HeaderAndBody httpResponse;
-        
+
         try {
             httpResponse = httpProvider.get();
         } catch (HttpException exception) {

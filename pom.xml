@@ -65,6 +65,7 @@
         <junit.version>4.8.2</junit.version>
         <mockito.version>1.9.5</mockito.version>
         <android.support.version>[18,)</android.support.version>
+        <roboeletric.version>2.2</roboeletric.version>
 
         <!-- Plugin properties-->
         <maven.android.plugin.verson>3.8.0</maven.android.plugin.verson>
@@ -181,8 +182,9 @@
         </dependency>
 
         <dependency>
-            <groupId>com.pivotallabs</groupId>
+            <groupId>org.robolectric</groupId>
             <artifactId>robolectric</artifactId>
+            <version>${roboeletric.version}</version>
             <scope>test</scope>
         </dependency>
 

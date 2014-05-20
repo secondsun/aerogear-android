@@ -16,7 +16,7 @@
  */
 package org.jboss.aerogear.android.impl.pipeline;
 
-import com.xtremelabs.robolectric.RobolectricTestRunner;
+import org.robolectric.RobolectricTestRunner;
 import org.jboss.aerogear.android.Pipeline;
 import org.jboss.aerogear.android.authentication.AuthenticationConfig;
 import org.jboss.aerogear.android.authentication.AuthenticationModule;

@@ -110,10 +110,10 @@ public class SQLStore<T> extends SQLiteOpenHelper implements Store<T> {
     public Collection<T> readAll() {
         String sql = String.format("Select PROPERTY_NAME, PROPERTY_VALUE,PARENT_ID from %s_property", className);
         Cursor cursor = database.rawQuery(sql, new String[0]);
-        HashMap<Integer, JsonObject> objects = new HashMap<Integer, JsonObject>(cursor.getCount());
+        HashMap<String, JsonObject> objects = new HashMap<String, JsonObject>(cursor.getCount());
         try {
             while (cursor.moveToNext()) {
-                Integer id = cursor.getInt(2);
+                String id = cursor.getString(2);
                 JsonObject object = objects.get(id);
                 if (object == null) {
                     object = new JsonObject();
@@ -343,6 +343,10 @@ public class SQLStore<T> extends SQLiteOpenHelper implements Store<T> {
         }.execute();
     }
 
+    public void openSync() {
+        SQLStore.this.database = getWritableDatabase();
+    }
+    
     @Override
     public void close() {
         this.database.close();
