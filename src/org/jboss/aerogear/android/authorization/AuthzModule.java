@@ -1,18 +1,18 @@
 /**
- * JBoss, Home of Professional Open Source
- * Copyright Red Hat, Inc., and individual contributors.
+ * JBoss, Home of Professional Open Source Copyright Red Hat, Inc., and
+ * individual contributors.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
  *
- * 	http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
 package org.jboss.aerogear.android.authorization;
 
@@ -40,6 +40,17 @@ public interface AuthzModule {
 
     /**
      *
+     * This function checks if a module has all of the necessary information to
+     * make a authorized request. This method does not check the state of those
+     * tokens. For that you should use {@link AuthzModule#isAuthorized()
+     * }
+     *
+     * @return if the module has completed Authorization.
+     */
+    public boolean hasCredentials();
+
+    /**
+     *
      * Begin requesting access for the application. This method MUST be
      * asynchronous. An implementation MAY start a new activity, but the calling
      * Activity MUST handle the response itself.
@@ -49,6 +60,18 @@ public interface AuthzModule {
      * authorization action.
      */
     public void requestAccess(Activity activity, Callback<String> callback);
+
+    /**
+     *
+     * Refreshing access will synchronously check the current of the tokens and
+     * refresh them if necessary.
+     *
+     * This is used by AeroGear if tokens expired while a reference to the
+     * module is still held by a pipe.
+     *
+     * @return true if access to the system is in a good state.
+     */
+    public boolean refreshAccess();
 
     /**
      * This method is called be {@link Pipe} implementations when they need

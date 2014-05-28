@@ -269,7 +269,7 @@ public class RestRunner<T> implements PipeHandler<T> {
 
         if (authModule != null && authModule.isLoggedIn()) {
             return authModule.getAuthorizationFields(relativeURI, httpMethod, new byte[] {});
-        } else if (authzModule != null && authzModule.isAuthorized()) {
+        } else if (authzModule != null && authzModule.hasCredentials()) {
             return authzModule.getAuthorizationFields(relativeURI, httpMethod, new byte[] {});
         }
 
@@ -393,6 +393,10 @@ public class RestRunner<T> implements PipeHandler<T> {
         return authModule != null && authModule.isLoggedIn() && authModule.retryLogin();
     }
 
+    private boolean retryAuthz(AuthzModule authzModule) {
+        return authzModule != null && authzModule.isAuthorized() && authzModule.refreshAccess();
+    }
+    
     @Override
     public HeaderAndBody onRawRead(Pipe<T> requestingPipe) {
         return onRawReadWithFilter(new ReadFilter(), requestingPipe);
@@ -423,7 +427,7 @@ public class RestRunner<T> implements PipeHandler<T> {
             httpResponse = httpProvider.get();
         } catch (HttpException exception) {
             if ((exception.getStatusCode() == HttpStatus.SC_UNAUTHORIZED
-                    || exception.getStatusCode() == HttpStatus.SC_FORBIDDEN) && retryAuth(authModule)) {
+                    || exception.getStatusCode() == HttpStatus.SC_FORBIDDEN) && (retryAuth(authModule) || retryAuthz(authzModule))) {
                 httpResponse = httpProvider.get();
             } else {
                 throw exception;

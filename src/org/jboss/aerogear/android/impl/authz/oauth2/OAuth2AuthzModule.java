@@ -1,18 +1,18 @@
 /**
- * JBoss, Home of Professional Open Source
- * Copyright Red Hat, Inc., and individual contributors.
+ * JBoss, Home of Professional Open Source Copyright Red Hat, Inc., and
+ * individual contributors.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
  *
- * 	http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
 package org.jboss.aerogear.android.impl.authz.oauth2;
 
@@ -25,6 +25,7 @@ import android.content.ServiceConnection;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
+import android.util.Log;
 import com.google.common.base.Strings;
 
 import java.net.URI;
@@ -35,6 +36,7 @@ import org.jboss.aerogear.android.authentication.AuthorizationFields;
 import org.jboss.aerogear.android.impl.authz.AuthzConfig;
 import org.jboss.aerogear.android.authorization.AuthzModule;
 import org.jboss.aerogear.android.impl.authz.AuthzService;
+import org.jboss.aerogear.android.impl.authz.OAuth2AuthorizationException;
 
 /**
  *
@@ -58,6 +60,7 @@ public class OAuth2AuthzModule implements AuthzModule {
         AUTHZ_FILTER = new IntentFilter();
         AUTHZ_FILTER.addAction("org.jboss.aerogear.android.authz.RECEIVE_AUTHZ");
     }
+    private String TAG = OAuth2AuthzModule.class.getSimpleName();
 
     public OAuth2AuthzModule(AuthzConfig config) {
         this.clientId = config.getClientId();
@@ -74,6 +77,15 @@ public class OAuth2AuthzModule implements AuthzModule {
         }
 
         return account.tokenIsNotExpired() && !Strings.isNullOrEmpty(account.getAccessToken());
+    }
+
+    public boolean hasCredentials() {
+
+        if (account == null) {
+            return false;
+        }
+
+        return !Strings.isNullOrEmpty(account.getAccessToken());
     }
 
     @Override
@@ -94,7 +106,7 @@ public class OAuth2AuthzModule implements AuthzModule {
         activity.bindService(
                 new Intent(activity.getApplicationContext(), AuthzService.class
                 ), connection, Context.BIND_AUTO_CREATE
-                );
+        );
 
     }
 
@@ -127,6 +139,38 @@ public class OAuth2AuthzModule implements AuthzModule {
 
         }
 
+    }
+
+    @Override
+    public boolean refreshAccess() {
+
+        if (!hasAccount()) {
+            return false;
+        } else {
+
+            if (isAuthorized()) {
+                return true;
+            }
+
+            try {
+                account.setAccessToken(service.fetchAccessToken(accountId, config));
+                Log.d(TAG, "Access token refresh complete!");
+                return true;
+            } catch (OAuth2AuthorizationException ex) {
+                Log.e(TAG, ex.getMessage(), ex);
+                return false;
+            }
+        }
+
+    }
+
+    /**
+     *
+     * @return true if accountId has a value AND that value is stored in the
+     * AuthzService
+     */
+    private boolean hasAccount() {
+        return (!Strings.isNullOrEmpty(accountId) && service.hasAccount(accountId));
     }
 
     private class OAuth2AccessCallback implements Callback<String> {
