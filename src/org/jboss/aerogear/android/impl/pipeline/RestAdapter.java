@@ -1,18 +1,18 @@
 /**
- * JBoss, Home of Professional Open Source
- * Copyright Red Hat, Inc., and individual contributors.
+ * JBoss, Home of Professional Open Source Copyright Red Hat, Inc., and
+ * individual contributors.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
  *
- * 	http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
 package org.jboss.aerogear.android.impl.pipeline;
 
@@ -45,8 +45,7 @@ public final class RestAdapter<T> implements Pipe<T> {
     private static final int CORE_POOL_SIZE = 5;
     private static final int MAX_POOL_SIZE = 64;
     private static final int KEEP_ALIVE = 1;
-    private static final BlockingQueue<Runnable> WORK_QUEUE =
-            new LinkedBlockingQueue<Runnable>(10);
+    private static final BlockingQueue<Runnable> WORK_QUEUE = new LinkedBlockingQueue<Runnable>(10);
     public static final Executor THREAD_POOL_EXECUTOR = new ThreadPoolExecutor(CORE_POOL_SIZE, MAX_POOL_SIZE, KEEP_ALIVE,
             TimeUnit.SECONDS, WORK_QUEUE);
 
@@ -59,23 +58,39 @@ public final class RestAdapter<T> implements Pipe<T> {
      * A class of the Generic collection type this pipe wraps. This is used by
      * JSON for deserializing collections.
      */
-    private final URL baseURL;
+    private final URL url;
     private final PipeHandler<T> restRunner;
     private final RequestBuilder<T> requestBuilder;
     private final ResponseParser<T> responseParser;
 
-    public RestAdapter(Class<T> klass, URL baseURL) {
-        this.restRunner = new RestRunner<T>(klass, baseURL);
+    /**
+     * 
+     * This will configure the Adapter as with sane RESTful defaults.
+     * 
+     * @param klass The type that this adapter will consume and produce
+     * @param absoluteURL the RESTful URL endpoint.
+     */
+    public RestAdapter(Class<T> klass, URL absoluteURL) {
+        this.restRunner = new RestRunner<T>(klass, absoluteURL);
         this.klass = klass;
-        this.baseURL = baseURL;
+        this.url = absoluteURL;
         this.requestBuilder = new GsonRequestBuilder<T>();
         this.responseParser = new GsonResponseParser<T>();
     }
 
+    /**
+     * 
+     * This will build an adapter based on a configuration.
+     * 
+     * @param klass The type that this adapter will consume and produce
+     * @param absoluteURL the RESTful URL endpoint.
+     * @param config A PipeConfig to use. NOTE: the URL's provided in the config
+     *            are ignored in deference to the absoluteURL parameter.
+     */
     @SuppressWarnings("unchecked")
-    public RestAdapter(Class<T> klass, URL baseURL, PipeConfig config) {
+    public RestAdapter(Class<T> klass, URL absoluteURL, PipeConfig config) {
         this.klass = klass;
-        this.baseURL = baseURL;
+        this.url = absoluteURL;
 
         this.requestBuilder = config.getRequestBuilder();
         this.responseParser = config.getResponseParser();
@@ -83,7 +98,7 @@ public final class RestAdapter<T> implements Pipe<T> {
         if (config.getHandler() != null) {
             this.restRunner = (PipeHandler<T>) config.getHandler();
         } else {
-            this.restRunner = new RestRunner<T>(klass, baseURL, config);
+            this.restRunner = new RestRunner<T>(klass, absoluteURL, config);
         }
 
     }
@@ -101,7 +116,7 @@ public final class RestAdapter<T> implements Pipe<T> {
      */
     @Override
     public URL getUrl() {
-        return baseURL;
+        return url;
     }
 
     @Override
