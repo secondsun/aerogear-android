@@ -44,12 +44,11 @@ public interface AuthzModule {
      * asynchronous. An implementation MAY start a new activity, but the calling
      * Activity MUST handle the response itself.
      *
-     * @param state a state parameter.
      * @param activity the calling activity.
      * @param callback a callback to be called upon completion of the
      * authorization action.
      */
-    public void requestAccess(String state, Activity activity, Callback<String> callback);
+    public void requestAccess(Activity activity, Callback<String> callback);
 
     /**
      * This method is called be {@link Pipe} implementations when they need

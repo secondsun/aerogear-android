@@ -28,6 +28,7 @@ import android.os.Looper;
 import com.google.common.base.Strings;
 
 import java.net.URI;
+import java.util.UUID;
 
 import org.jboss.aerogear.android.Callback;
 import org.jboss.aerogear.android.authentication.AuthorizationFields;
@@ -76,8 +77,10 @@ public class OAuth2AuthzModule implements AuthzModule {
     }
 
     @Override
-    public void requestAccess(final String state, final Activity activity, final Callback<String> callback) {
+    public void requestAccess(final Activity activity, final Callback<String> callback) {
 
+        final String state = UUID.randomUUID().toString();
+        
         final AuthzService.AGAuthzServiceConnection connection = new AuthzService.AGAuthzServiceConnection() {
 
             @Override
