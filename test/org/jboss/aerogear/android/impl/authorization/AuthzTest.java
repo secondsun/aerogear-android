@@ -16,8 +16,6 @@
  */
 package org.jboss.aerogear.android.impl.authorization;
 
-import android.app.Activity;
-import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Parcel;
@@ -27,25 +25,17 @@ import org.robolectric.RobolectricTestRunner;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
-import org.jboss.aerogear.android.Callback;
 import org.jboss.aerogear.android.impl.authz.AuthzConfig;
 import org.jboss.aerogear.android.impl.authz.AuthzService;
-import org.jboss.aerogear.android.impl.authz.oauth2.OAuth2AuthzModule;
 import org.jboss.aerogear.android.impl.authz.oauth2.OAuth2AuthzSession;
-import org.junit.Assert;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 
 @RunWith(RobolectricTestRunner.class)
 public class AuthzTest {
 
+    @Test
     public void testParcleOAUTH2AuthzSession() {
         OAuth2AuthzSession session = new OAuth2AuthzSession();
         session.setAccessToken("accessToken");
@@ -85,79 +75,7 @@ public class AuthzTest {
         assertEquals("accountId", accounts.get(0));
 
     }
-
-    /**
-     * This test will make sure requestAccess fires an intent if the config 
-     * isn't associated with a service
-     * 
-     */
-    @Test
-    @Ignore
-    public void fireIntentIfNotConnected() {
-
-        fail("not implemented");
-    }
-
-    @Test
-    @Ignore
-    public void serviceStoresRequestToWeb() {
-
-        fail("not implemented");
-    }
-
-    @Test
-    @Ignore
-    public void serviceStoresResponseFromWeb() {
-
-        fail("not implemented");
-    }
-
-    @Test
-    @Ignore
-    public void serviceSendsRequestToWeb() throws InterruptedException {
-
-        fail("not implemented");
-    }
-
-    @Test
-    @Ignore
-    public void callbackIsCalledIfConnected() {
-
-        Activity mockContext = mock(Activity.class);
-        BroadcastReceiver mockReceiver = mock(BroadcastReceiver.class);
-        Callback mockCallback = mock(Callback.class);
-
-        OAuth2AuthzModule module = new OAuth2AuthzModule(makeConfig());
-
-        module.requestAccess("testScope", mockContext, mockCallback);
-
-        verify(mockCallback, times(1)).onSuccess(any());
-    }
-
-    @Test
-    @Ignore
-    public void exchangeAccessToken() {
-        Assert.fail("Not implemented");
-    }
-
-    @Test
-    @Ignore
-    public void refreshToken() {
-        Assert.fail("Not implemented");
-    }
-
-    @Test
-    @Ignore
-    public void sessionObjectPersistence() {
-        Assert.fail("Not implemented");
-    }
-
-    @Test
-    @Ignore
-    public void serviceTest() {
-        Assert.fail("Not implemented");
-    }
-
+    
     private AuthzConfig makeConfig() {
         try {
             AuthzConfig conf = new AuthzConfig(new URL("https://accounts.google.com"), "restMod");
