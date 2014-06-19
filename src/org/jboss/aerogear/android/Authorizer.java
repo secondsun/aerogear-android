@@ -52,7 +52,7 @@ public class Authorizer {
     /**
      * Removes a module from the Authorizer
      *
-     * @param name the name of the module
+     * @param moduleName  the name of the module
      * @return the removed module
      */
     public AuthzModule remove(String moduleName) {
@@ -62,7 +62,7 @@ public class Authorizer {
     /**
      * Look up for a authzModule object.
      *
-     * @param name the name of the actual authzModule
+     * @param moduleName the name of the actual authzModule
      * @return the current authzModule or null
      */
     public AuthzModule get(String moduleName) {

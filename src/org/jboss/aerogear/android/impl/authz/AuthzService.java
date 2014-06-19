@@ -127,7 +127,7 @@ public class AuthzService extends Service {
      * Will check if there is an account which has previously been granted an
      * authorization code and access code
      *
-     * @param accountId
+     * @param accountId the accountId to check
      * @return true if there is a session for the account.
      */
     public boolean hasAccount(String accountId) {
