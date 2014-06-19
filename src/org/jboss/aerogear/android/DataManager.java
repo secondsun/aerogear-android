@@ -169,7 +169,8 @@ public class DataManager {
      * @param modelClass The model class will be encrypted
      * 
      * @return a default encrypted in memory store
-     * 
+     * @throws InvalidKeySpecException if encryption is used, this method will 
+     * throw an exception if the keys provided on the config object are malformed.
      */
     public Store encryptedStore(String storeName, StoreConfig config, String passphrase, Class modelClass)
             throws InvalidKeySpecException {

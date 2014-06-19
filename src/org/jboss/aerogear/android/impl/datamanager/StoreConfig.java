@@ -93,7 +93,10 @@ public final class StoreConfig {
     }
 
     /**
-     *
+     * klass is the class that this store will produce
+     * 
+     *@param klass the class that this store represents 
+     * 
      * @deprecated please use StoreConfig#Class instead.
      */
     public void setKlass(Class klass) {
