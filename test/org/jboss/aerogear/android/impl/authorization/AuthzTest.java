@@ -25,9 +25,14 @@ import org.robolectric.RobolectricTestRunner;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
+import org.hamcrest.core.Is;
+import org.jboss.aerogear.android.Authorizer;
+import org.jboss.aerogear.android.authorization.AuthzModule;
 import org.jboss.aerogear.android.impl.authz.AuthzConfig;
 import org.jboss.aerogear.android.impl.authz.AuthzService;
+import org.jboss.aerogear.android.impl.authz.oauth2.OAuth2AuthzModule;
 import org.jboss.aerogear.android.impl.authz.oauth2.OAuth2AuthzSession;
+import org.junit.Assert;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -35,6 +40,20 @@ import org.junit.runner.RunWith;
 @RunWith(RobolectricTestRunner.class)
 public class AuthzTest {
 
+    @Test
+    public void testAuthorizer() {
+        Authorizer authorizer = new Authorizer();
+        AuthzModule module = authorizer.authz(makeConfig());
+        AuthzModule getModule = authorizer.get("restMod");
+        AuthzModule removeModule = authorizer.remove("restMod");
+        AuthzModule nullModule = authorizer.get("restMod");
+        
+        Assert.assertThat(module, Is.is(OAuth2AuthzModule.class));
+        Assert.assertEquals(module, getModule);
+        Assert.assertEquals(module, removeModule);
+        Assert.assertNull(nullModule);
+    }
+    
     @Test
     public void testParcleOAUTH2AuthzSession() {
         OAuth2AuthzSession session = new OAuth2AuthzSession();
