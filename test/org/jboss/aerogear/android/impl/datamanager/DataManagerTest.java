@@ -67,7 +67,7 @@ public class DataManagerTest {
         @SuppressWarnings("LocalVariableHidesMemberVariable")
         DataManager dataManager = new DataManager(new StubStoreFactory());
 
-        Store store = dataManager.store("stub store");
+        Store store = dataManager.store("stub store", Data.class);
 
         assertNotNull("store could not be null", store);
         assertEquals("verifying the type", "Stub", store.getType().getName());
@@ -75,7 +75,7 @@ public class DataManagerTest {
 
     @Test
     public void testCreateStoreWithDefaultType() {
-        Store store = dataManager.store("foo");
+        Store store = dataManager.store("foo", Data.class);
 
         assertNotNull("store could not be null", store);
         assertEquals("verifying the type", MEMORY, store.getType());
@@ -83,7 +83,7 @@ public class DataManagerTest {
 
     @Test
     public void testCreateStoreWithMemoryType() {
-        Store store = dataManager.store("foo", new StoreConfig());
+        Store store = dataManager.store("foo", new StoreConfig(Data.class));
 
         assertNotNull("store could not be null", store);
         assertEquals("verifying the type", MEMORY, store.getType());
@@ -91,7 +91,7 @@ public class DataManagerTest {
 
     @Test
     public void testAddStoreWithDefaultType() {
-        dataManager.store("foo");
+        dataManager.store("foo", Data.class);
         Store store = dataManager.get("foo");
 
         assertNotNull("store could not be null", store);
@@ -100,7 +100,7 @@ public class DataManagerTest {
 
     @Test
     public void testAddStoreWithMemoryType() {
-        dataManager.store("foo", new StoreConfig());
+        dataManager.store("foo", new StoreConfig(Data.class));
         Store store = dataManager.get("foo");
 
         assertNotNull("foo store could not be null", store);
@@ -109,10 +109,9 @@ public class DataManagerTest {
 
     @Test
     public void testAddStoreWithSQLType() {
-        StoreConfig sqlStoreConfig = new StoreConfig();
+        StoreConfig sqlStoreConfig = new StoreConfig(Data.class);
         sqlStoreConfig.setContext(Robolectric.application.getApplicationContext());
         sqlStoreConfig.setType(SQL);
-        sqlStoreConfig.setKlass(Data.class);
         dataManager.store("foo", sqlStoreConfig);
         Store store = dataManager.get("foo");
         assertNotNull("foo store could not be null", store);
@@ -121,8 +120,8 @@ public class DataManagerTest {
 
     @Test
     public void testAndAddAndRemoveStores() {
-        dataManager.store("foo", new StoreConfig());
-        dataManager.store("bar");
+        dataManager.store("foo", new StoreConfig(Data.class));
+        dataManager.store("bar", Data.class);
 
         Store fooStore = dataManager.get("foo");
         assertNotNull("foo store could not be null", fooStore);
