@@ -159,41 +159,6 @@ public class RestRunner<T> implements PipeHandler<T> {
     }
 
     @Override
-    public List<T> onRead(Pipe<T> requestingPipe) {
-        return onReadWithFilter(new ReadFilter(), requestingPipe);
-    }
-
-    @Override
-    public T onSave(T data) {
-
-        final String id;
-        String recordIdFieldName = Scan.recordIdFieldNameIn(data.getClass());
-        Object idObject = new Property(data.getClass(), recordIdFieldName).getValue(data);
-        id = idObject == null ? null : idObject.toString();
-
-        byte[] body = requestBuilder.getBody(data);
-
-        HeaderAndBody result = onRawSave(id, body);
-
-        return responseParser.handleResponse(new String(result.getBody(), encoding), klass);
-    }
-
-    @Override
-    public List<T> onReadWithFilter(ReadFilter filter, Pipe<T> requestingPipe) {
-        List<T> result;
-
-        HeaderAndBody httpResponse = onRawReadWithFilter(filter, requestingPipe);
-        result = responseParser.handleResponse(httpResponse, klass);
-
-        if (pageConfig != null) {
-            result = computePagedList(result, httpResponse, filter.getWhere(), requestingPipe);
-        }
-
-        return result;
-
-    }
-
-    @Override
     public void onRemove(String id) {
         HttpProvider httpProvider = getHttpProvider();
         httpProvider.delete(id);
