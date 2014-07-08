@@ -142,7 +142,7 @@ public class DataManager {
     public Store encryptedStore(String storeName, String passphrase, Class modelClass) throws InvalidKeySpecException {
         StoreConfig config = new StoreConfig(modelClass);
         config.setType(StoreTypes.ENCRYPTED_MEMORY);
-        return encryptedStore(storeName, config, passphrase, modelClass);
+        return encryptedStore(storeName, config, passphrase);
     }
 
     /**
@@ -152,17 +152,15 @@ public class DataManager {
      * @param storeName  The name of the actual data store object.
      * @param config     The config object used to build the store
      * @param passphrase The passphrase used to create a KeyStore
-     * @param modelClass The model class will be encrypted
      * 
      * @return a default encrypted in memory store
      * @throws InvalidKeySpecException if encryption is used, this method will 
      * throw an exception if the keys provided on the config object are malformed.
      */
-    public Store encryptedStore(String storeName, StoreConfig config, String passphrase, Class modelClass)
+    public Store encryptedStore(String storeName, StoreConfig config, String passphrase)
             throws InvalidKeySpecException {
         config.setPassphrase(passphrase);
-        config.setKlass(modelClass);
-
+        
         Store store = storeFactory.createStore(config);
         stores.put(storeName, store);
         return store;
