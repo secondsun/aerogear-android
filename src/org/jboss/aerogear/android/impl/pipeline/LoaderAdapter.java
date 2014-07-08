@@ -48,7 +48,6 @@ import android.util.Log;
 
 import com.google.common.base.Objects;
 import com.google.common.collect.Multimap;
-import com.google.gson.Gson;
 import org.jboss.aerogear.android.http.HeaderAndBody;
 import org.jboss.aerogear.android.impl.reflection.Scan;
 import org.jboss.aerogear.android.pipeline.support.AbstractFragmentActivityCallback;
