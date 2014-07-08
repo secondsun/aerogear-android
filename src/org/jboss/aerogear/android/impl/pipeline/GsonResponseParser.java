@@ -42,16 +42,6 @@ public class GsonResponseParser<T> implements ResponseParser<T> {
     }
 
     @Override
-    public T handleResponse(String response, Class<T> responseType) {
-        return gson.fromJson(response, responseType);
-    }
-
-    @Override
-    public T[] handleArrayResponse(String response, Class<T[]> responseType) {
-        return gson.fromJson(response, responseType);
-    }
-
-    @Override
     public List<T> handleResponse(HeaderAndBody httpResponse, Class<T> responseType) {
         byte[] responseBody = httpResponse.getBody();
         List<T> result;
