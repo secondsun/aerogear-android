@@ -44,8 +44,12 @@ public class MarshallingConfig {
      * Default is "UTF-8"
      *
      * @param encoding a new encoding to set
+     * @throws IllegalArgumentException if encoding is null
      */
     public void setEncoding(Charset encoding) {
+        if (encoding == null) {
+            throw new IllegalArgumentException("encoding may not be null");
+        }
         this.encoding = encoding;
     }
 
