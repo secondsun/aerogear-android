@@ -22,7 +22,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.nio.charset.Charset;
 import java.util.List;
 
 import org.jboss.aerogear.android.Provider;
@@ -65,7 +64,7 @@ public class RestRunner<T> implements PipeHandler<T> {
     private final ParameterProvider parameterProvider;
     /**
      * A class of the Generic type this pipe wraps. This is used by GSON for
-     * deserializing.
+     * deserializingg.
      */
     private final Class<T> klass;
     /**
@@ -79,7 +78,7 @@ public class RestRunner<T> implements PipeHandler<T> {
     private final ResponseParser<T> responseParser;
     private AuthenticationModule authModule;
     private AuthzModule authzModule;
-    private Charset encoding = Charset.forName("UTF-8");
+    
 
     public RestRunner(Class<T> klass, URL baseURL) {
         this.klass = klass;
@@ -104,12 +103,6 @@ public class RestRunner<T> implements PipeHandler<T> {
             this.requestBuilder = config.getRequestBuilder();
         } else {
             this.requestBuilder = new GsonRequestBuilder<T>();
-        }
-
-        if (config.getEncoding() != null) {
-            this.encoding = config.getEncoding();
-        } else {
-            this.encoding = Charset.forName("UTF-8");
         }
 
         if (config.getDataRoot() != null) {
@@ -338,10 +331,6 @@ public class RestRunner<T> implements PipeHandler<T> {
             Log.e(TAG, "Error turning " + query + " into URI query.", ex);
             throw new RuntimeException(ex);
         }
-    }
-
-    void setEncoding(Charset encoding) {
-        this.encoding = encoding;
     }
 
     public String getDataRoot() {
