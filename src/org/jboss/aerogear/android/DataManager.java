@@ -105,20 +105,6 @@ public class DataManager {
      * Creates a new default (in memory) Store implementation.
      *
      * @param storeName The name of the actual data store object.
-     * 
-     * @return a default in MemoryStore
-     * 
-     * @deprecated use {@link DataManager#store(java.lang.String, java.lang.Class)}
-     */
-    @Deprecated
-    public Store store(String storeName) {
-        return store(storeName, new StoreConfig());
-    }
-
-    /**
-     * Creates a new default (in memory) Store implementation.
-     *
-     * @param storeName The name of the actual data store object.
      * @param modelClass The class for the Store
      * 
      * @return a default in MemoryStore 

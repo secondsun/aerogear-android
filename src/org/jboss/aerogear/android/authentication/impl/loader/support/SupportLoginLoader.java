@@ -40,18 +40,6 @@ public class SupportLoginLoader extends AbstractSupportAuthenticationLoader {
     private HeaderAndBody result = null;
     private final Map<String, String> loginData;
 
-    @Deprecated
-    /**
-     * Use LoginLoader(Context, Callback, AuthenticationModule, Map) instead.
-     */
-    public SupportLoginLoader(Context context, Callback callback, AuthenticationModule module, String username, String password) {
-        super(context, module, callback);
-        Map<String, String> loginParamMap = new HashMap<String, String>();
-        loginParamMap.put(AbstractAuthenticationModule.USERNAME_PARAMETER_NAME, username);
-        loginParamMap.put(AbstractAuthenticationModule.PASSWORD_PARAMETER_NAME, password);
-        this.loginData = loginParamMap;
-    }
-
     public SupportLoginLoader(Context context, Callback callback, AuthenticationModule module, Map<String, String> loginData) {
         super(context, module, callback);
         this.loginData = new HashMap<String, String>(loginData);

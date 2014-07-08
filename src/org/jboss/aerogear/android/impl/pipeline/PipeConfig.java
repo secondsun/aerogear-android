@@ -135,48 +135,6 @@ public final class PipeConfig {
     }
 
     /**
-     * @deprecated Pipes are moving to a more generic RequestBuilder interface.
-     * {@link GsonRequestBuilder}
-     *
-     * @return the current GSONBuilder which will be used to generate GSON
-     * objects to be used by Pipes with this config.
-     *
-     * @throws IllegalStateException if ResponseBuilder is not an instance of
-     * GsonResponseParser
-     *
-     */
-    public GsonBuilder getGsonBuilder() {
-        if (responseParser instanceof GsonResponseParser) {
-            return this.gsonBulder;
-        } else {
-            throw new IllegalStateException("responseBuilder is not an instance of GsonResponseBuilder");
-        }
-    }
-
-    /**
-     *
-     * @deprecated Pipes are moving to a more generic RequestBuilder interface.
-     * {@link GsonRequestBuilder}
-     *
-     * @param gsonBuilder GSONBuilder which will be used to generate GSON
-     * objects to be used by Pipes with this config.
-     *
-     * @throws IllegalStateException if ResponseBuilder is not an instance of
-     * GsonResponseParser
-     *
-     */
-    @Deprecated
-    public void setGsonBuilder(GsonBuilder gsonBuilder) {
-        if (!(responseParser instanceof GsonResponseParser && requestBuilder instanceof GsonRequestBuilder)) {
-            throw new IllegalStateException("responseBuilder is not an instance of GsonResponseBuilder");
-        } else {
-            this.gsonBulder = gsonBuilder;
-            ((GsonResponseParser) responseParser).setGson(gsonBuilder.create());
-            ((GsonRequestBuilder) requestBuilder).setGson(gsonBuilder.create());
-        }
-    }
-
-    /**
      * @return a {@link AuthenticationModule} which will be used for
      * Authentication.
      */
@@ -193,50 +151,6 @@ public final class PipeConfig {
      */
     public void setAuthModule(AuthenticationModule authModule) {
         this.authModule = authModule;
-    }
-
-    /**
-     * The Encoding is the String encoding to expect from the server.
-     *
-     * @return the current encoding, will not be null.
-     * 
-     * @deprecated Use {@link org.jboss.aerogear.android.pipeline.MarshallingConfig#getEncoding()} instead
-     */
-    @Deprecated
-    public Charset getEncoding() {
-        return encoding;
-    }
-
-    /**
-     * @param encoding a not null encoding
-     * @throws IllegalArgumentException if encoding is null
-     *
-     * @deprecated Use
-     * {@link org.jboss.aerogear.android.pipeline.MarshallingConfig#setEncoding(java.nio.charset.Charset)}} instead
-     *
-     */
-    @Deprecated
-    public void setEncoding(Charset encoding) {
-        if (encoding == null) {
-            throw new IllegalArgumentException("Encoding may not be null");
-        }
-        responseParser.getMarshallingConfig().setEncoding(encoding);
-        requestBuilder.getMarshallingConfig().setEncoding(encoding);
-    }
-
-    /**
-     * @param charsetName a string for the encoding to be used
-     * @throws UnsupportedCharsetException if charSet is not supported
-     *
-     * @deprecated Use
-     * {@link org.jboss.aerogear.android.pipeline.MarshallingConfig#setEncoding(java.nio.charset.Charset)}} instead
-     *
-     */
-    @Deprecated
-    public void setEncoding(String charsetName) {
-        this.encoding = Charset.forName(charsetName);
-        responseParser.getMarshallingConfig().setEncoding(encoding);
-        requestBuilder.getMarshallingConfig().setEncoding(encoding);
     }
 
     /**
@@ -258,64 +172,6 @@ public final class PipeConfig {
      */
     public void setPageConfig(PageConfig pageConfig) {
         this.pageConfig = pageConfig;
-    }
-
-    /**
-     * DataRoot refers to the dotted location of the result we are interested in
-     * from the JSON response from the server.
-     *
-     * For example:
-     * <pre>
-     * {
-     * "speakers": {
-     *      "data": [
-     *          {"speakerName":"John Doe", "speakerid":42},
-     *          {"speakerName":"Jesse James", "speakerid":5309},
-     *      ]
-     *  }
-     * }
-     * </pre>
-     *
-     * A DataRoot of "speakers.data" would make the pipe pass a List using the
-     * array of speakers to the onSuccess method of callback.
-     *
-     * @return the current dataRoot
-     * 
-     * @deprecated use {@link org.jboss.aerogear.android.pipeline.MarshallingConfig#getDataRoot()}  instead
-     */
-    @Deprecated
-    public String getDataRoot() {
-        return responseParser.getMarshallingConfig().getDataRoot();
-    }
-
-    /**
-     * DataRoot refers to the dotted location of the result we are interested in
-     * from the JSON response from the server.
-     *
-     * For example:
-     * <pre>
-     * {
-     * "speakers": {
-     *      "data": [
-     *          {"speakerName":"John Doe", "speakerid":42},
-     *          {"speakerName":"Jesse James", "speakerid":5309},
-     *      ]
-     *  }
-     * }
-     * </pre>
-     *
-     * A DataRoot of "speakers.data" would make the pipe pass a List using the
-     * array of speakers to the onSuccess method of callback.
-     *
-     * @param dataRoot  the new dataroot
-     * 
-     * @deprecated use
-     * {@link org.jboss.aerogear.android.pipeline.MarshallingConfig#setDataRoot(java.lang.String)} instead
-     */
-    @Deprecated
-    public void setDataRoot(String dataRoot) {
-        getRequestBuilder().getMarshallingConfig().setDataRoot(dataRoot);
-        getResponseParser().getMarshallingConfig().setDataRoot(dataRoot);
     }
 
     /**

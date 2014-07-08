@@ -85,31 +85,6 @@ public class LoaderAdapter<T> implements LoaderPipe<T>,
     private final RequestBuilder<T> requestBuilder;
     private final ResponseParser<T> responseParser;
 
-    @Deprecated
-    public LoaderAdapter(Activity activity, Pipe<T> pipe, Gson gson, String name) {
-        this.pipe = pipe;
-        this.requestBuilder = new GsonRequestBuilder<T>(gson);
-        this.responseParser = new GsonResponseParser<T>(gson);
-        this.manager = activity.getLoaderManager();
-        this.applicationContext = activity.getApplicationContext();
-        this.name = name;
-        this.handler = new Handler(Looper.getMainLooper());
-        this.activity = activity;
-    }
-
-    @Deprecated
-    public LoaderAdapter(Fragment fragment, Context applicationContext,
-            Pipe<T> pipe, Gson gson, String name) {
-        this.pipe = pipe;
-        this.manager = fragment.getLoaderManager();
-        this.requestBuilder = new GsonRequestBuilder<T>(gson);
-        this.responseParser = new GsonResponseParser<T>(gson);
-        this.applicationContext = applicationContext;
-        this.name = name;
-        this.handler = new Handler(Looper.getMainLooper());
-        this.fragment = fragment;
-    }
-
     public LoaderAdapter(Activity activity, Pipe<T> pipe,
             String name) {
         this.pipe = pipe;

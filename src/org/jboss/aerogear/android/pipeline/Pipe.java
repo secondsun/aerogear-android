@@ -62,17 +62,6 @@ public interface Pipe<T> {
     void read(ReadFilter filter, Callback<List<T>> callback);
 
     /**
-     * Reads all the data from the underlying server connection.
-     *
-     * @deprecated in 1.1.  Please use {@link Pipe#read(org.jboss.aerogear.android.ReadFilter, org.jboss.aerogear.android.Callback) } instead
-     * 
-     * @param callback The callback for consuming the result from the {@link Pipe} invocation.
-     * @param filter a {@link ReadFilter} for performing pagination and querying.
-     */
-    @Deprecated
-    void readWithFilter(ReadFilter filter, Callback<List<T>> callback);
-
-    /**
      * Saves or updates a given object on the server.
      *
      * @param item     the item to save or update
@@ -87,14 +76,6 @@ public interface Pipe<T> {
      * @param callback The callback for consuming the result from the {@link Pipe} invocation.
      */
     void remove(String id, Callback<Void> callback);
-
-    /**
-     * Returns the GSON serializer used to serialized instances of objects.
-     * 
-     * @return the gson instance servicing this pipe.
-     */
-    @Deprecated
-    Gson getGson();
 
     /**
      * @return the class which travels on this pipe

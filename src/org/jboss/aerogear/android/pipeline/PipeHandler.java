@@ -26,24 +26,7 @@ import org.jboss.aerogear.android.http.HeaderAndBody;
  * interact with services.
  */
 public interface PipeHandler<T> {
-    /**
-     * This method is called after a call to read.  It performs the actual load of data
-     * and returns.
-     * 
-     * @param requestingPipe the Pipe which is calling the this handler.
-     * 
-     * @return a List of data.
-     * 
-     */
-    @Deprecated
-    List<T> onRead(Pipe<T> requestingPipe);
-
-    @Deprecated
-    List<T> onReadWithFilter(ReadFilter filter, Pipe<T> requestingPipe);
-
-    @Deprecated
-    T onSave(T item);
-
+    
     HeaderAndBody onRawRead(Pipe<T> requestingPipe);
 
     HeaderAndBody onRawReadWithFilter(ReadFilter filter, Pipe<T> requestingPipe);

@@ -84,41 +84,6 @@ public class SupportLoaderAdapter<T> implements LoaderPipe<T>, LoaderManager.Loa
      */
     private final String name;
 
-    @Deprecated
-    /**
-     * This constructor is reprecated and will be replaced with 
-     * SupportLoaderAdapter(FragmentActivity activity, Pipe<T> pipe, String name)
-     */
-    public SupportLoaderAdapter(FragmentActivity activity, Pipe<T> pipe, Gson gson, String name) {
-        this.pipe = pipe;
-        this.manager = activity.getSupportLoaderManager();
-        this.applicationContext = activity.getApplicationContext();
-        this.name = name;
-        this.handler = new Handler(Looper.getMainLooper());
-        this.activity = activity;
-        this.fragment = null;
-        this.requestBuilder = new GsonRequestBuilder<T>(gson);
-        this.responseParser = new GsonResponseParser<T>(gson);
-    }
-
-    @Deprecated
-    /**
-     * 
-     * This constructor is deprecated and will be replaced with 
-     * SupportLoaderAdapter(Fragment fragment, Context applicationContext, Pipe<T> pipe, String name)
-     */
-    public SupportLoaderAdapter(Fragment fragment, Context applicationContext, Pipe<T> pipe, Gson gson, String name) {
-        this.pipe = pipe;
-        this.manager = fragment.getLoaderManager();
-        this.requestBuilder = new GsonRequestBuilder<T>(gson);
-        this.applicationContext = applicationContext;
-        this.name = name;
-        this.handler = new Handler(Looper.getMainLooper());
-        this.activity = null;
-        this.fragment = fragment;
-        this.responseParser = new GsonResponseParser<T>(gson);
-    }
-
     public SupportLoaderAdapter(Fragment fragment, Context applicationContext, Pipe<T> pipe, String name) {
         this.pipe = pipe;
         this.manager = fragment.getLoaderManager();
