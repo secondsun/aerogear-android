@@ -166,12 +166,6 @@ public class LoaderAdapter<T> implements LoaderPipe<T>,
     }
 
     @Override
-    public Gson getGson() {
-        return requestBuilder instanceof GsonRequestBuilder ? ((GsonRequestBuilder) requestBuilder)
-                .getGson() : null;
-    }
-
-    @Override
     public RequestBuilder<T> getRequestBuilder() {
         return requestBuilder;
     }
