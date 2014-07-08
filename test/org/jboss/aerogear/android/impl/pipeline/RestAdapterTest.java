@@ -161,7 +161,7 @@ public class RestAdapterTest {
 
     }
 
-    @Test(timeout = 500L)
+    @Test()
     public void testConfigSetEncoding() throws Exception {
         GsonBuilder builder = new GsonBuilder().registerTypeAdapter(
                 Point.class, new RestAdapterTest.PointTypeAdapter());
@@ -170,7 +170,7 @@ public class RestAdapterTest {
         Pipeline pipeline = new Pipeline(url);
         PipeConfig config = new PipeConfig(url, ListClassId.class);
         RequestBuilder requestBuilder = new GsonRequestBuilder(builder.create());
-        MarshallingConfig marshallingConfig = config.getRequestBuilder().getMarshallingConfig();
+        MarshallingConfig marshallingConfig = requestBuilder.getMarshallingConfig();
 
         config.setRequestBuilder(requestBuilder);
         marshallingConfig.setEncoding(utf_16);
@@ -568,7 +568,7 @@ public class RestAdapterTest {
 
     /**
      * Runs a read method, returns the result of the call back and makes sure no
-     * exceptions are thrown
+     * exceptions aredataRoot thrown
      *
      * @param restPipe
      */
