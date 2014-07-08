@@ -52,7 +52,7 @@ public class MemoryStorageTest {
     @Test(expected = IllegalArgumentException.class)
     public void testStoreTypeThrowsException() {
         DefaultStoreFactory factory = new DefaultStoreFactory();
-        StoreConfig config = new StoreConfig();
+        StoreConfig config = new StoreConfig(Data.class);
         config.setType(new FakeStoreType());
         factory.createStore(config);
     }
