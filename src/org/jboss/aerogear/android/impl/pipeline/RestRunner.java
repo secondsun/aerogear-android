@@ -60,7 +60,6 @@ public class RestRunner<T> implements PipeHandler<T> {
     private final PageConfig pageConfig;
     private static final String TAG = RestRunner.class.getSimpleName();
     private final RequestBuilder<T> requestBuilder;
-    private final String dataRoot;
     private final ParameterProvider parameterProvider;
     /**
      * A class of the Generic type this pipe wraps. This is used by GSON for
@@ -84,7 +83,6 @@ public class RestRunner<T> implements PipeHandler<T> {
         this.klass = klass;
         this.arrayKlass = ClassUtils.asArrayClass(klass);
         this.baseURL = baseURL;
-        this.dataRoot = "";
         this.requestBuilder = new GsonRequestBuilder<T>();
         this.pageConfig = null;
         this.parameterProvider = new DefaultParameterProvider();
@@ -103,12 +101,6 @@ public class RestRunner<T> implements PipeHandler<T> {
             this.requestBuilder = config.getRequestBuilder();
         } else {
             this.requestBuilder = new GsonRequestBuilder<T>();
-        }
-
-        if (config.getDataRoot() != null) {
-            this.dataRoot = config.getDataRoot();
-        } else {
-            this.dataRoot = "";
         }
 
         if (config.getResponseParser() != null) {
@@ -331,10 +323,6 @@ public class RestRunner<T> implements PipeHandler<T> {
             Log.e(TAG, "Error turning " + query + " into URI query.", ex);
             throw new RuntimeException(ex);
         }
-    }
-
-    public String getDataRoot() {
-        return dataRoot;
     }
 
     protected RequestBuilder<T> getRequestBuilder() {
