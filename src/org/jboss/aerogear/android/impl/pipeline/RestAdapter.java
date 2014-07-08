@@ -119,10 +119,6 @@ public final class RestAdapter<T> implements Pipe<T> {
         return url;
     }
 
-    @Override
-    public void readWithFilter(ReadFilter filter, final Callback<List<T>> callback) {
-        read(filter, callback);
-    }
 
     @Override
     public void read(ReadFilter filter, final Callback<List<T>> callback) {
@@ -238,11 +234,6 @@ public final class RestAdapter<T> implements Pipe<T> {
     @Override
     public Class<T> getKlass() {
         return klass;
-    }
-
-    @Override
-    public Gson getGson() {
-        return requestBuilder instanceof GsonRequestBuilder ? ((GsonRequestBuilder<T>) requestBuilder).getGson() : null;
     }
 
     @Override
