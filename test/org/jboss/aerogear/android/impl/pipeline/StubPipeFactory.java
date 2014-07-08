@@ -62,10 +62,6 @@ public class StubPipeFactory implements PipeFactory {
             }
 
             @Override
-            public void readWithFilter(ReadFilter filer, Callback callback) {
-            }
-
-            @Override
             public void save(Object item, Callback callback) {
             }
 
@@ -75,12 +71,6 @@ public class StubPipeFactory implements PipeFactory {
 
             @Override
             public PipeHandler getHandler() {
-                return null;
-            }
-
-            @Override
-            @Deprecated
-            public Gson getGson() {
                 return null;
             }
 

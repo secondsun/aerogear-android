@@ -67,19 +67,10 @@ public final class StoreConfig {
      */ 
     private String name;
 
-    /**
-     * 
-     * @deprecated please use StoreConfig#Class instead.
-     */
-    @Deprecated()
-    public StoreConfig() {
-    }
-
     public StoreConfig(Class klass) {
         this.klass = klass;
     }
 
-    
     public Context getContext() {
         return context;
     }
@@ -90,17 +81,6 @@ public final class StoreConfig {
 
     public Class getKlass() {
         return klass;
-    }
-
-    /**
-     * klass is the class that this store will produce
-     * 
-     *@param klass the class that this store represents 
-     * 
-     * @deprecated please use StoreConfig#Class instead.
-     */
-    public void setKlass(Class klass) {
-        this.klass = klass;
     }
 
     public StoreType getType() {

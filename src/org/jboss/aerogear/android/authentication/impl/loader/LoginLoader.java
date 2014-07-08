@@ -40,18 +40,6 @@ public class LoginLoader extends AbstractAuthenticationLoader {
     private HeaderAndBody result = null;
     private final Map<String, String> loginData;
 
-    @Deprecated
-    /**
-     * Use LoginLoader(Context, Callback, AuthenticationModule, Map) instead.
-     */
-    LoginLoader(Context context, Callback callback, AuthenticationModule module, String username, String password) {
-        super(context, module, callback);
-        Map<String, String> loginParams = new HashMap<String, String>();
-        loginParams.put(AbstractAuthenticationModule.USERNAME_PARAMETER_NAME, username);
-        loginParams.put(AbstractAuthenticationModule.PASSWORD_PARAMETER_NAME, password);
-        this.loginData = loginParams;
-    }
-
     LoginLoader(Context context, Callback callback, AuthenticationModule module, Map<String, String> loginData) {
         super(context, module, callback);
         this.loginData = new HashMap<String, String>(loginData);

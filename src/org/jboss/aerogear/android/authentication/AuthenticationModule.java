@@ -98,20 +98,6 @@ public interface AuthenticationModule {
      * parameters returned should be applied to the Url and HttpProvider
      * directly before a call.
      * 
-     * @return the current AuthorizationFields for security
-     *
-     * @deprecated This method has been superseded by {@link  AuthenticationModule#getAuthorizationFields(java.net.URI, String, byte[]) }
-     * 
-     */
-    @Deprecated
-    public AuthorizationFields getAuthorizationFields();
-
-    /**
-     * This method is called be {@link Pipe} implementations when they need
-     * security applied to their {@link HttpProvider}. The headers/data/query
-     * parameters returned should be applied to the Url and HttpProvider
-     * directly before a call.
-     * 
      * @param requestUri the Request-Line URI.
      * @param method the HTTP method being used
      * @param requestBody the body of the request.  This method promises to not 

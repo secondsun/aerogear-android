@@ -74,29 +74,6 @@ public class GsonResponseParser<T> implements ResponseParser<T> {
         return result;
     }
 
-    /**
-     * 
-     * @return the gson Serializer
-     * 
-     * @deprecated This method exists to support another deprecated method while
-     * we transition off of it.  {@link  PipeConfig#setGsonBuilder(com.google.gson.GsonBuilder) }
-     */
-    @Deprecated
-    public Gson getGson() {
-        return gson;
-    }
-
-    /**
-     * @param gson the gson serializer to use
-     * 
-     * @deprecated This method exists to support another deprecated method while
-     * we transition off of it.  {@link  PipeConfig#setGsonBuilder(com.google.gson.GsonBuilder) }
-     */
-    @Deprecated
-    public void setGson(Gson gson) {
-        this.gson = gson;
-    }
-
     private JsonElement getResultElement(JsonElement element, String dataRoot) {
         String[] identifiers = dataRoot.split("\\.");
         for (String identifier : identifiers) {

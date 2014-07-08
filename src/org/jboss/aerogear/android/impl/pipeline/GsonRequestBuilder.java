@@ -41,28 +41,6 @@ public class GsonRequestBuilder<T> implements RequestBuilder<T> {
         return gson.toJson(data).getBytes(marshallingConfig.getEncoding());
     }
 
-    /**
-     * @deprecated This method exists to support another deprecated method while we transition off of it.  {@link  PipeConfig#setGsonBuilder(com.google.gson.GsonBuilder) }
-     * 
-     * @return the Gson serializer used.
-     * 
-     */
-    @Deprecated
-    public Gson getGson() {
-        return gson;
-    }
-
-    /**
-     * @deprecated This method exists to support another deprecated method while we transition off of it.  {@link  PipeConfig#setGsonBuilder(com.google.gson.GsonBuilder) }
-     * 
-     * @param gson the gson serializer to use
-     * 
-     */
-    @Deprecated
-    public void setGson(Gson gson) {
-        this.gson = gson;
-    }
-
     @Override
     public String getContentType() {
         return CONTENT_TYPE;
