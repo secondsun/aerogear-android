@@ -167,11 +167,6 @@ public class AuthenticationModuleAdapter implements LoaderAuthenticationModule, 
     }
 
     @Override
-    public AuthorizationFields getAuthorizationFields() {
-        return module.getAuthorizationFields();
-    }
-
-    @Override
     public AuthorizationFields getAuthorizationFields(URI requestUri, String method, byte[] requestBody) {
         return module.getAuthorizationFields(requestUri, method, requestBody);
     }
