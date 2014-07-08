@@ -37,7 +37,7 @@ public final class StoreConfig {
      * The Class of the store, should be the same as the parameterized class
      * of the Store.  Used by {@link SQLStore}
      */
-    private Class klass;
+    private final Class klass;
 
     /**
      * The type of Store this instance will build when consumed by a {@link StoreFactory}
