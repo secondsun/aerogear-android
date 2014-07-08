@@ -148,6 +148,8 @@ public class RestAdapterTest {
         config.setRequestBuilder(new GsonRequestBuilder(builder.create()));
         MarshallingConfig marshallingConfig = config.getRequestBuilder().getMarshallingConfig();
         marshallingConfig.setEncoding(utf_16);
+        marshallingConfig = config.getResponseParser().getMarshallingConfig();
+        marshallingConfig.setEncoding(utf_16);
         RestAdapter<ListClassId> restPipe = new RestAdapter<ListClassId>(ListClassId.class, url, config);
         Object restRunner = UnitTestUtils.getPrivateField(restPipe, "restRunner");
         UnitTestUtils.setPrivateField(restRunner, "httpProviderFactory", new Provider<HttpProvider>() {
@@ -592,7 +594,7 @@ public class RestAdapterTest {
             }
         });
 
-        latch.await(2, TimeUnit.SECONDS);
+        latch.await(20, TimeUnit.SECONDS);
         Assert.assertFalse(hasException.get());
 
         return resultRef.get();
