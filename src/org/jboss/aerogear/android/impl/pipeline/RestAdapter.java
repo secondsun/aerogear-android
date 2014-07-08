@@ -33,8 +33,11 @@ import org.jboss.aerogear.android.pipeline.RequestBuilder;
 import org.jboss.aerogear.android.pipeline.ResponseParser;
 
 import android.util.Log;
+import java.io.Serializable;
 
-import com.google.gson.Gson;
+import org.jboss.aerogear.android.http.HeaderAndBody;
+import org.jboss.aerogear.android.impl.reflection.Property;
+import org.jboss.aerogear.android.impl.reflection.Scan;
 
 /**
  * Rest implementation of {@link Pipe}.
@@ -64,9 +67,9 @@ public final class RestAdapter<T> implements Pipe<T> {
     private final ResponseParser<T> responseParser;
 
     /**
-     * 
+     *
      * This will configure the Adapter as with sane RESTful defaults.
-     * 
+     *
      * @param klass The type that this adapter will consume and produce
      * @param absoluteURL the RESTful URL endpoint.
      */
@@ -79,13 +82,13 @@ public final class RestAdapter<T> implements Pipe<T> {
     }
 
     /**
-     * 
+     *
      * This will build an adapter based on a configuration.
-     * 
+     *
      * @param klass The type that this adapter will consume and produce
      * @param absoluteURL the RESTful URL endpoint.
      * @param config A PipeConfig to use. NOTE: the URL's provided in the config
-     *            are ignored in deference to the absoluteURL parameter.
+     * are ignored in deference to the absoluteURL parameter.
      */
     @SuppressWarnings("unchecked")
     public RestAdapter(Class<T> klass, URL absoluteURL, PipeConfig config) {
@@ -119,7 +122,6 @@ public final class RestAdapter<T> implements Pipe<T> {
         return url;
     }
 
-
     @Override
     public void read(ReadFilter filter, final Callback<List<T>> callback) {
         if (filter == null) {
@@ -134,7 +136,8 @@ public final class RestAdapter<T> implements Pipe<T> {
             @Override
             public void run() {
                 try {
-                    this.result = restRunner.onReadWithFilter(innerFilter, RestAdapter.this);
+                    HeaderAndBody response = restRunner.onRawReadWithFilter(innerFilter, RestAdapter.this);
+                    this.result = getResponseParser().handleResponse(response, klass);
                 } catch (Exception e) {
                     Log.e(TAG, e.getMessage(), e);
                     this.exception = e;
@@ -161,7 +164,7 @@ public final class RestAdapter<T> implements Pipe<T> {
             @Override
             public void run() {
                 try {
-                    this.result = restRunner.onRead(RestAdapter.this);
+                    this.result = getResponseParser().handleResponse(restRunner.onRawRead(RestAdapter.this), klass);
                 } catch (Exception e) {
                     Log.e(TAG, e.getMessage(), e);
                     this.exception = e;
@@ -185,7 +188,17 @@ public final class RestAdapter<T> implements Pipe<T> {
                 Exception exception = null;
 
                 try {
-                    result = restRunner.onSave(data);
+                    String id;
+
+                    String recordIdFieldName = Scan.recordIdFieldNameIn(data.getClass());
+                    Object idObject = new Property(data.getClass(), recordIdFieldName).getValue(data);
+                    id = idObject == null ? null : idObject.toString();
+
+                    byte[] body = requestBuilder.getBody(data);
+                    
+                    HeaderAndBody response = restRunner.onRawSave(id, body);
+                    
+                    result = getResponseParser().handleResponse(response, klass).get(0);
                 } catch (Exception e) {
                     exception = e;
                 }
