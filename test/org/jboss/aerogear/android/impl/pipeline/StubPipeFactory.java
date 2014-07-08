@@ -16,7 +16,6 @@
  */
 package org.jboss.aerogear.android.impl.pipeline;
 
-import com.google.gson.Gson;
 import java.net.MalformedURLException;
 import java.net.URL;
 import org.jboss.aerogear.android.Callback;

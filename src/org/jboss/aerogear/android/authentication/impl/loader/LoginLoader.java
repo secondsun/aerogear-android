@@ -27,7 +27,6 @@ import android.content.Loader;
 import android.util.Log;
 import java.util.HashMap;
 import java.util.Map;
-import org.jboss.aerogear.android.authentication.AbstractAuthenticationModule;
 
 /**
  * This class is a {@link Loader} which performs an login operation on behalf 

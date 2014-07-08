@@ -18,7 +18,6 @@ package org.jboss.aerogear.android.impl.pipeline;
 
 import java.net.URL;
 import java.nio.charset.Charset;
-import java.nio.charset.UnsupportedCharsetException;
 import java.util.Locale;
 
 import org.jboss.aerogear.android.Pipeline;

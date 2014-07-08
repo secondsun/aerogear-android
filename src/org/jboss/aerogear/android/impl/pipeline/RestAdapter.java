@@ -33,7 +33,6 @@ import org.jboss.aerogear.android.pipeline.RequestBuilder;
 import org.jboss.aerogear.android.pipeline.ResponseParser;
 
 import android.util.Log;
-import java.io.Serializable;
 
 import org.jboss.aerogear.android.http.HeaderAndBody;
 import org.jboss.aerogear.android.impl.reflection.Property;

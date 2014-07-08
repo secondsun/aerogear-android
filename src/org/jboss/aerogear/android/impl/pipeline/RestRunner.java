@@ -39,8 +39,6 @@ import org.jboss.aerogear.android.impl.pipeline.paging.URIBodyPageParser;
 import org.jboss.aerogear.android.impl.pipeline.paging.URIPageHeaderParser;
 import org.jboss.aerogear.android.impl.pipeline.paging.WebLink;
 import org.jboss.aerogear.android.impl.pipeline.paging.WrappingPagedList;
-import org.jboss.aerogear.android.impl.reflection.Property;
-import org.jboss.aerogear.android.impl.reflection.Scan;
 import org.jboss.aerogear.android.impl.util.ParseException;
 import org.jboss.aerogear.android.impl.util.UrlUtils;
 import org.jboss.aerogear.android.impl.util.WebLinkParser;
