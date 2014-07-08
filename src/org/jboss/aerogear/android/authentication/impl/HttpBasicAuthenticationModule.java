@@ -176,17 +176,12 @@ public class HttpBasicAuthenticationModule extends AbstractAuthenticationModule 
     }
 
     @Override
-    public AuthorizationFields getAuthorizationFields() {
+    public AuthorizationFields getAuthorizationFields(URI requestUri, String method, byte[] requestBody) {
         AuthorizationFields fields = new AuthorizationFields();
         List<Pair<String, String>> headerList = new ArrayList<Pair<String, String>>(1);
         headerList.add(new Pair<String, String>(BASIC_HEADER, getHashedAuth()));
         fields.setHeaders(headerList);
         return fields;
-    }
-
-    @Override
-    public AuthorizationFields getAuthorizationFields(URI requestUri, String method, byte[] requestBody) {
-        return getAuthorizationFields();
     }
 
     @Override

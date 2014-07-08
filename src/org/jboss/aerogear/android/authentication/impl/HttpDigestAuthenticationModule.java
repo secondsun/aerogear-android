@@ -163,11 +163,6 @@ public class HttpDigestAuthenticationModule extends AbstractAuthenticationModule
     }
 
     @Override
-    public AuthorizationFields getAuthorizationFields() {
-        throw new UnsupportedOperationException("Not supported");
-    }
-
-    @Override
     public AuthorizationFields getAuthorizationFields(URI requestUri, String method, byte[] requestBody) {
         AuthorizationFields fields = new AuthorizationFields();
         fields.addHeader("Authorization", runner.getAuthorizationHeader(requestUri, method, requestBody));

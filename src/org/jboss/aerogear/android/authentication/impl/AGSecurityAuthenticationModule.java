@@ -180,13 +180,8 @@ public final class AGSecurityAuthenticationModule extends AbstractAuthentication
     }
 
     @Override
-    public AuthorizationFields getAuthorizationFields() {
-        return new AuthorizationFields();
-    }
-
-    @Override
     public AuthorizationFields getAuthorizationFields(URI requestUri, String method, byte[] requestBody) {
-        return getAuthorizationFields();
+        return new AuthorizationFields();
     }
 
     @Override
