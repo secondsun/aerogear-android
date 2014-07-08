@@ -65,6 +65,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.jboss.aerogear.android.pipeline.MarshallingConfig;
 import org.jboss.aerogear.android.pipeline.RequestBuilder;
 
 import static org.junit.Assert.*;
@@ -110,9 +111,10 @@ public class RestAdapterTest {
     @Test(expected = IllegalArgumentException.class)
     public void testPipeFactoryPipeConfigEncoding() {
         PipeConfig config = new PipeConfig(url, Data.class);
-        config.setEncoding("UTF-16");
-        assertEquals(Charset.forName("UTF-16"), config.getEncoding());
-        config.setEncoding((Charset) null);
+        MarshallingConfig marshallingConfig = config.getRequestBuilder().getMarshallingConfig();
+        marshallingConfig.setEncoding(Charset.forName("UTF-16"));
+        assertEquals(Charset.forName("UTF-16"), marshallingConfig.getEncoding());
+        marshallingConfig.setEncoding((Charset) null);
     }
 
     @Test
@@ -144,7 +146,8 @@ public class RestAdapterTest {
 
         PipeConfig config = new PipeConfig(url, ListClassId.class);
         config.setRequestBuilder(new GsonRequestBuilder(builder.create()));
-        config.setEncoding(utf_16);
+        MarshallingConfig marshallingConfig = config.getRequestBuilder().getMarshallingConfig();
+        marshallingConfig.setEncoding(utf_16);
         RestAdapter<ListClassId> restPipe = new RestAdapter<ListClassId>(ListClassId.class, url, config);
         Object restRunner = UnitTestUtils.getPrivateField(restPipe, "restRunner");
         UnitTestUtils.setPrivateField(restRunner, "httpProviderFactory", new Provider<HttpProvider>() {
@@ -167,8 +170,10 @@ public class RestAdapterTest {
         Pipeline pipeline = new Pipeline(url);
         PipeConfig config = new PipeConfig(url, ListClassId.class);
         RequestBuilder requestBuilder = new GsonRequestBuilder(builder.create());
+        MarshallingConfig marshallingConfig = config.getRequestBuilder().getMarshallingConfig();
+
         config.setRequestBuilder(requestBuilder);
-        config.setEncoding(utf_16);
+        marshallingConfig.setEncoding(utf_16);
 
         RestAdapter<ListClassId> restPipe = (RestAdapter<ListClassId>) pipeline
                 .pipe(ListClassId.class, config);
@@ -208,7 +213,7 @@ public class RestAdapterTest {
 
         PipeConfig config = new PipeConfig(url, ListClassId.class);
         config.setRequestBuilder(new GsonRequestBuilder(builder.create()));
-        config.setDataRoot("result.points");
+        config.getResponseParser().getMarshallingConfig().setDataRoot("result.points");
 
         RestAdapter<ListClassId> restPipe = new RestAdapter<ListClassId>(ListClassId.class, url, config);
 
@@ -234,7 +239,7 @@ public class RestAdapterTest {
 
         PipeConfig config = new PipeConfig(url, ListClassId.class);
         config.setRequestBuilder(new GsonRequestBuilder(builder.create()));
-        config.setDataRoot("");
+        config.getResponseParser().getMarshallingConfig().setDataRoot("");
 
         RestAdapter<Point> restPipe = new RestAdapter<Point>(Point.class, url, config);
 
