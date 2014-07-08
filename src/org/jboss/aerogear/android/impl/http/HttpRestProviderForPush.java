@@ -83,7 +83,7 @@ public class HttpRestProviderForPush implements HttpProvider {
     public void setPasswordAuthentication(final String username, final String password) {
         basicAuth = new HttpBasicAuthenticationModule(getUrl());
         basicAuth.login(username, password, new EmptyCallback());
-        for (Pair<String, String> header : basicAuth.getAuthorizationFields().getHeaders()) {
+        for (Pair<String, String> header : basicAuth.getAuthorizationFields(null, null, null).getHeaders()) {
             setDefaultHeader(header.first, header.second);
         }
     }
