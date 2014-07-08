@@ -33,10 +33,18 @@ import org.jboss.aerogear.android.pipeline.RequestBuilder;
 import org.jboss.aerogear.android.pipeline.ResponseParser;
 
 import android.util.Log;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 import org.jboss.aerogear.android.http.HeaderAndBody;
+import org.jboss.aerogear.android.impl.pipeline.paging.WebLink;
+import org.jboss.aerogear.android.impl.pipeline.paging.WrappingPagedList;
 import org.jboss.aerogear.android.impl.reflection.Property;
 import org.jboss.aerogear.android.impl.reflection.Scan;
+import org.jboss.aerogear.android.impl.util.ParseException;
+import org.jboss.aerogear.android.impl.util.WebLinkParser;
+import org.jboss.aerogear.android.pipeline.paging.PageConfig;
+import org.json.JSONObject;
 
 /**
  * Rest implementation of {@link Pipe}.
@@ -64,6 +72,7 @@ public final class RestAdapter<T> implements Pipe<T> {
     private final PipeHandler<T> restRunner;
     private final RequestBuilder<T> requestBuilder;
     private final ResponseParser<T> responseParser;
+    private final PageConfig pageConfig;
 
     /**
      *
@@ -76,6 +85,7 @@ public final class RestAdapter<T> implements Pipe<T> {
         this.restRunner = new RestRunner<T>(klass, absoluteURL);
         this.klass = klass;
         this.url = absoluteURL;
+        this.pageConfig = null;
         this.requestBuilder = new GsonRequestBuilder<T>();
         this.responseParser = new GsonResponseParser<T>();
     }
@@ -94,6 +104,7 @@ public final class RestAdapter<T> implements Pipe<T> {
         this.klass = klass;
         this.url = absoluteURL;
 
+        this.pageConfig = config.getPageConfig();
         this.requestBuilder = config.getRequestBuilder();
         this.responseParser = config.getResponseParser();
 
@@ -137,6 +148,11 @@ public final class RestAdapter<T> implements Pipe<T> {
                 try {
                     HeaderAndBody response = restRunner.onRawReadWithFilter(innerFilter, RestAdapter.this);
                     this.result = getResponseParser().handleResponse(response, klass);
+                    
+                    if (pageConfig != null) {
+                        result = computePagedList(result, response, innerFilter.getWhere(), RestAdapter.this);
+                    }
+                    
                 } catch (Exception e) {
                     Log.e(TAG, e.getMessage(), e);
                     this.exception = e;
@@ -258,4 +274,76 @@ public final class RestAdapter<T> implements Pipe<T> {
         return this.responseParser;
     }
 
+    /**
+     *
+     * This method checks for paging information and returns the appropriate
+     * data
+     *
+     * @param result
+     * @param httpResponse
+     * @param where
+     * @return a {@link WrappingPagedList} if there is paging, result if not.
+     */
+    private List<T> computePagedList(List<T> result, HeaderAndBody httpResponse, JSONObject where, Pipe<T> requestingPipe) {
+        ReadFilter previousRead = null;
+        ReadFilter nextRead = null;
+
+        if (PageConfig.MetadataLocations.WEB_LINKING.equals(pageConfig.getMetadataLocation())) {
+            String webLinksRaw = "";
+            final String relHeader = "rel";
+            final String nextIdentifier = pageConfig.getNextIdentifier();
+            final String prevIdentifier = pageConfig.getPreviousIdentifier();
+            try {
+                webLinksRaw = getWebLinkHeader(httpResponse);
+                if (webLinksRaw == null) { //no paging, return result
+                    return result;
+                }
+                List<WebLink> webLinksParsed = WebLinkParser.parse(webLinksRaw);
+                for (WebLink link : webLinksParsed) {
+                    if (nextIdentifier.equals(link.getParameters().get(relHeader))) {
+                        nextRead = new ReadFilter();
+                        nextRead.setLinkUri(new URI(link.getUri()));
+                    } else if (prevIdentifier.equals(link.getParameters().get(relHeader))) {
+                        previousRead = new ReadFilter();
+                        previousRead.setLinkUri(new URI(link.getUri()));
+                    }
+
+                }
+            } catch (URISyntaxException ex) {
+                Log.e(TAG, webLinksRaw + " did not contain a valid context URI", ex);
+                throw new RuntimeException(ex);
+            } catch (ParseException ex) {
+                Log.e(TAG, webLinksRaw + " could not be parsed as a web link header", ex);
+                throw new RuntimeException(ex);
+            }
+        } else if (pageConfig.getMetadataLocation().equals(PageConfig.MetadataLocations.HEADERS)) {
+            nextRead = pageConfig.getPageParameterExtractor().getNextFilter(httpResponse, RestAdapter.this.pageConfig);
+            previousRead = pageConfig.getPageParameterExtractor().getPreviousFilter(httpResponse, RestAdapter.this.pageConfig);
+        } else if (pageConfig.getMetadataLocation().equals(PageConfig.MetadataLocations.BODY)) {
+            nextRead = pageConfig.getPageParameterExtractor().getNextFilter(httpResponse, RestAdapter.this.pageConfig);
+            previousRead = pageConfig.getPageParameterExtractor().getPreviousFilter(httpResponse, RestAdapter.this.pageConfig);
+        } else {
+            throw new IllegalStateException("Not supported");
+        }
+        if (nextRead != null) {
+            nextRead.setWhere(where);
+        }
+
+        if (previousRead != null) {
+            previousRead.setWhere(where);
+        }
+
+        return new WrappingPagedList<T>(requestingPipe, result, nextRead, previousRead);
+    }
+
+    private String getWebLinkHeader(HeaderAndBody httpResponse) {
+        String linkHeaderName = "Link";
+        Object header = httpResponse.getHeader(linkHeaderName);
+        if (header != null) {
+            return header.toString();
+        }
+        return null;
+    }
+
+    
 }
