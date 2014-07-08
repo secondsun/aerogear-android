@@ -529,11 +529,11 @@ public class RestAdapterTest {
             }
         });
         JSONObject where = new JSONObject();
-        Object restRunner = UnitTestUtils.getPrivateField(adapter, "restRunner");
-        Method method = restRunner.getClass().getDeclaredMethod("computePagedList", List.class, HeaderAndBody.class, JSONObject.class, Pipe.class);
+        
+        Method method = adapter.getClass().getDeclaredMethod("computePagedList", List.class, HeaderAndBody.class, JSONObject.class, Pipe.class);
         method.setAccessible(true);
 
-        WrappingPagedList<Data> pagedList = (WrappingPagedList<Data>) method.invoke(restRunner, list, response, where, adapter);
+        WrappingPagedList<Data> pagedList = (WrappingPagedList<Data>) method.invoke(adapter, list, response, where, adapter);
         assertEquals(new URI("http://server.com/context/chapter3"), pagedList.getNextFilter().getLinkUri());
         assertEquals(new URI("http://server.com/context/chapter2"), pagedList.getPreviousFilter().getLinkUri());
 
@@ -550,15 +550,14 @@ public class RestAdapterTest {
         config.setPageConfig(pageConfig);
 
         RestAdapter adapter = new RestAdapter(Data.class, url, config);
-        Object restRunner = UnitTestUtils.getPrivateField(adapter, "restRunner");
-
+        
         List<Data> list = new ArrayList<Data>();
         HeaderAndBody response = new HeaderAndBody("{\"pages\":{\"next\":\"chapter3\",\"previous\":\"chapter2\"}}".getBytes(), new HashMap<String, Object>());
         JSONObject where = new JSONObject();
-        Method method = restRunner.getClass().getDeclaredMethod("computePagedList", List.class, HeaderAndBody.class, JSONObject.class, Pipe.class);
+        Method method = adapter.getClass().getDeclaredMethod("computePagedList", List.class, HeaderAndBody.class, JSONObject.class, Pipe.class);
         method.setAccessible(true);
 
-        WrappingPagedList<Data> pagedList = (WrappingPagedList<Data>) method.invoke(restRunner, list, response, where, adapter);
+        WrappingPagedList<Data> pagedList = (WrappingPagedList<Data>) method.invoke(adapter, list, response, where, adapter);
         assertEquals(new URI("http://server.com/context/chapter3"), pagedList.getNextFilter().getLinkUri());
         assertEquals(new URI("http://server.com/context/chapter2"), pagedList.getPreviousFilter().getLinkUri());
 
