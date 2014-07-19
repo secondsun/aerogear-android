@@ -32,6 +32,8 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.jboss.aerogear.android.code.ModuleFields;
+import org.jboss.aerogear.android.http.HttpException;
 
 /**
  * A module for authenticating with restful AG services.
@@ -189,4 +191,22 @@ public final class AGSecurityAuthenticationModule extends AbstractAuthentication
         return false;
     }
 
+    @Override
+    public ModuleFields loadModule(URI relativeURI, String httpMethod, byte[] requestBody) {
+        AuthorizationFields fields = this.getAuthorizationFields(relativeURI, httpMethod, requestBody);
+        ModuleFields moduleFields = new ModuleFields();
+        
+        moduleFields.setHeaders(fields.getHeaders());
+        moduleFields.setQueryParameters(fields.getQueryParameters());
+        
+        return moduleFields;
+    }
+
+    @Override
+    public boolean handleError(HttpException exception) {
+        return retryLogin();
+    }
+
+    
+    
 }

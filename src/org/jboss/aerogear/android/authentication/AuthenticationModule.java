@@ -21,6 +21,7 @@ import java.net.URL;
 import java.util.Map;
 
 import org.jboss.aerogear.android.Callback;
+import org.jboss.aerogear.android.code.PipeModule;
 import org.jboss.aerogear.android.http.HeaderAndBody;
 import org.jboss.aerogear.android.http.HttpException;
 import org.jboss.aerogear.android.http.HttpProvider;
@@ -31,7 +32,7 @@ import org.jboss.aerogear.android.pipeline.Pipe;
  * to log a user in, out, and modify requests from a {@link Pipe} so they are
  * seen as authenticated.
  */
-public interface AuthenticationModule {
+public interface AuthenticationModule extends PipeModule {
 
     public URL getBaseURL();
 
@@ -104,8 +105,9 @@ public interface AuthenticationModule {
      * modify the body.
      * 
      * @return the current AuthorizationFields for security
-     * 
+     * @deprecated replaced by {@link PipeModule#loadModule(java.net.URI, java.lang.String, byte[])} 
      */
+    @Deprecated
     public AuthorizationFields getAuthorizationFields(URI requestUri, String method, byte[] requestBody);
 
     /**
@@ -120,7 +122,9 @@ public interface AuthenticationModule {
      * This method is blocking and it should NOT be called by the user directly.
      * 
      * @return whether or not retrying the login succeeded.
+     * @deprecated replaced by {@link PipeModule#handleError(org.jboss.aerogear.android.http.HttpException) }
      */
+    @Deprecated
     public boolean retryLogin() throws HttpException;
 
 }
