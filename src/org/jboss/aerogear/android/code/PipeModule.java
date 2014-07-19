@@ -2,7 +2,6 @@ package org.jboss.aerogear.android.code;
 
 import java.net.URI;
 import org.jboss.aerogear.android.http.HttpException;
-import org.jboss.aerogear.android.http.HttpProvider;
 
 /**
  * A PipeModule allows special actions to be taken during certain phases of the
@@ -25,15 +24,6 @@ public interface PipeModule {
      * @return moduleFields which
      */
     ModuleFields loadModule(URI relativeURI, String httpMethod, byte[] requestBody);
-
-    /**
-     *
-     * This method will configure an httpProvider.
-     *
-     * @param fields the fields to use.
-     * @param httpProvider the provider which will be used
-     */
-    public void applyModule(ModuleFields fields, HttpProvider httpProvider);
 
     /**
      * This will try to resolve an error.
