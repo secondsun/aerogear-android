@@ -56,7 +56,7 @@ public class RestRunnerTest {
         } catch (Exception ignore) {
         }
 
-        verify(mockModule, times(1)).retryLogin();
+        verify(mockModule, times(1)).handleError(any(HttpException.class));
         verify(mockProvider, times(2)).get();
 
     }
@@ -75,14 +75,14 @@ public class RestRunnerTest {
         } catch (Exception ignore) {
         }
 
-        verify(mockModule, times(1)).retryLogin();
+        verify(mockModule, times(1)).handleError(any(HttpException.class));
         verify(mockProvider, times(2)).get();
     }
 
     private AuthenticationModule createMockModule() {
         AuthenticationModule module = mock(AuthenticationModule.class);
         when(module.isLoggedIn()).thenReturn(true);
-        when(module.retryLogin()).thenReturn(Boolean.TRUE);
+        when(module.handleError(any(HttpException.class))).thenReturn(Boolean.TRUE);
         return module;
     }
 
