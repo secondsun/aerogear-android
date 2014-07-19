@@ -26,7 +26,9 @@ import static org.jboss.aerogear.android.authentication.AbstractAuthenticationMo
 import static org.jboss.aerogear.android.authentication.AbstractAuthenticationModule.USERNAME_PARAMETER_NAME;
 import org.jboss.aerogear.android.authentication.AuthenticationConfig;
 import org.jboss.aerogear.android.authentication.AuthorizationFields;
+import org.jboss.aerogear.android.code.ModuleFields;
 import org.jboss.aerogear.android.http.HeaderAndBody;
+import org.jboss.aerogear.android.http.HttpException;
 
 /**
  * This class provides Authentication using HTTP Digest
@@ -180,6 +182,22 @@ public class HttpDigestAuthenticationModule extends AbstractAuthenticationModule
     @Override
     public void login(Map<String, String> loginData, Callback<HeaderAndBody> callback) {
         login(loginData.get(USERNAME_PARAMETER_NAME), loginData.get(PASSWORD_PARAMETER_NAME), callback);
+    }
+    
+    @Override
+    public ModuleFields loadModule(URI relativeURI, String httpMethod, byte[] requestBody) {
+        AuthorizationFields fields = this.getAuthorizationFields(relativeURI, httpMethod, requestBody);
+        ModuleFields moduleFields = new ModuleFields();
+        
+        moduleFields.setHeaders(fields.getHeaders());
+        moduleFields.setQueryParameters(fields.getQueryParameters());
+        
+        return moduleFields;
+    }
+
+    @Override
+    public boolean handleError(HttpException exception) {
+        return retryLogin();
     }
 
 }

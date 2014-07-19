@@ -42,6 +42,8 @@ import android.util.Log;
 import com.google.common.base.Objects;
 import java.net.URI;
 import org.jboss.aerogear.android.authentication.AbstractAuthenticationModule;
+import org.jboss.aerogear.android.code.ModuleFields;
+import org.jboss.aerogear.android.http.HttpException;
 
 /**
  * This class manages the relationship between Android's Loader framework and
@@ -296,4 +298,20 @@ public class AuthenticationModuleAdapter implements LoaderAuthenticationModule, 
         }
     }
 
+    @Override
+    public ModuleFields loadModule(URI relativeURI, String httpMethod, byte[] requestBody) {
+        AuthorizationFields fields = this.getAuthorizationFields(relativeURI, httpMethod, requestBody);
+        ModuleFields moduleFields = new ModuleFields();
+        
+        moduleFields.setHeaders(fields.getHeaders());
+        moduleFields.setQueryParameters(fields.getQueryParameters());
+        
+        return moduleFields;
+    }
+
+    @Override
+    public boolean handleError(HttpException exception) {
+        return retryLogin();
+    }
+    
 }

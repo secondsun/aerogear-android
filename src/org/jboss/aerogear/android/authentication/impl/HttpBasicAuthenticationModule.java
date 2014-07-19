@@ -37,6 +37,8 @@ import android.util.Base64;
 import android.util.Pair;
 import java.net.URI;
 import static org.jboss.aerogear.android.authentication.AbstractAuthenticationModule.USERNAME_PARAMETER_NAME;
+import org.jboss.aerogear.android.code.ModuleFields;
+import org.jboss.aerogear.android.http.HttpException;
 
 /**
  * This class provides Authentication using HTTP Basic
@@ -221,4 +223,22 @@ public class HttpBasicAuthenticationModule extends AbstractAuthenticationModule 
     public void login(Map<String, String> loginData, Callback<HeaderAndBody> callback) {
         login(loginData.get(USERNAME_PARAMETER_NAME), loginData.get(PASSWORD_PARAMETER_NAME), callback);
     }
+
+    @Override
+    public ModuleFields loadModule(URI relativeURI, String httpMethod, byte[] requestBody) {
+        AuthorizationFields fields = this.getAuthorizationFields(relativeURI, httpMethod, requestBody);
+        ModuleFields moduleFields = new ModuleFields();
+        
+        moduleFields.setHeaders(fields.getHeaders());
+        moduleFields.setQueryParameters(fields.getQueryParameters());
+        
+        return moduleFields;
+    }
+
+    @Override
+    public boolean handleError(HttpException exception) {
+        return retryLogin();
+    }
+    
+    
 }
