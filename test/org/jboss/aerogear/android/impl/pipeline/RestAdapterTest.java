@@ -32,7 +32,6 @@ import java.io.Serializable;
 import junit.framework.Assert;
 import org.jboss.aerogear.android.*;
 import org.jboss.aerogear.android.authentication.AuthenticationModule;
-import org.jboss.aerogear.android.authentication.AuthorizationFields;
 import org.jboss.aerogear.android.http.HeaderAndBody;
 import org.jboss.aerogear.android.http.HttpProvider;
 import org.jboss.aerogear.android.impl.core.HttpProviderFactory;
@@ -65,6 +64,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.jboss.aerogear.android.code.ModuleFields;
 import org.jboss.aerogear.android.pipeline.MarshallingConfig;
 import org.jboss.aerogear.android.pipeline.RequestBuilder;
 
@@ -396,12 +396,12 @@ public class RestAdapterTest {
         when(provider.get()).thenReturn(headerAndBody);
         when(factory.get(anyObject(), anyObject())).thenReturn(provider);
 
-        AuthorizationFields authFields = new AuthorizationFields();
-        authFields.addQueryParameter("token", "token");
+        ModuleFields moduleFields = new ModuleFields();
+        moduleFields.addQueryParameter("token", "token");
 
         AuthenticationModule urlModule = mock(AuthenticationModule.class);
         when(urlModule.isLoggedIn()).thenReturn(true);
-        when(urlModule.getAuthorizationFields((URI) anyObject(), anyString(), (byte[]) anyObject())).thenReturn(authFields);
+        when(urlModule.loadModule((URI) anyObject(), anyString(), (byte[]) anyObject())).thenReturn(moduleFields);
 
         PipeConfig config = new PipeConfig(url, Data.class);
         config.setAuthModule(urlModule);
