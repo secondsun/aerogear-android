@@ -48,6 +48,7 @@ import android.util.Log;
 import android.util.Pair;
 
 import org.apache.http.HttpStatus;
+import org.jboss.aerogear.android.code.ModuleFields;
 import org.jboss.aerogear.android.impl.util.ClassUtils;
 
 public class RestRunner<T> implements PipeHandler<T> {
@@ -211,7 +212,11 @@ public class RestRunner<T> implements PipeHandler<T> {
     private AuthorizationFields loadAuth(URI relativeURI, String httpMethod) {
 
         if (authModule != null && authModule.isLoggedIn()) {
-            return authModule.getAuthorizationFields(relativeURI, httpMethod, new byte[] {});
+            ModuleFields fields = authModule.loadModule(relativeURI, httpMethod, new byte[] {});
+            AuthorizationFields authorizationFields = new AuthorizationFields();
+            authorizationFields.setHeaders(fields.getHeaders());
+            authorizationFields.setQueryParameters(fields.getQueryParameters());
+            return authorizationFields;
         } else if (authzModule != null && authzModule.hasCredentials()) {
             return authzModule.getAuthorizationFields(relativeURI, httpMethod, new byte[] {});
         }
@@ -255,7 +260,7 @@ public class RestRunner<T> implements PipeHandler<T> {
     }
 
     private boolean retryAuth(AuthenticationModule authModule) {
-        return authModule != null && authModule.isLoggedIn() && authModule.retryLogin();
+        return authModule != null && authModule.isLoggedIn() && authModule.handleError(null);
     }
 
     private boolean retryAuthz(AuthzModule authzModule) {
@@ -285,12 +290,14 @@ public class RestRunner<T> implements PipeHandler<T> {
 
     }
 
+    
     private HeaderAndBody runHttpGet(HttpProvider httpProvider) {
         HeaderAndBody httpResponse;
 
         try {
             httpResponse = httpProvider.get();
         } catch (HttpException exception) {
+            //TODO: After modularization this should look over modules and pass in the httpException.
             if ((exception.getStatusCode() == HttpStatus.SC_UNAUTHORIZED
                     || exception.getStatusCode() == HttpStatus.SC_FORBIDDEN) && (retryAuth(authModule) || retryAuthz(authzModule))) {
                 httpResponse = httpProvider.get();
