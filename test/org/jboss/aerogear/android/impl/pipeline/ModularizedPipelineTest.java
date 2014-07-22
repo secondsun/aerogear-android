@@ -3,10 +3,11 @@ package org.jboss.aerogear.android.impl.pipeline;
 import java.net.MalformedURLException;
 import java.net.URL;
 import static junit.framework.Assert.assertEquals;
-import org.jboss.aerogear.android.Pipeline2;
+import org.jboss.aerogear.android.pipeline.Pipeline2;
 import org.jboss.aerogear.android.authentication.AuthenticationModule;
 import org.jboss.aerogear.android.authentication.impl.HttpBasicAuthenticationModule;
 import org.jboss.aerogear.android.authorization.AuthzModule;
+import org.jboss.aerogear.android.code.PipeModule;
 import org.jboss.aerogear.android.impl.helper.Data;
 import static org.jboss.aerogear.android.impl.helper.UnitTestUtils.getPrivateField;
 import static org.jboss.aerogear.android.impl.pipeline.PipeTypes.REST;
@@ -87,7 +88,7 @@ public class ModularizedPipelineTest {
     public void addAuthzToPipe() throws NoSuchFieldException, IllegalArgumentException, IllegalAccessException {
         AuthzModule authzModule = mock(AuthzModule.class);
 
-        Pipe newPipe = Pipeline2.config(PipeConfiguration.class, "auth").withUrl(url).module(authzModule).forClass(Data.class);
+        Pipe newPipe = Pipeline2.config(PipeConfiguration.class, "auth").withUrl(url).module((PipeModule)authzModule).forClass(Data.class);
 
         RestRunner runner = getPrivateField(newPipe, "restRunner", RestRunner.class);
         AuthzModule module = getPrivateField(runner, "authzModule", AuthzModule.class);

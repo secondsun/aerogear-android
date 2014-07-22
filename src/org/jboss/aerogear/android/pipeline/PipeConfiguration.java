@@ -17,6 +17,7 @@
 package org.jboss.aerogear.android.pipeline;
 
 import java.net.URL;
+import org.jboss.aerogear.android.code.PipeModule;
 import org.jboss.aerogear.android.pipeline.paging.PageConfig;
 
 /**
@@ -30,7 +31,7 @@ public interface PipeConfiguration<CONFIGURATION extends PipeConfiguration<CONFI
     public CONFIGURATION withUrl(URL url);
 
     //TODO: create module classes maybe?
-    public CONFIGURATION module(Object module);
+    public CONFIGURATION module(PipeModule module);
 
     public CONFIGURATION pageConfig(PageConfig pageConfig);
 
