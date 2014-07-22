@@ -23,7 +23,7 @@ import org.jboss.aerogear.android.http.HttpException;
  * A PipeModule allows special actions to be taken during certain phases of the
  * Pipe life cycle.
  *
- * @author summers
+ * 
  */
 public interface PipeModule {
 
