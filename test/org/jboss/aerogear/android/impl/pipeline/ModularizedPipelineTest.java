@@ -3,7 +3,6 @@ package org.jboss.aerogear.android.impl.pipeline;
 import java.net.MalformedURLException;
 import java.net.URL;
 import static junit.framework.Assert.assertEquals;
-import org.jboss.aerogear.android.pipeline.Pipeline2;
 import org.jboss.aerogear.android.authentication.AuthenticationModule;
 import org.jboss.aerogear.android.authentication.impl.HttpBasicAuthenticationModule;
 import org.jboss.aerogear.android.authorization.AuthzModule;
@@ -13,6 +12,7 @@ import static org.jboss.aerogear.android.impl.helper.UnitTestUtils.getPrivateFie
 import static org.jboss.aerogear.android.impl.pipeline.PipeTypes.REST;
 import org.jboss.aerogear.android.pipeline.Pipe;
 import org.jboss.aerogear.android.pipeline.PipeConfiguration;
+import org.jboss.aerogear.android.pipeline.PipeManager;
 import org.jboss.aerogear.android.pipeline.RequestBuilder;
 import org.jboss.aerogear.android.pipeline.paging.PageConfig;
 import org.junit.Before;
@@ -34,7 +34,7 @@ public class ModularizedPipelineTest {
     @Test
     public void defaultPipeSetup() {
 
-        Pipe newPipe = Pipeline2.config(PipeConfiguration.class, "data").withUrl(url).forClass(Data.class);
+        Pipe newPipe = PipeManager.config("data", PipeConfiguration.class ).withUrl(url).forClass(Data.class);
 
         assertEquals("verifying the given URL", "http://server.com/context/data", newPipe.getUrl().toString());
         assertEquals("verifying the type", REST, newPipe.getType());
@@ -45,7 +45,7 @@ public class ModularizedPipelineTest {
      */
     @Test
     public void customPipeSetup() {
-        Pipe newPipe = Pipeline2.config(IStubPipeConfiguration.class, "custom").withUrl(url).id(5).forClass(Data.class);
+        Pipe newPipe = PipeManager.config("custom", IStubPipeConfiguration.class).withUrl(url).id(5).forClass(Data.class);
 
         assertEquals("verifying the given URL", "http://server.com/context/data/5", newPipe.getUrl().toString());
     }
@@ -61,7 +61,7 @@ public class ModularizedPipelineTest {
     public void addAuthToPipe() throws NoSuchFieldException, IllegalArgumentException, IllegalAccessException {
         AuthenticationModule basicModule = new HttpBasicAuthenticationModule(url);
 
-        Pipe newPipe = Pipeline2.config(PipeConfiguration.class, "auth").withUrl(url).module(basicModule).forClass(Data.class);
+        Pipe newPipe = PipeManager.config("auth", PipeConfiguration.class).withUrl(url).module(basicModule).forClass(Data.class);
 
         RestRunner runner = getPrivateField(newPipe, "restRunner", RestRunner.class);
         AuthenticationModule module = getPrivateField(runner, "authModule", AuthenticationModule.class);
@@ -88,7 +88,7 @@ public class ModularizedPipelineTest {
     public void addAuthzToPipe() throws NoSuchFieldException, IllegalArgumentException, IllegalAccessException {
         AuthzModule authzModule = mock(AuthzModule.class);
 
-        Pipe newPipe = Pipeline2.config(PipeConfiguration.class, "auth").withUrl(url).module((PipeModule)authzModule).forClass(Data.class);
+        Pipe newPipe = PipeManager.config( "auth", PipeConfiguration.class).withUrl(url).module((PipeModule)authzModule).forClass(Data.class);
 
         RestRunner runner = getPrivateField(newPipe, "restRunner", RestRunner.class);
         AuthzModule module = getPrivateField(runner, "authzModule", AuthzModule.class);
@@ -110,7 +110,7 @@ public class ModularizedPipelineTest {
     @Test
     public void addPagingToPipe() {
         PageConfig pageConfig = new PageConfig();
-        Pipe newPipe = Pipeline2.config(PipeConfiguration.class, "auth").withUrl(url).pageConfig(pageConfig).forClass(Data.class);
+        Pipe newPipe = PipeManager.config( "auth", PipeConfiguration.class).withUrl(url).pageConfig(pageConfig).forClass(Data.class);
         
         throw new IllegalStateException("Not yet implemented");
         /*
@@ -130,7 +130,7 @@ public class ModularizedPipelineTest {
     @Test
     public void addMultipartToPipe() throws NoSuchFieldException, IllegalArgumentException, IllegalAccessException {
         RequestBuilder multipartBuilder = new MultipartRequestBuilder();
-        Pipe newPipe = Pipeline2.config(PipeConfiguration.class, "auth").withUrl(url).requestBuilder(multipartBuilder).forClass(Data.class);
+        Pipe newPipe = PipeManager.config( "auth", PipeConfiguration.class).withUrl(url).requestBuilder(multipartBuilder).forClass(Data.class);
         
         RestRunner runner = getPrivateField(newPipe, "restRunner", RestRunner.class);
         RequestBuilder runnerBuilder = runner.getRequestBuilder();
@@ -141,9 +141,41 @@ public class ModularizedPipelineTest {
          */
     }
 
-    private static interface IStubPipeConfiguration extends PipeConfiguration<IStubPipeConfiguration> {
+    private static class IStubPipeConfiguration extends PipeConfiguration<IStubPipeConfiguration> {
+        private int id;
 
-        IStubPipeConfiguration id(int id);
+        public IStubPipeConfiguration id(int id) {
+            this.id = id;
+            return this;
+        }
+
+        @Override
+        public <DATA> Pipe<DATA> forClass(Class<DATA> aClass) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public IStubPipeConfiguration withUrl(URL url) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public IStubPipeConfiguration module(PipeModule module) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public IStubPipeConfiguration pageConfig(PageConfig pageConfig) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public IStubPipeConfiguration requestBuilder(RequestBuilder multipartBuilder) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+        
+        
+        
     }
 
 }

@@ -40,15 +40,15 @@ public abstract class PipeConfiguration<CONFIGURATION extends PipeConfiguration<
         return (CONFIGURATION) this;
     }
     
-    abstract <DATA> Pipe<DATA> forClass(Class<DATA> aClass);
+    public abstract <DATA> Pipe<DATA> forClass(Class<DATA> aClass);
 
-    abstract CONFIGURATION withUrl(URL url);
+    public abstract CONFIGURATION withUrl(URL url);
 
     //TODO: create module classes maybe?
-    abstract CONFIGURATION module(PipeModule module);
+    public abstract CONFIGURATION module(PipeModule module);
 
-    abstract CONFIGURATION pageConfig(PageConfig pageConfig);
+    public abstract CONFIGURATION pageConfig(PageConfig pageConfig);
 
-    abstract CONFIGURATION requestBuilder(RequestBuilder multipartBuilder);
+    public abstract CONFIGURATION requestBuilder(RequestBuilder multipartBuilder);
 
 }
