@@ -53,8 +53,7 @@ public class RestfulPipeConfiguration extends PipeConfiguration<RestfulPipeConfi
 
     @Override
     public <DATA> Pipe<DATA> forClass(Class<DATA> aClass) {
-        URL dataUrl = UrlUtils.appendToBaseURL(url, name);
-        return new RestAdapter<DATA>(aClass, dataUrl);
+        return new RestAdapter<DATA>(aClass, this);
     }
 
     @Override
