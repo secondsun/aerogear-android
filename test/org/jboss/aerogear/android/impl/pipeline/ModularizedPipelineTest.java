@@ -14,7 +14,7 @@ import org.jboss.aerogear.android.pipeline.Pipe;
 import org.jboss.aerogear.android.pipeline.PipeConfiguration;
 import org.jboss.aerogear.android.pipeline.PipeManager;
 import org.jboss.aerogear.android.pipeline.RequestBuilder;
-import org.jboss.aerogear.android.pipeline.RestfulPipeConfiguration;
+import org.jboss.aerogear.android.pipeline.ResponseParser;
 import org.jboss.aerogear.android.pipeline.paging.PageConfig;
 import org.junit.Before;
 import org.junit.Test;
@@ -62,7 +62,7 @@ public class ModularizedPipelineTest {
     public void addAuthToPipe() throws NoSuchFieldException, IllegalArgumentException, IllegalAccessException {
         AuthenticationModule basicModule = new HttpBasicAuthenticationModule(url);
 
-        Pipe newPipe = PipeManager.config("auth", PipeConfiguration.class).withUrl(url).module(basicModule).forClass(Data.class);
+        Pipe newPipe = PipeManager.config("auth", RestfulPipeConfiguration.class).withUrl(url).module(basicModule).forClass(Data.class);
 
         RestRunner runner = getPrivateField(newPipe, "restRunner", RestRunner.class);
         AuthenticationModule module = getPrivateField(runner, "authModule", AuthenticationModule.class);
@@ -172,6 +172,16 @@ public class ModularizedPipelineTest {
 
         @Override
         public IStubPipeConfiguration requestBuilder(RequestBuilder multipartBuilder) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public IStubPipeConfiguration timeout(Integer timeout) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public IStubPipeConfiguration responseParser(ResponseParser responseParser) {
             throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
         

@@ -47,8 +47,12 @@ public abstract class PipeConfiguration<CONFIGURATION extends PipeConfiguration<
     //TODO: create module classes maybe?
     public abstract CONFIGURATION module(PipeModule module);
 
+    public abstract CONFIGURATION timeout(Integer timeout);
+    
     public abstract CONFIGURATION pageConfig(PageConfig pageConfig);
 
-    public abstract CONFIGURATION requestBuilder(RequestBuilder multipartBuilder);
+    public abstract CONFIGURATION requestBuilder(RequestBuilder builder);
+    
+    public abstract CONFIGURATION responseParser(ResponseParser responseParser);
 
 }

@@ -117,6 +117,22 @@ public final class RestAdapter<T> implements Pipe<T> {
     }
 
     /**
+     * This is package private because the correct method of calling it should be
+     * from the FactoryClass, PipeModule.
+     * 
+     * @param configuration the configuration to use.
+     */
+    RestAdapter(Class<T> klass, RestfulPipeConfiguration configuration) {
+        this.klass = klass;
+        this.url = configuration.getAbsoluteURL();
+        this.pageConfig = configuration.getPageConfig();
+        this.requestBuilder = configuration.getRequestBuilder();
+        this.responseParser = configuration.getResponseParser();
+        this.restRunner = new RestRunner<T>(klass, url, configuration);
+        
+    }
+    
+    /**
      * {@inheritDoc}
      */
     @Override

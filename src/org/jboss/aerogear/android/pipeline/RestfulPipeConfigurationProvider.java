@@ -15,6 +15,7 @@
  * limitations under the License.
  */package org.jboss.aerogear.android.pipeline;
 
+import org.jboss.aerogear.android.impl.pipeline.RestfulPipeConfiguration;
 import org.jboss.aerogear.android.ConfigurationProvider;
 
 public class RestfulPipeConfigurationProvider implements ConfigurationProvider<RestfulPipeConfiguration> {

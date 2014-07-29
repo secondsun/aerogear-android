@@ -16,6 +16,7 @@
  */
 package org.jboss.aerogear.android.pipeline;
 
+import org.jboss.aerogear.android.impl.pipeline.RestfulPipeConfiguration;
 import java.util.HashMap;
 import java.util.Map;
 import org.jboss.aerogear.android.ConfigurationProvider;
