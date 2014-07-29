@@ -14,6 +14,7 @@ import org.jboss.aerogear.android.pipeline.Pipe;
 import org.jboss.aerogear.android.pipeline.PipeConfiguration;
 import org.jboss.aerogear.android.pipeline.PipeManager;
 import org.jboss.aerogear.android.pipeline.RequestBuilder;
+import org.jboss.aerogear.android.pipeline.RestfulPipeConfiguration;
 import org.jboss.aerogear.android.pipeline.paging.PageConfig;
 import org.junit.Before;
 import org.junit.Test;
@@ -34,7 +35,7 @@ public class ModularizedPipelineTest {
     @Test
     public void defaultPipeSetup() {
 
-        Pipe newPipe = PipeManager.config("data", PipeConfiguration.class ).withUrl(url).forClass(Data.class);
+        Pipe newPipe = PipeManager.config("data", RestfulPipeConfiguration.class ).withUrl(url).forClass(Data.class);
 
         assertEquals("verifying the given URL", "http://server.com/context/data", newPipe.getUrl().toString());
         assertEquals("verifying the type", REST, newPipe.getType());

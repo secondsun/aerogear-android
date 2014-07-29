@@ -9,29 +9,35 @@ package org.jboss.aerogear.android.pipeline;
 import java.net.URL;
 import org.jboss.aerogear.android.Config;
 import org.jboss.aerogear.android.code.PipeModule;
+import org.jboss.aerogear.android.impl.pipeline.RestAdapter;
+import org.jboss.aerogear.android.impl.util.UrlUtils;
 import org.jboss.aerogear.android.pipeline.paging.PageConfig;
 
 public class RestfulPipeConfiguration extends PipeConfiguration<RestfulPipeConfiguration> implements Config<RestfulPipeConfiguration>{
-
+    private URL url;
+    private String name;
 
     @Override
     public String getName() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return name;
     }
 
     @Override
     public RestfulPipeConfiguration setName(String name) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        this.name = name;
+        return this;
     }
 
     @Override
     public <DATA> Pipe<DATA> forClass(Class<DATA> aClass) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        URL dataUrl = UrlUtils.appendToBaseURL(url, name);
+        return new RestAdapter<DATA>(aClass, dataUrl);
     }
 
     @Override
     public RestfulPipeConfiguration withUrl(URL url) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        this.url = url;
+        return this;
     }
 
     @Override

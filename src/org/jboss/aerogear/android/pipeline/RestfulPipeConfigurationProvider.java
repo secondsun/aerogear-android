@@ -21,7 +21,7 @@ public class RestfulPipeConfigurationProvider implements ConfigurationProvider<R
 
     @Override
     public RestfulPipeConfiguration newConfiguration() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return new RestfulPipeConfiguration();
     }
     
 }
