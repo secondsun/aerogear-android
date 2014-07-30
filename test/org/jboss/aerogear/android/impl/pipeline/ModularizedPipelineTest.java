@@ -3,6 +3,7 @@ package org.jboss.aerogear.android.impl.pipeline;
 import java.net.MalformedURLException;
 import java.net.URL;
 import static junit.framework.Assert.assertEquals;
+import org.jboss.aerogear.android.ConfigurationProvider;
 import org.jboss.aerogear.android.authentication.AuthenticationModule;
 import org.jboss.aerogear.android.authentication.impl.HttpBasicAuthenticationModule;
 import org.jboss.aerogear.android.authorization.AuthzModule;
@@ -10,6 +11,7 @@ import org.jboss.aerogear.android.code.PipeModule;
 import org.jboss.aerogear.android.impl.helper.Data;
 import static org.jboss.aerogear.android.impl.helper.UnitTestUtils.getPrivateField;
 import static org.jboss.aerogear.android.impl.pipeline.PipeTypes.REST;
+import org.jboss.aerogear.android.impl.util.UrlUtils;
 import org.jboss.aerogear.android.pipeline.Pipe;
 import org.jboss.aerogear.android.pipeline.PipeConfiguration;
 import org.jboss.aerogear.android.pipeline.PipeManager;
@@ -47,6 +49,7 @@ public class ModularizedPipelineTest {
      */
     @Test
     public void customPipeSetup() {
+        PipeManager.registerConfigurationProvider(IStubPipeConfiguration.class, new IStubPipeConfigurationProvider());
         Pipe newPipe = PipeManager.config("custom", IStubPipeConfiguration.class).withUrl(url).id(5).forClass(Data.class);
 
         assertEquals("verifying the given URL", "http://server.com/context/data/5", newPipe.getUrl().toString());
@@ -148,6 +151,7 @@ public class ModularizedPipelineTest {
 
     private static class IStubPipeConfiguration extends PipeConfiguration<IStubPipeConfiguration> {
         private int id;
+        private URL url;
 
         public IStubPipeConfiguration id(int id) {
             this.id = id;
@@ -156,12 +160,13 @@ public class ModularizedPipelineTest {
 
         @Override
         public <DATA> Pipe<DATA> forClass(Class<DATA> aClass) {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            return new RestAdapter<DATA>(aClass, UrlUtils.appendToBaseURL(url, aClass.getSimpleName().toLowerCase() + "/" + id + ""));
         }
 
         @Override
         public IStubPipeConfiguration withUrl(URL url) {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            this.url = url;
+            return this;
         }
 
         @Override
@@ -191,6 +196,17 @@ public class ModularizedPipelineTest {
         
         
         
+    }
+
+    private static class IStubPipeConfigurationProvider  implements ConfigurationProvider<IStubPipeConfiguration> {
+
+        public IStubPipeConfigurationProvider() {
+        }
+
+        @Override
+        public IStubPipeConfiguration newConfiguration() {
+            return new IStubPipeConfiguration();
+        }
     }
 
 }
