@@ -26,7 +26,7 @@ import static org.mockito.Mockito.mock;
 import org.robolectric.RobolectricTestRunner;
 
 @RunWith(RobolectricTestRunner.class)
-public class ModularizedPipelineTest {
+public class PipeManagerTest {
 
     private URL url;
 
