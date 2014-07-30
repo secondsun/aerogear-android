@@ -104,22 +104,24 @@ public class ModularizedPipelineTest {
          TODO: Eventually we will want to break the dependency on the 
          AuthzModule type from RestRunner.  This will happen 
          during modularization and this test will be rewritten
-         */    }
+         */    
+    }
 
     /**
      * This test will show paging handling can be added to a Pipeline
      *
+     * @throws java.lang.NoSuchFieldException thrown by Java, shouldn't happen if the test works.
+     * @throws java.lang.IllegalArgumentException thrown by Java, shouldn't happen if the test works.
+     * @throws java.lang.IllegalAccessException thrown by Java, shouldn't happen if the test works.
+     * 
      */
     @Test
-    public void addPagingToPipe() {
+    public void addPagingToPipe() throws NoSuchFieldException, IllegalArgumentException, IllegalAccessException {
         PageConfig pageConfig = new PageConfig();
         Pipe newPipe = PipeManager.config( "auth", RestfulPipeConfiguration.class).withUrl(url).pageConfig(pageConfig).forClass(Data.class);
+        PageConfig appliedConfig = getPrivateField(newPipe, "pageConfig", PageConfig.class);
         
-        throw new IllegalStateException("Not yet implemented");
-        /*
-          TODO: Refactor paging perhaps to be more modular?
-          Refactor PageConfig to extend PipeConfiguration and make the builder more fluent?
-        */
+        assertEquals(pageConfig, appliedConfig);
     }
 
     /**
