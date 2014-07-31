@@ -18,6 +18,7 @@ import org.jboss.aerogear.android.pipeline.PipeManager;
 import org.jboss.aerogear.android.pipeline.RequestBuilder;
 import org.jboss.aerogear.android.pipeline.ResponseParser;
 import org.jboss.aerogear.android.pipeline.paging.PageConfig;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -43,6 +44,16 @@ public class PipeManagerTest {
         assertEquals("verifying the given URL", "http://server.com/context/data", newPipe.getUrl().toString());
         assertEquals("verifying the type", REST, newPipe.getType());
     }
+    
+
+    @Test
+    public void nullUrlCantHappen() {
+
+        Pipe newPipe = PipeManager.config("data", RestfulPipeConfiguration.class ).forClass(Data.class);
+
+        Assert.assertNotNull(newPipe.getUrl());
+        
+    }    
 
     /**
      * This test will show that the Pipe URL Creation can be overriden
