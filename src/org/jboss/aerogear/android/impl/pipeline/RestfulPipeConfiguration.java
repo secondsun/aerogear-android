@@ -53,6 +53,9 @@ public class RestfulPipeConfiguration extends PipeConfiguration<RestfulPipeConfi
 
     @Override
     public <DATA> Pipe<DATA> forClass(Class<DATA> aClass) {
+        if (url == null) {
+            throw new IllegalStateException("url may not be null");
+        }
         return new RestAdapter<DATA>(aClass, this);
     }
 

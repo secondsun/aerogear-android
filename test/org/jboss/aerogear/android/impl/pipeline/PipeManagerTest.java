@@ -46,10 +46,10 @@ public class PipeManagerTest {
     }
     
 
-    @Test
+    @Test(expected = IllegalStateException.class)
     public void nullUrlCantHappen() {
 
-        Pipe newPipe = PipeManager.config("data", RestfulPipeConfiguration.class ).forClass(Data.class);
+        Pipe newPipe = PipeManager.config("data", RestfulPipeConfiguration.class ).withUrl(null).forClass(Data.class);
 
         Assert.assertNotNull(newPipe.getUrl());
         
