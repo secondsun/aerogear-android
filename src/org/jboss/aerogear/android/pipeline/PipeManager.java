@@ -65,7 +65,7 @@ public class PipeManager {
 
     }
 
-    public static Pipe getCache(String name) {
+    public static Pipe getPipe(String name) {
         return pipes.get(name);
     }
 
