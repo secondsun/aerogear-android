@@ -17,6 +17,8 @@
 package org.jboss.aerogear.android.pipeline;
 
 import java.net.URL;
+import java.util.Collection;
+import java.util.HashSet;
 import org.jboss.aerogear.android.Config;
 import org.jboss.aerogear.android.code.PipeModule;
 import org.jboss.aerogear.android.pipeline.paging.PageConfig;
@@ -28,6 +30,11 @@ import org.jboss.aerogear.android.pipeline.paging.PageConfig;
 public abstract class PipeConfiguration<CONFIGURATION extends PipeConfiguration<CONFIGURATION>> implements Config<CONFIGURATION> {
 
     private String name;
+    private Collection<OnPipeCreatedListener> listeners;
+    
+    public PipeConfiguration() {
+        listeners = new HashSet<OnPipeCreatedListener>();
+    }
     
     @Override
     public String getName() {
@@ -37,6 +44,20 @@ public abstract class PipeConfiguration<CONFIGURATION extends PipeConfiguration<
     @Override
     public CONFIGURATION setName(String name) {
         this.name = name;
+        return (CONFIGURATION) this;
+    }
+    
+        public Collection<OnPipeCreatedListener> getOnPipeCreatedListeners() {
+        return listeners;
+    }
+
+    public CONFIGURATION addOnPipeCreatedListener(OnPipeCreatedListener listener) {
+        this.listeners.add(listener);
+        return (CONFIGURATION) this;
+    }
+
+    public CONFIGURATION setOnPipeCreatedListeners(Collection<OnPipeCreatedListener> listeners) {
+        listeners.addAll(listeners);
         return (CONFIGURATION) this;
     }
     

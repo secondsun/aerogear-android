@@ -24,6 +24,7 @@ import org.jboss.aerogear.android.authentication.AuthenticationModule;
 import org.jboss.aerogear.android.authorization.AuthzModule;
 import org.jboss.aerogear.android.code.PipeModule;
 import org.jboss.aerogear.android.impl.util.UrlUtils;
+import org.jboss.aerogear.android.pipeline.OnPipeCreatedListener;
 import org.jboss.aerogear.android.pipeline.Pipe;
 import org.jboss.aerogear.android.pipeline.PipeConfiguration;
 import org.jboss.aerogear.android.pipeline.RequestBuilder;
@@ -56,7 +57,13 @@ public class RestfulPipeConfiguration extends PipeConfiguration<RestfulPipeConfi
         if (url == null) {
             throw new IllegalStateException("url may not be null");
         }
-        return new RestAdapter<DATA>(aClass, this);
+        RestAdapter<DATA> newPipe = new RestAdapter<DATA>(aClass, this);
+        
+        for (OnPipeCreatedListener listener : getOnPipeCreatedListeners()) {
+            listener.onPipeCreated(this, newPipe);
+        }
+        
+        return newPipe;
     }
 
     @Override

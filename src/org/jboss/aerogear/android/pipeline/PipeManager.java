@@ -61,7 +61,8 @@ public class PipeManager {
         }
 
         return provider.newConfiguration()
-                .setName(name);
+                .setName(name)
+                .addOnPipeCreatedListener(onPipeCreatedListener);
 
     }
 
