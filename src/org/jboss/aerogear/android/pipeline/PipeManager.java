@@ -21,10 +21,13 @@ import java.util.HashMap;
 import java.util.Map;
 import org.jboss.aerogear.android.ConfigurationProvider;
 
-
+/**
+ * A Manager which handles the registration of configurations and references to 
+ * created pipes.
+ */
 public class PipeManager {
 
-     private static Map<String, Pipe<?>> pipes = new HashMap<String, Pipe<?>>();
+    private static Map<String, Pipe<?>> pipes = new HashMap<String, Pipe<?>>();
 
     private static Map<Class<? extends PipeConfiguration<?>>, ConfigurationProvider<?>>
             configurationProviderMap = new HashMap<Class<? extends PipeConfiguration<?>>, ConfigurationProvider<?>>();
@@ -44,17 +47,36 @@ public class PipeManager {
     private PipeManager() {
     }
 
+    /**
+     * 
+     * This will add a new Configuration that this Manager can build 
+     * Configurations for.
+     * 
+     * @param <CFG> the actual Configuration type
+     * @param configurationClass the class of configuration to be registered
+     * @param provider the instance which will provide the configuration.
+     */
     public static <CFG extends PipeConfiguration<CFG>> void registerConfigurationProvider
             (Class<CFG> configurationClass, ConfigurationProvider<CFG> provider) {
         configurationProviderMap.put(configurationClass, provider);
     }
 
-    public static <CFG extends PipeConfiguration<CFG>> CFG config(String name, Class<CFG> pipeImplementationClass) {
+    /**
+     * Begins a new fluent configuration stanza.
+     * 
+     * @param <CFG> the Configuration type.
+     * @param name an identifier which will be used to fetch the Pipe after 
+     * configuration is finished. See : {@link PipeManager#getPipe(java.lang.String) }
+     * @param pipeConfigurationClass the class of the configuration type.
+     *
+     * @return a PipeConfiguration which can be used to build a Pipe object.
+     */            
+    public static <CFG extends PipeConfiguration<CFG>> CFG config(String name, Class<CFG> pipeConfigurationClass) {
 
         @SuppressWarnings("unchecked")
         ConfigurationProvider<? extends PipeConfiguration<CFG>> provider =
                 (ConfigurationProvider<? extends PipeConfiguration<CFG>>)
-                        configurationProviderMap.get(pipeImplementationClass);
+                        configurationProviderMap.get(pipeConfigurationClass);
 
         if (provider == null) {
             throw new IllegalArgumentException("Configuration not registered!");
@@ -66,6 +88,12 @@ public class PipeManager {
 
     }
 
+    /**
+     * Fetches a named pipe
+     * @param name the name of the Pipe given in {@link PipeManager#config(java.lang.String, java.lang.Class) }
+     *
+     * @return the named Pipe or null
+     */
     public static Pipe getPipe(String name) {
         return pipes.get(name);
     }

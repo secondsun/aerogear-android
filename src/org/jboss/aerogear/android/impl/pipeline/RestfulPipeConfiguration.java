@@ -30,6 +30,9 @@ import org.jboss.aerogear.android.pipeline.RequestBuilder;
 import org.jboss.aerogear.android.pipeline.ResponseParser;
 import org.jboss.aerogear.android.pipeline.paging.PageConfig;
 
+/**
+ * Configures a Pipe which interacts with RESTful endpoints.
+ */
 public class RestfulPipeConfiguration extends PipeConfiguration<RestfulPipeConfiguration> implements Config<RestfulPipeConfiguration>{
     private URL url;
     private String name;
