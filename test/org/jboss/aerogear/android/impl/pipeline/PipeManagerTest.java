@@ -43,6 +43,7 @@ public class PipeManagerTest {
 
         assertEquals("verifying the given URL", "http://server.com/context/data", newPipe.getUrl().toString());
         assertEquals("verifying the type", REST, newPipe.getType());
+        assertEquals(newPipe, PipeManager.getPipe("data"));
     }
     
 
