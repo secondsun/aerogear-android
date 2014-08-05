@@ -63,7 +63,7 @@ public abstract class PipeConfiguration<CONFIGURATION extends PipeConfiguration<
     
     /**
      * 
-     * Creates a pipe based on the current configuration.
+     * Creates a pipe based on the current configuration and notifies all listeners
      * 
      * @param <DATA> The data type of the Pipe
      * @param aClass The data type class of the Pipe
@@ -72,8 +72,29 @@ public abstract class PipeConfiguration<CONFIGURATION extends PipeConfiguration<
      * @throws IllegalStateException if the Pipe can not be constructed.
      * 
      */
-    public abstract <DATA> Pipe<DATA> forClass(Class<DATA> aClass);
+    public final <DATA> Pipe<DATA> forClass(Class<DATA> aClass) {
+        Pipe<DATA> newPipe = buildPipeForClass(aClass);
+        
+        for (OnPipeCreatedListener listener : getOnPipeCreatedListeners()) {
+            listener.onPipeCreated(this, newPipe);
+        }
+        
+        return newPipe;   
+    }
 
+    /**
+     * 
+     * Validates configuration parameters and returns a Pipe instance.
+     * 
+     * @param <DATA> The data type of the Pipe
+     * @param aClass The data type class of the Pipe
+     * @return A pipe based on this configuration
+     * 
+     * @throws IllegalStateException if the Pipe can not be constructed.
+     */
+    protected abstract <DATA> Pipe<DATA> buildPipeForClass(Class<DATA> aClass);
+    
+    
     public abstract CONFIGURATION withUrl(URL url);
 
     //TODO: create module classes maybe?
