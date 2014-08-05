@@ -65,6 +65,8 @@ public class PipeManagerTest {
         Pipe newPipe = PipeManager.config("custom", IStubPipeConfiguration.class).withUrl(url).id(5).forClass(Data.class);
 
         assertEquals("verifying the given URL", "http://server.com/context/data/5", newPipe.getUrl().toString());
+        assertEquals(newPipe, PipeManager.getPipe("custom"));
+
     }
 
     /**
@@ -171,7 +173,7 @@ public class PipeManagerTest {
         }
 
         @Override
-        public <DATA> Pipe<DATA> forClass(Class<DATA> aClass) {
+        public <DATA> Pipe<DATA> buildPipeForClass(Class<DATA> aClass) {
             return new RestAdapter<DATA>(aClass, UrlUtils.appendToBaseURL(url, aClass.getSimpleName().toLowerCase() + "/" + id + ""));
         }
 
