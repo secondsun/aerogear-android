@@ -31,7 +31,7 @@ public class PipeManager {
 
     private static OnPipeCreatedListener onPipeCreatedListener = new OnPipeCreatedListener() {
         @Override
-        public void onCacheCreated(PipeConfiguration<?> configuration, Pipe<?> pipe) {
+        public void onPipeCreated(PipeConfiguration<?> configuration, Pipe<?> pipe) {
             pipes.put(configuration.getName(), pipe);
         }
     };

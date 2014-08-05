@@ -17,5 +17,5 @@
 package org.jboss.aerogear.android.pipeline;
 
 public interface OnPipeCreatedListener {
-    public void onCacheCreated(PipeConfiguration<?> configuration, Pipe<?> pipe);
+    public void onPipeCreated(PipeConfiguration<?> configuration, Pipe<?> pipe);
 }
