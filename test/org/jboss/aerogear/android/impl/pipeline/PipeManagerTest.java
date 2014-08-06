@@ -104,11 +104,10 @@ public class PipeManagerTest {
      * @throws java.lang.IllegalAccessException thrown by Java, shouldn't happen if the test works.
      */
     @Test
-    @Ignore(value = "Authz hasn't been converted to module yet.")
     public void addAuthzToPipe() throws NoSuchFieldException, IllegalArgumentException, IllegalAccessException {
         AuthzModule authzModule = mock(AuthzModule.class);
 
-        Pipe newPipe = PipeManager.config( "auth", RestfulPipeConfiguration.class).withUrl(url).module((PipeModule)authzModule).forClass(Data.class);
+        Pipe newPipe = PipeManager.config( "auth", RestfulPipeConfiguration.class).withUrl(url).module(authzModule).forClass(Data.class);
 
         RestRunner runner = getPrivateField(newPipe, "restRunner", RestRunner.class);
         AuthzModule module = getPrivateField(runner, "authzModule", AuthzModule.class);
