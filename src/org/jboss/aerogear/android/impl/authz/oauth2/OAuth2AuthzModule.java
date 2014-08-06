@@ -30,11 +30,14 @@ import com.google.common.base.Strings;
 
 import java.net.URI;
 import java.util.UUID;
+import org.apache.http.HttpStatus;
 
 import org.jboss.aerogear.android.Callback;
 import org.jboss.aerogear.android.authentication.AuthorizationFields;
 import org.jboss.aerogear.android.impl.authz.AuthzConfig;
 import org.jboss.aerogear.android.authorization.AuthzModule;
+import org.jboss.aerogear.android.code.ModuleFields;
+import org.jboss.aerogear.android.http.HttpException;
 import org.jboss.aerogear.android.impl.authz.AuthzService;
 import org.jboss.aerogear.android.impl.authz.OAuth2AuthorizationException;
 
@@ -44,7 +47,6 @@ import org.jboss.aerogear.android.impl.authz.OAuth2AuthorizationException;
  *
  * Authorization is performed in a WebView and returned to the calling activity.
  *
- * @author summers
  */
 public class OAuth2AuthzModule implements AuthzModule {
 
@@ -92,7 +94,7 @@ public class OAuth2AuthzModule implements AuthzModule {
     public void requestAccess(final Activity activity, final Callback<String> callback) {
 
         final String state = UUID.randomUUID().toString();
-        
+
         final AuthzService.AGAuthzServiceConnection connection = new AuthzService.AGAuthzServiceConnection() {
 
             @Override
@@ -171,6 +173,32 @@ public class OAuth2AuthzModule implements AuthzModule {
      */
     private boolean hasAccount() {
         return (!Strings.isNullOrEmpty(accountId) && service.hasAccount(accountId));
+    }
+
+    @Override
+    public ModuleFields loadModule(URI relativeURI, String httpMethod, byte[] requestBody) {
+        AuthorizationFields authzFields = getAuthorizationFields(relativeURI, httpMethod, requestBody);
+        ModuleFields moduleFields = new ModuleFields();
+        moduleFields.setHeaders(authzFields.getHeaders());
+        moduleFields.setQueryParameters(authzFields.getQueryParameters());
+        return moduleFields;
+    }
+
+    @Override
+    /**
+     * Will refresh the access token if the exception status is UNAUTHORIZED or
+     * FORBIDDED.
+     *
+     * @return true if the token was refreshed. False if the token could not be
+     * refreshed or if the status wasn't of UNAUTHORIZED or FORBIDDEN.
+     */
+    public boolean handleError(HttpException exception) {
+        if (exception.getStatusCode() == HttpStatus.SC_UNAUTHORIZED
+                || exception.getStatusCode() == HttpStatus.SC_FORBIDDEN) {
+            return refreshAccess();
+        } else {
+            return false;
+        }
     }
 
     private class OAuth2AccessCallback implements Callback<String> {

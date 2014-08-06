@@ -20,6 +20,7 @@ import android.app.Activity;
 import java.net.URI;
 import org.jboss.aerogear.android.Callback;
 import org.jboss.aerogear.android.authentication.AuthorizationFields;
+import org.jboss.aerogear.android.code.PipeModule;
 import org.jboss.aerogear.android.http.HttpProvider;
 import org.jboss.aerogear.android.pipeline.Pipe;
 
@@ -27,7 +28,7 @@ import org.jboss.aerogear.android.pipeline.Pipe;
  * The AuthzModule wraps access to Authorization providers and exposes
  * authorization state and tokens to Android applications.
  */
-public interface AuthzModule {
+public interface AuthzModule extends PipeModule {
 
     /**
      *
