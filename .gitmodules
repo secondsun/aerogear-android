@@ -1,0 +1,21 @@
+[submodule "aerogear-android-core"]
+	path = aerogear-android-core
+	url = http://github.com/aerogear/aerogear-android-core
+[submodule "aerogear-android-pipe"]
+	path = aerogear-android-pipe
+	url = http://github.com/aerogear/aerogear-android-pipe
+[submodule "aerogear-android-push"]
+	path = aerogear-android-push
+	url = http://github.com/aerogear/aerogear-android-push
+[submodule "aerogear-android-auth"]
+	path = aerogear-android-auth
+	url = http://github.com/aerogear/aerogear-android-auth
+[submodule "aerogear-android-authz"]
+	path = aerogear-android-authz
+	url = http://github.com/aerogear/aerogear-android-authz
+[submodule "aerogear-android-security"]
+	path = aerogear-android-security
+	url = http://github.com/aerogear/aerogear-android-security
+[submodule "aerogear-android-store"]
+	path = aerogear-android-store
+	url = http://github.com/aerogear/aerogear-android-store
